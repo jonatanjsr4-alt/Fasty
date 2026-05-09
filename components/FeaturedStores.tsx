@@ -1,70 +1,89 @@
 const stores = [
   {
-    name: 'Burger House',
-    category: 'Hamburguesas',
+    name: 'Pizza Gold',
+    category: 'Pizza',
+    time: '20 min',
+    rating: '4.9',
     image:
-      'https://images.unsplash.com/photo-1568901346375-23c9450c58cd',
+      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop',
   },
   {
-    name: 'Pizza Gold',
-    category: 'Pizzería',
+    name: 'Burger House',
+    category: 'Hamburguesas',
+    time: '15 min',
+    rating: '4.8',
     image:
-      'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+      'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200&auto=format&fit=crop',
   },
   {
     name: 'Helados Frost',
-    category: 'Heladería',
+    category: 'Postres',
+    time: '10 min',
+    rating: '4.7',
     image:
-      'https://images.unsplash.com/photo-1563805042-7684c019e1cb',
+      'https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1200&auto=format&fit=crop',
   },
 ]
-import FadeIn from './FadeIn'
+
 export default function FeaturedStores() {
   return (
-    <FadeIn>
-  <section className="py-24 px-6 bg-black">
+    <section className="px-6">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="flex items-center justify-between mb-12">
+        <div className="mb-12">
 
-          <h2 className="text-4xl font-extrabold text-white">
-            Negocios Destacados
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
+            Negocios destacados
           </h2>
 
-          <button className="text-orange-500 font-bold">
-            Ver Todos
-          </button>
+          <p className="text-zinc-500 mt-3">
+            Restaurantes y tiendas populares en FASTY.
+          </p>
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
           {stores.map((store) => (
             <div
               key={store.name}
-              className="glass-card rounded-3xl overflow-hidden"
+              className="bg-[#111111] border border-zinc-900 hover:border-zinc-700 transition-all rounded-[32px] overflow-hidden"
             >
 
               <div className="overflow-hidden">
 
-  <img
-    src={store.image}
-    alt={store.name}
-    className="w-full h-64 object-cover hover:scale-110 transition-all duration-700"
-  />
+                <img
+                  src={store.image}
+                  alt={store.name}
+                  className="w-full h-64 object-cover hover:scale-105 transition-all duration-700"
+                />
 
-</div>
+              </div>
 
               <div className="p-6">
 
-                <h3 className="text-2xl font-bold text-white">
-                  {store.name}
-                </h3>
+                <div className="flex items-center justify-between">
 
-                <p className="text-gray-400 mt-2">
-                  {store.category}
-                </p>
+                  <h3 className="text-white text-xl font-semibold">
+                    {store.name}
+                  </h3>
+
+                  <span className="text-orange-400 text-sm font-medium">
+                    ★ {store.rating}
+                  </span>
+
+                </div>
+
+                <div className="flex items-center gap-3 mt-3 text-zinc-500 text-sm">
+
+                  <span>{store.category}</span>
+
+                  <span>•</span>
+
+                  <span>{store.time}</span>
+
+                </div>
 
               </div>
 
@@ -75,7 +94,6 @@ export default function FeaturedStores() {
 
       </div>
 
-       </section>
-</FadeIn>
+    </section>
   )
 }

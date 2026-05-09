@@ -1,59 +1,71 @@
 export default function Footer() {
   return (
-    <footer className="bg-zinc-950 border-t border-zinc-800 py-16 px-6">
+    <footer className="px-6 py-16 border-t border-zinc-900 mt-28">
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto">
 
-        <div>
-          <h2 className="text-4xl font-extrabold text-orange-500">
-            FASTY
-          </h2>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
 
-          <p className="text-gray-400 mt-4">
-            Plataforma moderna de domicilios y negocios en Quibdó.
+          <div>
+
+            <div className="flex items-center gap-3">
+
+              <div className="w-10 h-10 rounded-2xl bg-orange-500 flex items-center justify-center">
+
+                <span className="text-black font-black">
+                  F
+                </span>
+
+              </div>
+
+              <h2 className="text-white text-2xl font-bold tracking-tight">
+                FASTY
+              </h2>
+
+            </div>
+
+            <p className="text-zinc-500 mt-5 max-w-md leading-relaxed">
+
+              Plataforma moderna de domicilios y delivery para negocios y usuarios en Quibdó.
+
+            </p>
+
+          </div>
+
+          <div className="flex items-center gap-8 text-sm text-zinc-500">
+
+            <a href="#" className="hover:text-white transition-all">
+              Inicio
+            </a>
+
+            <a href="#" className="hover:text-white transition-all">
+              Negocios
+            </a>
+
+            <a href="#" className="hover:text-white transition-all">
+              Categorías
+            </a>
+
+            <a href="#" className="hover:text-white transition-all">
+              Contacto
+            </a>
+
+          </div>
+
+        </div>
+
+        <div className="border-t border-zinc-900 mt-12 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+
+          <p className="text-zinc-600 text-sm">
+            © 2026 FASTY. Todos los derechos reservados.
           </p>
+
+          <p className="text-zinc-600 text-sm">
+            Hecho en Quibdó, Colombia.
+          </p>
+
         </div>
 
-        <div>
-          <h3 className="text-white font-bold text-xl mb-4">
-            Empresa
-          </h3>
-
-          <ul className="space-y-3 text-gray-400">
-            <li>Nosotros</li>
-            <li>Contacto</li>
-            <li>Trabaja con nosotros</li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-white font-bold text-xl mb-4">
-            Servicios
-          </h3>
-
-          <ul className="space-y-3 text-gray-400">
-            <li>Domicilios</li>
-            <li>Negocios</li>
-            <li>Pedidos</li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-white font-bold text-xl mb-4">
-            Legal
-          </h3>
-
-          <ul className="space-y-3 text-gray-400">
-            <li>Términos</li>
-            <li>Privacidad</li>
-            <li>Cookies</li>
-          </ul>
-        </div>
-
-      </div>
-
-      <div className="border-t border-zinc-800 mt-12 pt-8 text-center text-gray-500">
-        © 2026 FASTY. Todos los derechos reservados.
       </div>
 
     </footer>

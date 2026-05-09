@@ -14,47 +14,28 @@ import CTA from '@/components/CTA'
 
 export default function Home() {
   return (
-    <main className="bg-[#0b0b0c] text-white overflow-hidden min-h-screen">
+    <main className="bg-[#0a0a0a] text-white min-h-screen overflow-hidden">
 
       <Navbar />
 
-      <section className="relative px-6 pt-36 pb-24">
+      <section className="px-6 pt-36 pb-24">
 
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-
-          <div className="absolute top-[-300px] left-[-300px] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-3xl" />
-
-          <div className="absolute bottom-[-300px] right-[-300px] w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl" />
-
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-24 items-center">
 
           <div>
-
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/70 text-sm text-zinc-300 mb-8">
-
-              <div className="w-2 h-2 rounded-full bg-orange-500" />
-
-              Delivery rápido en Quibdó
-
-            </div>
 
             <h1 className="text-5xl md:text-7xl font-black leading-[0.95] tracking-[-4px] max-w-2xl">
 
               Delivery moderno
-
               <br />
 
-              para una ciudad
-
-              <span className="text-orange-500"> real.</span>
+              para Quibdó
 
             </h1>
 
             <p className="mt-8 text-zinc-400 text-lg leading-relaxed max-w-xl">
 
-              Restaurantes, supermercados y domicilios rápidos desde una sola plataforma.
+              Comida, supermercados y domicilios rápidos desde una sola plataforma.
 
             </p>
 
@@ -73,15 +54,19 @@ export default function Home() {
           </div>
 
           <div className="flex justify-center lg:justify-end">
+
             <PhoneMockup />
+
           </div>
 
         </div>
 
       </section>
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6 -mt-6">
+      <div className="max-w-7xl mx-auto px-6">
+
         <SearchBar />
+
       </div>
 
       <div className="space-y-28 mt-28">

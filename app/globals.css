@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
+  --background: #0b0b0c;
   --foreground: #ffffff;
 }
 
@@ -16,10 +16,7 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(circle at top, rgba(255,106,0,0.15), transparent 40%),
-    #000;
-    
+  background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
@@ -29,52 +26,23 @@ button {
   cursor: pointer;
 }
 
+img {
+  user-select: none;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #111;
+  background: #0f0f10;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff6b00;
+  background: #27272a;
   border-radius: 999px;
 }
-.glass-card {
-  background: rgba(24, 24, 27, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-}
 
-.glass-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255, 106, 0, 0.4);
-  box-shadow: 0 20px 50px rgba(255, 106, 0, 0.15);
-}
-.premium-button {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.premium-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 100%;
-  height: 100%;
-  background: rgba(255,255,255,0.15);
-  transform: skewX(-20deg);
-  transition: all 0.5s ease;
-}
-
-.premium-button:hover::before {
-  left: 120%;
-}
-
-.premium-button:hover {
-  transform: translateY(-3px);
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }

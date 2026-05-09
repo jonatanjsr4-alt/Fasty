@@ -13,13 +13,13 @@ import {
   Wrench,
   Dumbbell,
 } from 'lucide-react'
-import FadeIn from './FadeIn'
+
 const categories = [
   { name: 'Licores', icon: Wine },
   { name: 'Restaurantes', icon: Utensils },
   { name: 'Heladerías', icon: IceCream },
   { name: 'Educación', icon: GraduationCap },
-  { name: 'Cafetería', icon: Coffee },
+  { name: 'Cafeterías', icon: Coffee },
   { name: 'Supermercados', icon: ShoppingCart },
   { name: 'Moda', icon: Shirt },
   { name: 'Belleza', icon: Sparkles },
@@ -32,16 +32,23 @@ const categories = [
 
 export default function Categories() {
   return (
-    <FadeIn>
-  <section className="py-24 px-6 bg-zinc-950">
+    <section className="px-6">
 
       <div className="max-w-7xl mx-auto">
 
-        <h2 className="text-4xl font-extrabold text-white mb-12">
-          Categorías
-        </h2>
+        <div className="mb-12">
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
+            Categorías
+          </h2>
+
+          <p className="text-zinc-500 mt-3">
+            Encuentra lo que necesitas rápidamente.
+          </p>
+
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
 
           {categories.map((category) => {
             const Icon = category.icon
@@ -49,14 +56,18 @@ export default function Categories() {
             return (
               <div
                 key={category.name}
-                className="glass-card rounded-3xl p-8 flex flex-col items-center justify-center"
+                className="bg-[#111111] border border-zinc-900 hover:border-zinc-700 transition-all rounded-3xl p-6"
               >
 
-                <Icon className="w-12 h-12 text-orange-500 mb-4" />
+                <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center mb-5">
 
-                <span className="text-white font-semibold">
+                  <Icon className="w-6 h-6 text-orange-400" />
+
+                </div>
+
+                <h3 className="text-white font-medium text-sm leading-snug">
                   {category.name}
-                </span>
+                </h3>
 
               </div>
             )
@@ -66,7 +77,6 @@ export default function Categories() {
 
       </div>
 
-       </section>
-</FadeIn>
+    </section>
   )
 }
