@@ -38,7 +38,7 @@ export default function Stats() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="relative overflow-hidden rounded-[34px] bg-[#111111] p-7 md:p-10 shadow-[0_20px_60px_rgba(0,0,0,.10)]">
+        <div className="relative overflow-hidden rounded-[34px] dark-section p-7 md:p-10 glow-orange-[0_20px_60px_rgba(0,0,0,.10)]">
 
           <div className="absolute top-[-180px] right-[-180px] w-[380px] h-[380px] bg-orange-500/10 blur-3xl rounded-full" />
 

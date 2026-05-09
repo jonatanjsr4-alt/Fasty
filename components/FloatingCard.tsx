@@ -10,12 +10,12 @@ export default function FloatingCard({
   return (
     <motion.div
       whileHover={{
-        y: -8,
-        scale: 1.015,
+        y: -10,
+        scale: 1.02,
       }}
       transition={{
         type: 'spring',
-        stiffness: 200,
+        stiffness: 220,
         damping: 18,
       }}
     >

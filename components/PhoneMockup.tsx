@@ -1,43 +1,46 @@
 'use client'
 
 import {
-  Search,
   Star,
   Clock3,
-  ShoppingBag,
+  Search,
 } from 'lucide-react'
 
 export default function PhoneMockup() {
   return (
-    <div className="relative flex justify-center">
+    <div className="relative">
 
-      <div className="absolute inset-0 bg-orange-300/20 blur-3xl rounded-full scale-125 opacity-40" />
+      <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full scale-110" />
 
-      <div className="relative w-[280px] h-[570px] rounded-[42px] bg-[#111111] p-2.5 shadow-[0_25px_70px_rgba(0,0,0,.2)]">
+      <div className="relative w-[310px] h-[640px] rounded-[48px] bg-black border-[6px] border-zinc-800 shadow-[0_40px_120px_rgba(0,0,0,.45)] overflow-hidden">
 
-        <div className="w-full h-full bg-[#f8f8f8] rounded-[34px] overflow-hidden relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-3xl z-30" />
 
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#111111] rounded-b-3xl z-50" />
+        <div className="w-full h-full bg-[#f8f6f2] overflow-hidden">
 
-          <div className="bg-white px-5 pt-10 pb-5 border-b border-[#efefef]">
+          <div className="px-5 pt-12 pb-5 bg-white border-b border-[#ececec]">
 
             <div className="flex items-center justify-between">
 
               <div>
 
-                <p className="text-[11px] text-[#888]">
+                <p className="text-xs text-[#888]">
+
                   Delivery rápido
+
                 </p>
 
-                <h2 className="text-xl font-black text-[#18181b] mt-1">
+                <h2 className="text-2xl font-black tracking-[-1px] text-[#111111] mt-1">
+
                   FASTY
+
                 </h2>
 
               </div>
 
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-orange">
 
-                <span className="text-white font-black text-base">
+                <span className="text-white font-black">
                   F
                 </span>
 
@@ -45,85 +48,86 @@ export default function PhoneMockup() {
 
             </div>
 
-            <div className="mt-5 flex items-center gap-3 bg-[#f7f7f7] border border-[#ececec] rounded-2xl px-4 h-12">
+            <div className="mt-5 bg-[#f5f5f5] rounded-2xl h-14 px-4 flex items-center gap-3">
 
               <Search
-                size={16}
-                className="text-orange-500"
+                size={18}
+                className="text-[#999]"
               />
 
-              <input
-                placeholder="Buscar comida..."
-                className="bg-transparent outline-none text-sm w-full text-[#18181b] placeholder:text-[#888]"
-              />
+              <p className="text-[#777] text-sm">
+
+                Buscar restaurantes
+
+              </p>
 
             </div>
 
           </div>
 
-          <div className="p-4 space-y-4 overflow-y-auto h-[calc(100%-125px)]">
+          <div className="p-4 space-y-5">
 
-            <div className="relative rounded-[26px] overflow-hidden shadow-md">
+            <div className="relative overflow-hidden rounded-[30px] shadow-lg">
 
               <img
-                src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop"
+                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop"
                 alt="Pizza"
-                className="w-full h-40 object-cover"
+                className="w-full h-44 object-cover"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-              <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xl px-3 py-1.5 rounded-2xl flex items-center gap-1.5 shadow-md">
+              <div className="absolute top-4 left-4">
 
-                <Star
-                  size={12}
-                  className="text-orange-500 fill-orange-500"
-                />
+                <div className="bg-white/90 backdrop-blur-xl rounded-full px-3 py-1.5 flex items-center gap-2">
 
-                <span className="text-xs font-semibold text-[#18181b]">
-                  4.9
-                </span>
+                  <Star
+                    size={13}
+                    className="text-orange-500 fill-orange-500"
+                  />
+
+                  <span className="text-xs font-semibold">
+
+                    4.9
+
+                  </span>
+
+                </div>
 
               </div>
 
               <div className="absolute bottom-4 left-4 right-4">
 
-                <div className="flex items-end justify-between">
+                <div className="bg-white/85 backdrop-blur-2xl rounded-[24px] p-4 border border-white/20">
 
-                  <div>
+                  <div className="flex items-start justify-between gap-3">
 
-                    <h3 className="text-white text-xl font-black">
+                    <div>
 
-                      Pizza Gold
+                      <p className="text-xs text-[#888]">
 
-                    </h3>
-
-                    <div className="flex items-center gap-3 mt-1 text-white/80 text-xs">
-
-                      <div className="flex items-center gap-1">
-
-                        <Clock3 size={12} />
-
-                        20 min
-
-                      </div>
-
-                      <span>
                         Pizza
-                      </span>
+
+                      </p>
+
+                      <h3 className="text-xl font-black tracking-[-1px] text-[#111111] mt-1">
+
+                        Pizza Gold
+
+                      </h3>
+
+                    </div>
+
+                    <div className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shadow-orange">
+
+                      <Clock3
+                        size={18}
+                        className="text-white"
+                      />
 
                     </div>
 
                   </div>
-
-                  <button className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
-
-                    <ShoppingBag
-                      size={18}
-                      className="text-white"
-                    />
-
-                  </button>
 
                 </div>
 
@@ -131,83 +135,48 @@ export default function PhoneMockup() {
 
             </div>
 
-            <div className="bg-white border border-[#ececec] rounded-[24px] p-3 shadow-sm">
+            <div className="bg-white rounded-[28px] p-4 border border-[#ececec] shadow-sm">
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
 
                 <img
-                  src="https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200&auto=format&fit=crop"
+                  src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1200&auto=format&fit=crop"
                   alt="Burger"
-                  className="w-20 h-20 object-cover rounded-2xl"
+                  className="w-20 h-20 rounded-2xl object-cover"
                 />
 
                 <div className="flex-1">
 
-                  <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs text-[#888]">
 
-                    <div>
+                    Hamburguesas
 
-                      <h3 className="font-black text-base text-[#18181b]">
+                  </p>
 
-                        Burger House
+                  <h3 className="text-lg font-black tracking-[-1px] text-[#111111] mt-1">
 
-                      </h3>
+                    Burger House
 
-                      <p className="text-xs text-[#777] mt-1">
+                  </h3>
 
-                        Hamburguesas premium
+                  <div className="flex items-center gap-2 mt-2">
 
-                      </p>
+                    <Star
+                      size={14}
+                      className="text-orange-500 fill-orange-500"
+                    />
 
-                    </div>
-
-                    <div className="bg-orange-100 text-orange-600 px-2.5 py-1 rounded-xl text-xs font-semibold">
+                    <span className="text-sm font-medium text-[#666]">
 
                       4.8
 
-                    </div>
-
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4">
-
-                    <div className="flex items-center gap-2 text-[#777] text-xs">
-
-                      <Clock3 size={12} />
-
-                      15 min
-
-                    </div>
-
-                    <button className="bg-[#18181b] hover:bg-black text-white px-4 h-8 rounded-xl text-xs font-semibold transition-all">
-
-                      Agregar
-
-                    </button>
+                    </span>
 
                   </div>
 
                 </div>
 
               </div>
-
-            </div>
-
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-[24px] p-4 text-white shadow-lg shadow-orange-500/20">
-
-              <p className="text-xs text-white/80">
-                Oferta especial
-              </p>
-
-              <h3 className="text-xl font-black mt-1">
-                30% OFF
-              </h3>
-
-              <p className="mt-2 text-white/90 text-xs leading-relaxed">
-
-                En restaurantes seleccionados de FASTY.
-
-              </p>
 
             </div>
 

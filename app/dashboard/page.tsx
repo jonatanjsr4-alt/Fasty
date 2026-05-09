@@ -1,263 +1,320 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
-
 import {
-  LayoutDashboard,
-  ShoppingBag,
   Store,
-  LogOut,
-  User,
-  Clock3,
+  ShoppingBag,
+  DollarSign,
+  TrendingUp,
+  Bell,
+  Search,
 } from 'lucide-react'
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<any>(null)
-
-  const router = useRouter()
-
-  useEffect(() => {
-    getUser()
-  }, [])
-
-  async function getUser() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-      router.push('/auth')
-      return
-    }
-
-    setUser(user)
-  }
-
-  async function logout() {
-    await supabase.auth.signOut()
-    router.push('/auth')
-  }
-
   return (
-    <main className="min-h-screen bg-[#0b0b0c] text-white flex">
+    <main className="min-h-screen bg-[#0f0f11] text-white flex">
 
-      <aside className="hidden lg:flex w-[250px] bg-[#111111] border-r border-zinc-800 p-6 flex-col justify-between">
+      <aside className="w-[280px] dark-section luxury-border border-r p-8 hidden lg:flex flex-col">
 
         <div>
 
-          <div className="flex items-center gap-3 mb-12">
+          <div className="flex items-center gap-4 mb-14">
 
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-lg font-black shadow-lg shadow-orange-500/20">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center glow-orange">
 
-              F
+              <span className="text-white text-xl font-black">
+
+                F
+
+              </span>
 
             </div>
 
             <div>
 
-              <h1 className="text-xl font-black">
+              <h1 className="text-2xl font-black tracking-[-1px]">
+
                 FASTY
+
               </h1>
 
-              <p className="text-zinc-500 text-xs mt-1">
-                Delivery Platform
+              <p className="text-zinc-500 text-sm">
+
+                Dashboard
+
               </p>
 
             </div>
 
           </div>
 
-          <nav className="space-y-2">
+          <div className="space-y-3">
 
-            <button className="w-full flex items-center gap-3 bg-orange-500 text-white px-4 h-12 rounded-2xl font-semibold text-sm shadow-lg shadow-orange-500/20">
+            {[
+              'Resumen',
+              'Pedidos',
+              'Productos',
+              'Clientes',
+              'Configuración',
+            ].map((item, index) => (
 
-              <LayoutDashboard size={18} />
+              <button
+                key={item}
+                className={`w-full h-14 rounded-2xl px-5 flex items-center transition-all font-medium
+                ${index === 0
+                  ? 'bg-orange-500 text-white glow-orange'
+                  : 'text-zinc-400 hover:bg-white/5'
+                }`}
+              >
 
-              Dashboard
+                {item}
 
-            </button>
+              </button>
 
-            <button className="w-full flex items-center gap-3 hover:bg-zinc-900 text-zinc-300 px-4 h-12 rounded-2xl transition-all text-sm">
+            ))}
 
-              <ShoppingBag size={18} />
-
-              Pedidos
-
-            </button>
-
-            <button className="w-full flex items-center gap-3 hover:bg-zinc-900 text-zinc-300 px-4 h-12 rounded-2xl transition-all text-sm">
-
-              <Store size={18} />
-
-              Restaurantes
-
-            </button>
-
-            <button className="w-full flex items-center gap-3 hover:bg-zinc-900 text-zinc-300 px-4 h-12 rounded-2xl transition-all text-sm">
-
-              <User size={18} />
-
-              Perfil
-
-            </button>
-
-          </nav>
+          </div>
 
         </div>
 
-        <button
-          onClick={logout}
-          className="w-full flex items-center justify-center gap-3 bg-red-500 hover:bg-red-600 transition-all h-12 rounded-2xl font-semibold text-sm"
-        >
+        <div className="mt-auto">
 
-          <LogOut size={18} />
+          <div className="dark-section luxury-border rounded-[28px] p-5">
 
-          Cerrar sesión
+            <p className="text-sm text-zinc-400 leading-relaxed">
 
-        </button>
+              FASTY Business Premium Dashboard.
+
+            </p>
+
+          </div>
+
+        </div>
 
       </aside>
 
-      <section className="flex-1 p-5 md:p-8 overflow-y-auto">
+      <section className="flex-1 p-6 md:p-10">
 
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-10">
 
           <div>
 
             <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
 
-              PANEL PRINCIPAL
+              PANEL ADMINISTRATIVO
 
             </p>
 
-            <h1 className="text-4xl md:text-5xl font-black mt-3 tracking-[-2px]">
+            <h1 className="text-4xl md:text-5xl font-black tracking-[-3px] mt-3">
 
-              Bienvenido 👋
+              Bienvenido de nuevo
 
             </h1>
 
-            <p className="text-zinc-400 mt-3 text-sm md:text-base">
-
-              Gestiona tu cuenta FASTY fácilmente.
-
-            </p>
-
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 px-5 py-4 rounded-2xl">
+          <div className="flex items-center gap-4">
 
-            <p className="text-zinc-500 text-xs">
-              Usuario conectado
-            </p>
+            <div className="glass rounded-2xl h-12 px-5 flex items-center gap-3">
 
-            <h2 className="font-semibold mt-1 text-sm md:text-base break-all">
+              <Search
+                size={18}
+                className="text-zinc-400"
+              />
 
-              {user?.email}
+              <input
+                type="text"
+                placeholder="Buscar..."
+                className="bg-transparent outline-none text-sm text-white placeholder:text-zinc-500"
+              />
 
-            </h2>
+            </div>
 
-          </div>
+            <button className="w-12 h-12 rounded-2xl glass flex items-center justify-center">
 
-        </div>
+              <Bell
+                size={18}
+                className="text-white"
+              />
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
-
-          <div className="bg-gradient-to-br from-orange-500 to-orange-700 rounded-[28px] p-6 shadow-xl shadow-orange-500/10">
-
-            <p className="text-white/70 text-xs">
-              PEDIDOS
-            </p>
-
-            <h2 className="text-5xl font-black mt-3">
-              0
-            </h2>
-
-            <p className="mt-4 text-white/80 text-sm">
-              Pedidos realizados
-            </p>
-
-          </div>
-
-          <div className="bg-zinc-900 border border-zinc-800 rounded-[28px] p-6">
-
-            <p className="text-zinc-500 text-xs">
-              ESTADO
-            </p>
-
-            <h2 className="text-3xl font-black mt-3 text-green-400">
-
-              Activo
-
-            </h2>
-
-            <p className="mt-4 text-zinc-400 text-sm">
-              Cuenta verificada
-            </p>
-
-          </div>
-
-          <div className="bg-zinc-900 border border-zinc-800 rounded-[28px] p-6">
-
-            <p className="text-zinc-500 text-xs">
-              MIEMBRO DESDE
-            </p>
-
-            <h2 className="text-3xl font-black mt-3">
-              2026
-            </h2>
-
-            <p className="mt-4 text-zinc-400 text-sm">
-              Usuario FASTY
-            </p>
+            </button>
 
           </div>
 
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-[28px] p-6">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
 
-          <div className="flex items-center gap-3 mb-6">
+          {[
+            {
+              title: '$12.4K',
+              subtitle: 'Ingresos',
+              icon: DollarSign,
+            },
+            {
+              title: '1,248',
+              subtitle: 'Pedidos',
+              icon: ShoppingBag,
+            },
+            {
+              title: '324',
+              subtitle: 'Clientes',
+              icon: Store,
+            },
+            {
+              title: '+18%',
+              subtitle: 'Crecimiento',
+              icon: TrendingUp,
+            },
+          ].map((item) => {
+            const Icon = item.icon
 
-            <Clock3
-              size={20}
-              className="text-orange-500"
-            />
+            return (
 
-            <h2 className="text-xl font-bold">
+              <div
+                key={item.title}
+                className="dark-section luxury-border rounded-[32px] p-6 glow-orange"
+              >
 
-              Actividad reciente
+                <div className="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center mb-6">
 
-            </h2>
+                  <Icon
+                    size={24}
+                    className="text-white"
+                  />
 
-          </div>
+                </div>
 
-          <div className="space-y-3">
+                <h2 className="text-4xl font-black tracking-[-2px]">
 
-            <div className="bg-[#151515] border border-zinc-800 rounded-2xl p-4 flex items-center justify-between gap-4">
+                  {item.title}
 
-              <div>
+                </h2>
 
-                <h3 className="font-semibold text-sm md:text-base">
+                <p className="text-zinc-400 mt-3">
 
-                  Bienvenido a FASTY
-
-                </h3>
-
-                <p className="text-zinc-500 text-xs md:text-sm mt-1">
-
-                  Tu cuenta fue creada exitosamente.
+                  {item.subtitle}
 
                 </p>
 
               </div>
 
-              <span className="text-orange-500 text-xs md:text-sm whitespace-nowrap">
+            )
+          })}
 
-                Ahora
+        </div>
 
-              </span>
+        <div className="grid xl:grid-cols-[1.3fr_.7fr] gap-6">
+
+          <div className="dark-section luxury-border rounded-[36px] p-8">
+
+            <div className="flex items-center justify-between mb-8">
+
+              <div>
+
+                <h2 className="text-2xl font-black">
+
+                  Pedidos recientes
+
+                </h2>
+
+                <p className="text-zinc-500 mt-2">
+
+                  Últimos movimientos dentro de FASTY.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="space-y-4">
+
+              {[1,2,3,4].map((item) => (
+
+                <div
+                  key={item}
+                  className="bg-white/5 rounded-2xl p-5 flex items-center justify-between"
+                >
+
+                  <div>
+
+                    <h3 className="font-semibold">
+
+                      Pedido #{item}245
+
+                    </h3>
+
+                    <p className="text-sm text-zinc-500 mt-1">
+
+                      Pizza Gold • Quibdó
+
+                    </p>
+
+                  </div>
+
+                  <span className="text-orange-500 font-semibold">
+
+                    En camino
+
+                  </span>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+          <div className="dark-section luxury-border rounded-[36px] p-8">
+
+            <h2 className="text-2xl font-black">
+
+              Rendimiento
+
+            </h2>
+
+            <p className="text-zinc-500 mt-2">
+
+              Estadísticas generales.
+
+            </p>
+
+            <div className="mt-10 space-y-6">
+
+              {[
+                'Ventas',
+                'Clientes',
+                'Retención',
+              ].map((item) => (
+
+                <div key={item}>
+
+                  <div className="flex items-center justify-between mb-2">
+
+                    <span className="text-sm text-zinc-400">
+
+                      {item}
+
+                    </span>
+
+                    <span className="text-sm font-semibold text-white">
+
+                      85%
+
+                    </span>
+
+                  </div>
+
+                  <div className="h-3 rounded-full bg-white/5 overflow-hidden">
+
+                    <div className="h-full w-[85%] rounded-full bg-gradient-to-r from-orange-500 to-orange-600" />
+
+                  </div>
+
+                </div>
+
+              ))}
 
             </div>
 

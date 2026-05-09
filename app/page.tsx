@@ -12,6 +12,9 @@ import DownloadApp from '@/components/DownloadApp'
 import CTA from '@/components/CTA'
 import Link from 'next/link'
 import Reveal from '@/components/Reveal'
+import PhoneMockup from '@/components/PhoneMockup'
+import Loader from '@/components/Loader'
+import Cursor from '@/components/Cursor'
 import {
   ArrowRight,
 } from 'lucide-react'
@@ -19,163 +22,118 @@ import {
 export default function Home() {
   return (
     <main className="bg-[#f6f3ee] min-h-screen overflow-hidden">
-
+      <Cursor />
+      <Loader />
       <Navbar />
 
-      <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 px-5 md:px-6 overflow-hidden">
+<section className="relative overflow-hidden pt-6">
 
-        <div className="absolute top-[-300px] right-[-300px] w-[700px] h-[700px] bg-orange-200/40 blur-3xl rounded-full" />
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#fb923c20,transparent_35%)]" />
 
-        <div className="max-w-7xl mx-auto">
+  <div className="max-w-7xl mx-auto px-5 md:px-6">
 
-          <div className="grid lg:grid-cols-[1fr_.9fr] gap-16 items-center">
+    <div className="relative overflow-hidden rounded-[48px] bg-[#0f0f11] border border-white/5 min-h-[780px] flex items-center">
 
-            <div className="max-w-2xl">
+      <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-orange-500/10 blur-3xl rounded-full" />
 
-              <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-xl border border-white/50 shadow-sm px-4 py-2 rounded-full mb-8">
+      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-orange-400/10 blur-3xl rounded-full" />
 
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+      <div className="grid lg:grid-cols-2 gap-14 items-center w-full px-8 md:px-14 py-20 relative z-10">
 
-                <p className="text-sm text-[#444] font-medium">
+        <div className="max-w-2xl">
 
-                  Delivery moderno en Quibdó
+          <div className="inline-flex items-center gap-3 glass px-5 py-3 rounded-full mb-8">
 
-                </p>
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
 
-              </div>
+            <p className="text-sm font-medium text-white/80">
 
-              <h1 className="text-[58px] md:text-[84px] xl:text-[96px] font-bold leading-[0.88] tracking-[-6px] text-[#111111]">
+              FASTY disponible en Quibdó
 
-                Todo lo que
-                <br />
+            </p>
 
-                necesitas,
-                <br />
+          </div>
 
-                entregado
-                <span className="text-orange-500">
-                  {' '}rápido.
-                </span>
+          <h1 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-[-5px] text-white">
 
-              </h1>
+            Todo lo que
+            <br />
 
-              <p className="text-[#666] text-lg md:text-xl leading-relaxed mt-8 max-w-xl">
+            necesitas,
+            <br />
 
-                FASTY conecta restaurantes, supermercados
-                y negocios locales en una experiencia moderna,
-                rápida y premium.
+            entregado
+            <span className="text-gradient">
+              {' '}rápido
+            </span>
 
+          </h1>
+
+          <p className="mt-8 text-lg md:text-xl text-zinc-400 leading-relaxed max-w-xl">
+
+            Restaurantes, supermercados, farmacias y negocios locales en una sola plataforma moderna.
+
+          </p>
+
+          <div className="flex flex-wrap gap-4 mt-10">
+
+            <Link
+              href="/auth"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 h-14 rounded-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-orange"
+            >
+
+              Pedir ahora
+
+              <ArrowRight size={18} />
+
+            </Link>
+
+            <Link
+              href="/business"
+              className="glass text-white px-8 h-14 rounded-2xl font-semibold flex items-center justify-center gap-3"
+            >
+
+              Registrar negocio
+
+            </Link>
+
+          </div>
+
+          <div className="flex items-center gap-12 mt-14 flex-wrap">
+
+            <div>
+
+              <h2 className="text-5xl font-black text-white">
+                +10K
+              </h2>
+
+              <p className="text-zinc-500 text-lg mt-2">
+                Pedidos
               </p>
-
-              <div className="flex flex-wrap gap-4 mt-10">
-
-                <Link
-                  href="/auth"
-                  className="bg-[#111111] hover:bg-black text-white h-14 px-8 rounded-2xl font-medium flex items-center gap-3 transition-all shadow-xl"
-                >
-
-                  Pedir ahora
-
-                  <ArrowRight size={18} />
-
-                </Link>
-
-                <Link
-                  href="/business"
-                  className="bg-white/80 backdrop-blur-xl border border-white/50 h-14 px-8 rounded-2xl font-medium text-[#111111] flex items-center transition-all shadow-sm"
-                >
-
-                  Registrar negocio
-
-                </Link>
-
-              </div>
-
-              <div className="flex items-center gap-12 mt-14 flex-wrap">
-
-                <div>
-
-                  <h2 className="text-4xl md:text-5xl font-bold tracking-[-2px] text-[#111111]">
-
-                    +10K
-
-                  </h2>
-
-                  <p className="text-sm text-[#777] mt-1">
-
-                    Pedidos entregados
-
-                  </p>
-
-                </div>
-
-                <div>
-
-                  <h2 className="text-4xl md:text-5xl font-bold tracking-[-2px] text-[#111111]">
-
-                    +500
-
-                  </h2>
-
-                  <p className="text-sm text-[#777] mt-1">
-
-                    Negocios activos
-
-                  </p>
-
-                </div>
-
-              </div>
 
             </div>
 
-            <div className="relative">
+            <div>
 
-              <div className="relative overflow-hidden rounded-[40px] shadow-[0_30px_80px_rgba(0,0,0,.12)]">
+              <h2 className="text-5xl font-black text-white">
+                +500
+              </h2>
 
-                <img
-                  src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop"
-                  alt="FASTY"
-                  className="w-full h-[620px] object-cover"
-                />
+              <p className="text-zinc-500 text-lg mt-2">
+                Negocios
+              </p>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+            </div>
 
-                <div className="absolute bottom-6 left-6 right-6">
+            <div>
 
-                  <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[28px] p-5 shadow-xl">
+              <h2 className="text-5xl font-black text-white">
+                24/7
+              </h2>
 
-                    <div className="flex items-center justify-between gap-4">
-
-                      <div>
-
-                        <p className="text-sm text-[#777]">
-
-                          Delivery promedio
-
-                        </p>
-
-                        <h3 className="text-3xl font-bold tracking-[-2px] text-[#111111] mt-1">
-
-                          15 min
-
-                        </h3>
-
-                      </div>
-
-                      <div className="bg-orange-500 text-white px-5 py-3 rounded-2xl text-sm font-medium shadow-lg shadow-orange-500/20">
-
-                        En vivo
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
+              <p className="text-zinc-500 text-lg mt-2">
+                Soporte
+              </p>
 
             </div>
 
@@ -183,7 +141,23 @@ export default function Home() {
 
         </div>
 
-      </section>
+        <div className="relative flex justify-center lg:justify-end">
+
+          <div className="relative scale-[0.88] md:scale-[0.95] lg:scale-100 origin-center">
+
+            <PhoneMockup />
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
       <div className="max-w-6xl mx-auto px-5 md:px-6 -mt-10 relative z-20">
 

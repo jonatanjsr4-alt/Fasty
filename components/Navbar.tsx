@@ -3,101 +3,291 @@
 import Link from 'next/link'
 
 import {
-  ArrowRight,
+  Menu,
+  ShoppingBag,
+  X,
 } from 'lucide-react'
 
+import {
+  motion,
+  AnimatePresence,
+} from 'framer-motion'
+
+import {
+  useEffect,
+  useState,
+} from 'react'
+
 export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   return (
-    <header className="fixed top-0 left-0 w-full z-50">
+    <>
+      <motion.header
+        animate={{
+          y: 0,
+        }}
+        className="sticky top-0 z-50 px-4 md:px-6 pt-4"
+      >
 
-      <div className="max-w-7xl mx-auto px-5 md:px-6 pt-5">
+        <div className="max-w-7xl mx-auto">
 
-        <div className="bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,.04)] rounded-[24px] px-5 md:px-7 h-16 flex items-center justify-between">
-
-          <Link
-            href="/"
-            className="flex items-center gap-3"
+          <motion.div
+            animate={{
+              height: scrolled ? 72 : 82,
+              borderRadius: scrolled ? 24 : 30,
+            }}
+            transition={{
+              duration: 0.35,
+            }}
+            className={`glass border border-white/10 flex items-center justify-between px-6 shadow-[0_10px_40px_rgba(0,0,0,.08)]
+            ${scrolled
+              ? 'bg-white/70 backdrop-blur-2xl'
+              : 'bg-white/40 backdrop-blur-xl'
+            }`}
           >
 
-            <div className="w-10 h-10 rounded-2xl bg-[#111111] flex items-center justify-center">
-
-              <span className="text-white text-sm font-bold">
-                F
-              </span>
-
-            </div>
-
-            <div>
-
-              <h1 className="text-lg font-bold text-[#111111] tracking-[-1px]">
-
-                FASTY
-
-              </h1>
-
-              <p className="text-[10px] text-[#999]">
-
-                Delivery Platform
-
-              </p>
-
-            </div>
-
-          </Link>
-
-          <nav className="hidden lg:flex items-center gap-10">
-
-            <a
-              href="#"
-              className="text-sm text-[#666] hover:text-black transition-all"
-            >
-              Inicio
-            </a>
-
-            <a
-              href="#"
-              className="text-sm text-[#666] hover:text-black transition-all"
-            >
-              Restaurantes
-            </a>
-
-            <a
-              href="#"
-              className="text-sm text-[#666] hover:text-black transition-all"
-            >
-              Categorías
-            </a>
-
-          </nav>
-
-          <div className="flex items-center gap-3">
-
             <Link
-              href="/auth"
-              className="hidden md:flex text-sm font-medium text-[#111111]"
+              href="/"
+              className="flex items-center gap-4 group"
             >
 
-              Ingresar
+              <div className="relative">
+
+                <div className="absolute inset-0 bg-orange-500 blur-2xl opacity-30 rounded-2xl group-hover:opacity-50 transition-all" />
+
+                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-orange">
+
+                  <span className="text-white text-lg font-black">
+
+                    F
+
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div>
+
+                <h1 className="text-xl md:text-2xl font-black tracking-[-1px] text-[#111111]">
+
+                  FASTY
+
+                </h1>
+
+                <p className="text-xs text-[#777] mt-0.5 font-medium">
+
+                  Delivery Platform
+
+                </p>
+
+              </div>
 
             </Link>
 
-            <Link
-              href="/business"
-              className="bg-[#111111] hover:bg-black text-white h-11 px-5 rounded-2xl text-sm font-medium flex items-center gap-2 transition-all"
-            >
+            <nav className="hidden lg:flex items-center gap-10">
 
-              Registrar negocio
+              {[
+                'Inicio',
+                'Restaurantes',
+                'Categorías',
+                'Contacto',
+              ].map((item) => (
 
-              <ArrowRight size={15} />
+                <a
+                  key={item}
+                  href="#"
+                  className="text-[#666] hover:text-[#111111] transition-all font-medium text-sm relative after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-orange-500 hover:after:w-full after:transition-all"
+                >
 
-            </Link>
+                  {item}
 
-          </div>
+                </a>
+
+              ))}
+
+            </nav>
+
+            <div className="flex items-center gap-3">
+
+              <button className="hidden md:flex w-11 h-11 rounded-2xl bg-white border border-[#ececec] items-center justify-center hover:border-orange-300 hover:bg-orange-50 transition-all">
+
+                <ShoppingBag
+                  size={18}
+                  className="text-[#111111]"
+                />
+
+              </button>
+
+              <Link
+                href="/auth"
+                className="hidden md:flex bg-[#111111] hover:bg-black text-white px-6 h-11 rounded-2xl font-semibold items-center transition-all shadow-lg hover:scale-[1.03]"
+              >
+
+                Ingresar
+
+              </Link>
+
+              <button
+                onClick={() => setMenuOpen(true)}
+                className="lg:hidden w-11 h-11 rounded-2xl bg-white border border-[#ececec] flex items-center justify-center"
+              >
+
+                <Menu
+                  size={20}
+                  className="text-[#111111]"
+                />
+
+              </button>
+
+            </div>
+
+          </motion.div>
 
         </div>
 
-      </div>
+      </motion.header>
 
-    </header>
+      <AnimatePresence>
+
+        {menuOpen && (
+
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            className="fixed inset-0 z-[999] bg-black/70 backdrop-blur-2xl"
+          >
+
+            <motion.div
+              initial={{
+                y: -40,
+                opacity: 0,
+              }}
+              animate={{
+                y: 0,
+                opacity: 1,
+              }}
+              exit={{
+                y: -40,
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+              className="h-full flex flex-col px-8 py-8"
+            >
+
+              <div className="flex items-center justify-between">
+
+                <div className="flex items-center gap-4">
+
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+
+                    <span className="text-white text-lg font-black">
+
+                      F
+
+                    </span>
+
+                  </div>
+
+                  <div>
+
+                    <h1 className="text-2xl font-black text-white">
+
+                      FASTY
+
+                    </h1>
+
+                    <p className="text-sm text-zinc-400">
+
+                      Delivery Platform
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="w-12 h-12 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center"
+                >
+
+                  <X
+                    size={22}
+                    className="text-white"
+                  />
+
+                </button>
+
+              </div>
+
+              <div className="flex flex-col gap-6 mt-20">
+
+                {[
+                  'Inicio',
+                  'Restaurantes',
+                  'Categorías',
+                  'Contacto',
+                ].map((item) => (
+
+                  <a
+                    key={item}
+                    href="#"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-4xl font-black text-white tracking-[-2px]"
+                  >
+
+                    {item}
+
+                  </a>
+
+                ))}
+
+              </div>
+
+              <div className="mt-auto">
+
+                <Link
+                  href="/auth"
+                  className="bg-orange-500 h-14 rounded-2xl text-white font-semibold flex items-center justify-center"
+                >
+
+                  Ingresar
+
+                </Link>
+
+              </div>
+
+            </motion.div>
+
+          </motion.div>
+
+        )}
+
+      </AnimatePresence>
+    </>
   )
 }

@@ -1,10 +1,11 @@
+import PageTransition from '@/components/PageTransition'
 import type { Metadata } from 'next'
-import { Space_Grotesk } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 
-const spaceGrotesk = Space_Grotesk({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-jakarta',
 })
 
 export const metadata: Metadata = {
@@ -19,9 +20,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={spaceGrotesk.className}>
-        {children}
-      </body>
+      <body className={jakarta.variable}>
+
+  <PageTransition>
+
+    {children}
+
+  </PageTransition>
+
+</body>
     </html>
   )
 }
