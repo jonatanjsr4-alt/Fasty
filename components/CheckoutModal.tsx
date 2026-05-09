@@ -31,37 +31,46 @@ export default function CheckoutModal({
   )
 
   async function sendOrder() {
-    if (!name || !phone || !address) {
-      alert('Completa todos los campos')
-      return
-    }
 
-    setLoading(true)
+  if (!name || !phone || !address) {
+    alert('Completa todos los campos')
+    return
+  }
 
-    const { error } = await supabase
-      .from('orders')
-      .insert({
-        customer_name: name,
-        customer_phone: phone,
-        customer_address: address,
-        products: cart,
-        total,
-      })
+  setLoading(true)
 
-    if (error) {
-      alert(error.message)
-      setLoading(false)
-      return
-    }
+  const orderData = {
+    customer_name: name,
+    customer_phone: phone,
+    customer_address: address,
+    products: cart,
+    total,
+  }
 
-    const productsText = cart
-      .map(
-        (item) =>
-          `• ${item.name} - $${item.price}`
-      )
-      .join('%0A')
+  console.log(orderData)
 
-    const message = `
+  const { data, error } = await supabase
+    .from('orders')
+    .insert([orderData])
+    .select()
+
+  console.log(data)
+  console.log(error)
+
+  if (error) {
+    alert(error.message)
+    setLoading(false)
+    return
+  }
+
+  const productsText = cart
+    .map(
+      (item) =>
+        `• ${item.name} - $${item.price}`
+    )
+    .join('%0A')
+
+  const message = `
 🚀 *NUEVO PEDIDO FASTY*
 
 👤 Cliente:
@@ -80,16 +89,19 @@ ${productsText}
 $${total}
 `
 
-    const whatsappUrl = `https://wa.me/573001112233?text=${message}`
+  const whatsappUrl =
+    `https://wa.me/573001112233?text=${message}`
 
-    window.open(whatsappUrl, '_blank')
+  window.open(whatsappUrl, '_blank')
 
-    alert('Pedido guardado correctamente')
+  alert('Pedido guardado correctamente')
 
-    setLoading(false)
+  setLoading(false)
 
-    onClose()
-  }
+  onClose()
+}
+
+
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
