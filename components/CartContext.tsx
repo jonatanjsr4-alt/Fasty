@@ -17,11 +17,13 @@ type CartItem = {
 type CartContextType = {
   cart: CartItem[]
   addToCart: (item: CartItem) => void
+  removeFromCart: (id: string) => void
 }
 
 const CartContext = createContext<CartContextType>({
   cart: [],
   addToCart: () => {},
+  removeFromCart: () => {},
 })
 
 export function CartProvider({
@@ -35,11 +37,18 @@ export function CartProvider({
     setCart((prev) => [...prev, item])
   }
 
+  function removeFromCart(id: string) {
+    setCart((prev) =>
+      prev.filter((item) => item.id !== id)
+    )
+  }
+
   return (
     <CartContext.Provider
       value={{
         cart,
         addToCart,
+        removeFromCart,
       }}
     >
       {children}
