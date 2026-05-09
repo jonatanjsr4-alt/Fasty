@@ -1,76 +1,74 @@
 'use client'
 
 import { useState } from 'react'
-
+import { supabase } from '@/lib/supabase'
 import { X } from 'lucide-react'
 
-import { useCart } from '@/components/CartContext'
-import { supabase } from '@/lib/supabase'
+type CartItem = {
+  id: string
+  name: string
+  price: number
+  image: string
+}
 
 type Props = {
-  open: boolean
+  cart: CartItem[]
+  total: number
   onClose: () => void
 }
 
 export default function CheckoutModal({
-  open,
+  cart,
+  total,
   onClose,
 }: Props) {
-  const { cart } = useCart()
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (!open) return null
-
-  const total = cart.reduce(
-    (acc, item) => acc + Number(item.price),
-    0
-  )
-
   async function sendOrder() {
 
-  if (!name || !phone || !address) {
-    alert('Completa todos los campos')
-    return
-  }
+    if (!name || !phone || !address) {
+      alert('Completa todos los campos')
+      return
+    }
 
-  setLoading(true)
+    setLoading(true)
 
-  const orderData = {
-    customer_name: name,
-    customer_phone: phone,
-    customer_address: address,
-    products: cart,
-    total,
-  }
+    const orderData = {
+      customer_name: name,
+      customer_phone: phone,
+      customer_address: address,
+      products: cart,
+      total,
+    }
 
-  console.log(orderData)
+    console.log(orderData)
 
-  const { data, error } = await supabase
-    .from('orders')
-    .insert([orderData])
-    .select()
+    const { data, error } = await supabase
+      .from('orders')
+      .insert([orderData])
+      .select()
 
-  console.log(data)
-  console.log(error)
+    console.log(data)
+    console.log(error)
 
-  if (error) {
-    alert(error.message)
-    setLoading(false)
-    return
-  }
+    if (error) {
+      alert(error.message)
+      setLoading(false)
+      return
+    }
 
-  const productsText = cart
-    .map(
-      (item) =>
-        `• ${item.name} - $${item.price}`
-    )
-    .join('%0A')
+    const productsText = cart
+      .map(
+        (item) =>
+          `• ${item.name} - $${item.price}`
+      )
+      .join('%0A')
 
-  const message = `
+    const message = `
 🚀 *NUEVO PEDIDO FASTY*
 
 👤 Cliente:
@@ -89,52 +87,44 @@ ${productsText}
 $${total}
 `
 
-  const whatsappUrl =
-    `https://wa.me/573001112233?text=${message}`
+    const whatsappUrl =
+      `https://wa.me/573001112233?text=${message}`
 
-  window.open(whatsappUrl, '_blank')
+    window.open(whatsappUrl, '_blank')
 
-  alert('Pedido guardado correctamente')
+    alert('Pedido enviado correctamente')
 
-  setLoading(false)
+    setLoading(false)
 
-  onClose()
-}
-
-
+    onClose()
+  }
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-5">
 
-      <div className="w-full max-w-xl bg-[#111111] border border-white/10 rounded-[36px] overflow-hidden">
+      <div className="w-full max-w-xl rounded-[32px] bg-[#111111] border border-white/10 p-8 relative">
 
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 text-white"
+        >
+          <X size={28} />
+        </button>
 
-          <h2 className="text-3xl font-black text-white">
+        <h2 className="text-5xl font-black text-white tracking-[-3px]">
 
-            Finalizar pedido
+          Finalizar pedido
 
-          </h2>
+        </h2>
 
-          <button
-            onClick={onClose}
-            className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center"
-          >
-
-            <X className="text-white" />
-
-          </button>
-
-        </div>
-
-        <div className="p-6 space-y-5">
+        <div className="space-y-4 mt-8">
 
           <input
             type="text"
             placeholder="Nombre completo"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 px-5 text-white outline-none"
+            className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 px-5 text-white outline-none"
           />
 
           <input
@@ -142,25 +132,23 @@ $${total}
             placeholder="WhatsApp"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 px-5 text-white outline-none"
+            className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 px-5 text-white outline-none"
           />
 
           <textarea
             placeholder="Dirección"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full h-32 rounded-2xl bg-white/5 border border-white/10 px-5 py-4 text-white outline-none resize-none"
+            className="w-full h-40 rounded-2xl bg-white/5 border border-white/10 px-5 py-4 text-white outline-none resize-none"
           />
 
           <button
             onClick={sendOrder}
             disabled={loading}
-            className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg disabled:opacity-50"
+            className="w-full h-16 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg"
           >
 
-            {loading
-              ? 'Enviando...'
-              : 'Enviar pedido'}
+            {loading ? 'Enviando...' : 'Enviar pedido'}
 
           </button>
 
