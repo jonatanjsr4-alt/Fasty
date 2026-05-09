@@ -31,15 +31,19 @@ export default function FeaturedStores() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="mb-14">
+        <div className="flex items-end justify-between mb-10">
 
-          <h2 className="text-3xl md:text-4xl font-bold text-[#18181b]">
-            Negocios destacados
-          </h2>
+          <div>
 
-          <p className="text-[#7c6f64] mt-3 text-lg">
-            Restaurantes y tiendas populares en FASTY.
-          </p>
+            <h2 className="text-3xl font-bold text-[#18181b]">
+              Negocios destacados
+            </h2>
+
+            <p className="text-[#666] mt-2">
+              Restaurantes y tiendas populares en FASTY.
+            </p>
+
+          </div>
 
         </div>
 
@@ -48,7 +52,7 @@ export default function FeaturedStores() {
           {stores.map((store) => (
             <div
               key={store.name}
-              className="bg-[#fffaf4] border border-[#e7ded4] rounded-[32px] overflow-hidden hover:shadow-[0_10px_40px_rgba(0,0,0,.06)] transition-all duration-300"
+              className="bg-white border border-[#efefef] rounded-3xl overflow-hidden hover:shadow-xl transition-all duration-300"
             >
 
               <div className="overflow-hidden">
@@ -56,12 +60,12 @@ export default function FeaturedStores() {
                 <img
                   src={store.image}
                   alt={store.name}
-                  className="w-full h-64 object-cover hover:scale-105 transition-all duration-700"
+                  className="w-full h-52 object-cover hover:scale-105 transition-all duration-700"
                 />
 
               </div>
 
-              <div className="p-6">
+              <div className="p-5">
 
                 <div className="flex items-center justify-between">
 
@@ -69,13 +73,13 @@ export default function FeaturedStores() {
                     {store.name}
                   </h3>
 
-                  <span className="text-orange-500 text-sm font-medium">
+                  <span className="text-orange-500 text-sm font-semibold">
                     ★ {store.rating}
                   </span>
 
                 </div>
 
-                <div className="flex items-center gap-3 mt-3 text-[#7c6f64] text-sm">
+                <div className="flex items-center gap-3 mt-3 text-[#666] text-sm">
 
                   <span>{store.category}</span>
 

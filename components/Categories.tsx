@@ -36,19 +36,23 @@ export default function Categories() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="mb-14">
+        <div className="flex items-center justify-between mb-10">
 
-          <h2 className="text-3xl md:text-4xl font-bold text-[#18181b]">
-            Categorías
-          </h2>
+          <div>
 
-          <p className="text-[#7c6f64] mt-3 text-lg">
-            Encuentra lo que necesitas rápidamente.
-          </p>
+            <h2 className="text-3xl font-bold text-[#18181b]">
+              Categorías
+            </h2>
+
+            <p className="text-[#666] mt-2">
+              Explora negocios y servicios.
+            </p>
+
+          </div>
 
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 
           {categories.map((category) => {
             const Icon = category.icon
@@ -56,16 +60,16 @@ export default function Categories() {
             return (
               <div
                 key={category.name}
-                className="bg-[#fffaf4] border border-[#e7ded4] rounded-[28px] p-6 hover:shadow-[0_10px_30px_rgba(0,0,0,.05)] transition-all duration-300"
+                className="bg-white hover:bg-[#fafafa] border border-[#efefef] rounded-2xl p-5 transition-all duration-300 hover:shadow-lg"
               >
 
-                <div className="w-14 h-14 rounded-2xl bg-[#f5efe6] flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center mb-4">
 
-                  <Icon className="w-6 h-6 text-orange-500" />
+                  <Icon className="w-5 h-5 text-orange-500" />
 
                 </div>
 
-                <h3 className="text-[#18181b] font-semibold text-sm leading-snug">
+                <h3 className="text-[#18181b] font-medium text-sm">
                   {category.name}
                 </h3>
 

@@ -1,50 +1,37 @@
 export default function CTA() {
   return (
-    <section className="px-6 py-24">
+    <section className="px-6">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="relative overflow-hidden rounded-[50px] bg-[#18181b] px-10 md:px-20 py-24">
+        <div className="bg-orange-500 rounded-[40px] px-8 md:px-16 py-16 overflow-hidden">
 
-          <div className="absolute top-[-200px] right-[-200px] w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-3xl" />
-
-          <div className="relative z-10 grid lg:grid-cols-2 gap-20 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
 
             <div>
 
-              <p className="text-orange-400 uppercase tracking-[4px] text-sm font-semibold">
-
-                FASTY PREMIUM DELIVERY
-
-              </p>
-
-              <h2 className="text-white text-5xl md:text-7xl leading-[0.95] tracking-[-4px] font-black mt-8">
+              <h2 className="text-white text-4xl md:text-5xl font-black leading-tight max-w-xl">
 
                 Todo lo que necesitas,
-                <br />
-
-                entregado
-                <br />
-
-                rápidamente.
+                entregado rápidamente.
 
               </h2>
 
-              <p className="text-zinc-400 text-xl leading-relaxed mt-10 max-w-xl">
+              <p className="text-orange-100 text-lg mt-6 max-w-lg leading-relaxed">
 
-                Desde restaurantes hasta supermercados y negocios locales.
+                Restaurantes, supermercados y negocios locales en una sola plataforma.
 
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-5 mt-14">
+              <div className="flex flex-col sm:flex-row gap-4 mt-10">
 
-                <button className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-9 py-5 rounded-2xl font-semibold text-lg">
+                <button className="bg-white text-[#18181b] px-7 py-4 rounded-2xl font-semibold">
 
                   Pedir ahora
 
                 </button>
 
-                <button className="border border-zinc-700 hover:border-zinc-500 transition-all text-white px-9 py-5 rounded-2xl font-semibold text-lg">
+                <button className="border border-white/30 text-white px-7 py-4 rounded-2xl font-semibold">
 
                   Conocer más
 
@@ -54,12 +41,12 @@ export default function CTA() {
 
             </div>
 
-            <div className="relative">
+            <div>
 
               <img
-                src="https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=1400&auto=format&fit=crop"
+                src="https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=1200&auto=format&fit=crop"
                 alt="Delivery"
-                className="rounded-[40px] h-[500px] w-full object-cover"
+                className="w-full h-[420px] object-cover rounded-[32px]"
               />
 
             </div>

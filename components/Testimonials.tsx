@@ -2,32 +2,44 @@ const testimonials = [
   {
     name: 'Laura Mosquera',
     role: 'Cliente FASTY',
-    text: 'La experiencia es rápida, moderna y mucho más cómoda para pedir en Quibdó.',
+    text: 'La experiencia es rápida y muy cómoda para pedir en Quibdó.',
   },
   {
     name: 'Kevin Cuesta',
     role: 'Negocio aliado',
-    text: 'FASTY nos ayudó a aumentar pedidos y mejorar la atención a nuestros clientes.',
+    text: 'FASTY nos ayudó a aumentar pedidos y mejorar la atención.',
   },
 ]
 
 export default function Testimonials() {
   return (
-    <section className="px-6 py-10">
+    <section className="px-6">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="grid lg:grid-cols-2 gap-10">
+        <div className="mb-12">
+
+          <h2 className="text-3xl font-bold text-[#18181b]">
+            Opiniones
+          </h2>
+
+          <p className="text-[#666] mt-2">
+            Lo que dicen nuestros usuarios.
+          </p>
+
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
 
           {testimonials.map((item) => (
             <div
               key={item.name}
-              className="bg-[#fffaf4] border border-[#e7ded4] rounded-[40px] p-10 shadow-[0_10px_40px_rgba(0,0,0,.04)]"
+              className="bg-white border border-[#efefef] rounded-3xl p-8"
             >
 
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-4 mb-6">
 
-                <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold">
 
                   {item.name.charAt(0)}
 
@@ -35,11 +47,11 @@ export default function Testimonials() {
 
                 <div>
 
-                  <h3 className="text-[#18181b] font-bold text-lg">
+                  <h3 className="font-semibold text-[#18181b]">
                     {item.name}
                   </h3>
 
-                  <p className="text-[#7c6f64] text-sm mt-1">
+                  <p className="text-sm text-[#666]">
                     {item.role}
                   </p>
 
@@ -47,7 +59,7 @@ export default function Testimonials() {
 
               </div>
 
-              <p className="text-2xl leading-relaxed text-[#18181b] font-medium">
+              <p className="text-[#18181b] text-lg leading-relaxed">
 
                 “{item.text}”
 
