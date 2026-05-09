@@ -18,54 +18,49 @@ export default function Home() {
 
       <Navbar />
 
-     <section className="relative px-6 pt-44 pb-36 overflow-hidden">
+     <section className="relative bg-[#111111] overflow-hidden">
 
-  <div className="absolute top-0 right-[-200px] w-[700px] h-[700px] bg-orange-200 rounded-full blur-3xl opacity-40" />
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.25),transparent_35%)]" />
 
-  <div className="max-w-7xl mx-auto relative z-10">
+  <div className="max-w-7xl mx-auto px-6 pt-36 pb-24 relative z-10">
 
-    <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-24 items-center">
+    <div className="grid lg:grid-cols-2 gap-16 items-center">
 
       <div>
 
-        <div className="mb-8">
+        <span className="inline-flex items-center gap-2 bg-white/10 border border-white/10 px-4 py-2 rounded-full text-sm text-orange-300 mb-8">
 
-          <span className="text-sm uppercase tracking-[4px] text-[#9b8773] font-semibold">
-            FAST DELIVERY PLATFORM
-          </span>
+          ⚡ Delivery rápido en Quibdó
 
-        </div>
+        </span>
 
-        <h1 className="text-[4.5rem] md:text-[7rem] leading-[0.9] tracking-[-6px] font-black text-[#18181b]">
+        <h1 className="text-5xl md:text-7xl leading-[0.95] tracking-[-4px] font-black text-white max-w-2xl">
 
-          Delivery
+          Delivery moderno
           <br />
 
-          diseñado
+          para una ciudad
           <br />
 
-          para
-          <span className="text-orange-500">
-            {' '}Quibdó.
-          </span>
+          que se mueve rápido.
 
         </h1>
 
-        <p className="mt-10 text-xl leading-relaxed text-[#7c6f64] max-w-xl">
+        <p className="mt-8 text-lg text-zinc-400 leading-relaxed max-w-xl">
 
-          FASTY conecta restaurantes, supermercados y negocios locales en una experiencia moderna, rápida y elegante.
+          Restaurantes, supermercados y negocios locales en una experiencia moderna y rápida.
 
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-5 mt-14">
+        <div className="flex flex-col sm:flex-row gap-4 mt-10">
 
-          <button className="bg-[#18181b] text-white px-10 py-5 rounded-2xl text-lg font-semibold hover:bg-black transition-all shadow-sm">
+          <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-semibold">
 
             Pedir ahora
 
           </button>
 
-          <button className="bg-white border border-[#e7ded4] px-10 py-5 rounded-2xl text-lg font-semibold text-[#18181b] hover:border-[#d6c8b8] transition-all">
+          <button className="border border-zinc-700 hover:border-zinc-500 text-white px-8 py-4 rounded-2xl font-semibold">
 
             Registrar negocio
 
@@ -73,51 +68,9 @@ export default function Home() {
 
         </div>
 
-        <div className="flex items-center gap-10 mt-16">
-
-          <div>
-
-            <h3 className="text-3xl font-black text-[#18181b]">
-              +10K
-            </h3>
-
-            <p className="text-[#7c6f64] mt-1">
-              Pedidos
-            </p>
-
-          </div>
-
-          <div>
-
-            <h3 className="text-3xl font-black text-[#18181b]">
-              +500
-            </h3>
-
-            <p className="text-[#7c6f64] mt-1">
-              Negocios
-            </p>
-
-          </div>
-
-          <div>
-
-            <h3 className="text-3xl font-black text-[#18181b]">
-              24/7
-            </h3>
-
-            <p className="text-[#7c6f64] mt-1">
-              Soporte
-            </p>
-
-          </div>
-
-        </div>
-
       </div>
 
-      <div className="relative flex justify-center lg:justify-end">
-
-        <div className="absolute w-[500px] h-[500px] bg-orange-300/40 rounded-full blur-3xl" />
+      <div className="flex justify-center lg:justify-end">
 
         <PhoneMockup />
 
