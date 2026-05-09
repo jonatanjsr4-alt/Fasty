@@ -171,7 +171,7 @@ export default function Home() {
   <Categories />
 </Reveal>
 
-        <Reveal delay={0.1}>
+       <Reveal delay={0.1}>
   <FeaturedStores />
 </Reveal>
 
