@@ -36,7 +36,7 @@ export default function Home() {
 
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-32 items-center relative z-10">
 
           <div>
 
@@ -60,7 +60,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-5xl md:text-7xl font-extrabold text-white leading-[1.1]"
+              className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] max-w-3xl"
             >
               Tus pedidos
               <span className="text-orange-500"> rápidos</span>
@@ -72,7 +72,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="mt-8 text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed"
+              className="mt-10 text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed"
             >
               Pide comida, compra productos y recibe entregas rápidas con FASTY.
             </motion.p>
@@ -91,7 +91,7 @@ export default function Home() {
 
           </div>
 
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-center mt-20 lg:mt-0">
 
             <PhoneMockup />
 
