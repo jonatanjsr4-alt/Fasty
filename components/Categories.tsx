@@ -36,19 +36,19 @@ export default function Categories() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="mb-12">
+        <div className="mb-14">
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#18181b]">
             Categorías
           </h2>
 
-          <p className="text-zinc-500 mt-3">
+          <p className="text-[#7c6f64] mt-3 text-lg">
             Encuentra lo que necesitas rápidamente.
           </p>
 
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
 
           {categories.map((category) => {
             const Icon = category.icon
@@ -56,16 +56,16 @@ export default function Categories() {
             return (
               <div
                 key={category.name}
-                className="bg-[#111111] border border-zinc-900 hover:border-zinc-700 transition-all rounded-3xl p-6"
+                className="bg-[#fffaf4] border border-[#e7ded4] rounded-[28px] p-6 hover:shadow-[0_10px_30px_rgba(0,0,0,.05)] transition-all duration-300"
               >
 
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center mb-5">
+                <div className="w-14 h-14 rounded-2xl bg-[#f5efe6] flex items-center justify-center mb-5">
 
-                  <Icon className="w-6 h-6 text-orange-400" />
+                  <Icon className="w-6 h-6 text-orange-500" />
 
                 </div>
 
-                <h3 className="text-white font-medium text-sm leading-snug">
+                <h3 className="text-[#18181b] font-semibold text-sm leading-snug">
                   {category.name}
                 </h3>
 
