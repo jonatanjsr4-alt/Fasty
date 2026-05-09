@@ -22,21 +22,21 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="px-6">
+    <section className="px-5 md:px-6">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
 
           <div>
 
-            <p className="text-orange-500 uppercase tracking-[4px] text-sm font-semibold">
+            <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
 
               Testimonios
 
             </p>
 
-            <h2 className="text-5xl md:text-6xl font-black text-[#18181b] mt-5 leading-[1] tracking-[-3px]">
+            <h2 className="text-4xl md:text-5xl font-black text-[#18181b] mt-3 leading-none tracking-[-2px]">
 
               Lo que dicen
               <br />
@@ -47,7 +47,7 @@ export default function Testimonials() {
 
           </div>
 
-          <p className="text-[#666] text-lg leading-relaxed max-w-xl">
+          <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-xl">
 
             FASTY conecta usuarios y negocios locales
             en una experiencia moderna, rápida y confiable.
@@ -56,38 +56,38 @@ export default function Testimonials() {
 
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-5">
 
           {testimonials.map((item) => (
 
             <div
               key={item.name}
-              className="group relative overflow-hidden bg-white border border-[#ececec] rounded-[40px] p-8 hover:shadow-[0_25px_60px_rgba(0,0,0,.08)] hover:-translate-y-1 transition-all duration-500"
+              className="group relative overflow-hidden bg-white border border-[#ececec] rounded-[30px] p-6 hover:shadow-[0_15px_40px_rgba(0,0,0,.06)] hover:-translate-y-1 transition-all duration-300"
             >
 
-              <div className="absolute top-0 right-0 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div className="absolute top-0 right-0 w-28 h-28 bg-orange-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
               <div className="relative z-10">
 
-                <div className="flex items-start justify-between gap-6">
+                <div className="flex items-start justify-between gap-4">
 
-                  <div className="flex items-center gap-5">
+                  <div className="flex items-center gap-4">
 
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-16 h-16 rounded-3xl object-cover shadow-lg"
+                      className="w-14 h-14 rounded-2xl object-cover shadow-md"
                     />
 
                     <div>
 
-                      <h3 className="text-xl font-black text-[#18181b]">
+                      <h3 className="text-lg font-black text-[#18181b] leading-none">
 
                         {item.name}
 
                       </h3>
 
-                      <p className="text-[#777] mt-1">
+                      <p className="text-[#777] text-sm mt-1.5">
 
                         {item.role}
 
@@ -97,10 +97,10 @@ export default function Testimonials() {
 
                   </div>
 
-                  <div className="w-14 h-14 rounded-3xl bg-orange-100 flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-2xl bg-orange-100 flex items-center justify-center flex-shrink-0">
 
                     <Quote
-                      size={24}
+                      size={18}
                       className="text-orange-500"
                     />
 
@@ -108,13 +108,13 @@ export default function Testimonials() {
 
                 </div>
 
-                <div className="flex items-center gap-1 mt-8">
+                <div className="flex items-center gap-1 mt-6">
 
                   {[1, 2, 3, 4, 5].map((star) => (
 
                     <Star
                       key={star}
-                      size={18}
+                      size={15}
                       className="text-orange-500 fill-orange-500"
                     />
 
@@ -122,7 +122,7 @@ export default function Testimonials() {
 
                 </div>
 
-                <p className="text-[#18181b] text-2xl leading-relaxed font-medium mt-8">
+                <p className="text-[#18181b] text-lg md:text-xl leading-relaxed font-medium mt-6">
 
                   “{item.text}”
 

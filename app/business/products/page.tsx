@@ -1,8 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import { supabase } from '@/lib/supabase'
+
 import { useRouter } from 'next/navigation'
+
 import {
   Plus,
   Package,
@@ -93,45 +96,45 @@ export default function ProductsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white p-10">
+    <main className="min-h-screen bg-[#0b0b0c] text-white p-5 md:p-8">
 
       <div className="max-w-6xl mx-auto">
 
-        <p className="text-orange-500 uppercase tracking-[4px] text-sm font-semibold">
+        <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
 
           PRODUCTOS
 
         </p>
 
-        <h1 className="text-5xl font-black mt-4">
+        <h1 className="text-4xl md:text-5xl font-black mt-3 tracking-[-2px]">
 
           Agrega productos
 
         </h1>
 
-        <p className="text-zinc-400 mt-4 text-lg">
+        <p className="text-zinc-400 mt-3 text-sm md:text-base">
 
           Administra el menú de tu negocio.
 
         </p>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-[32px] p-8 mt-10">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-[28px] p-6 md:p-7 mt-8">
 
-          <div className="space-y-5">
+          <div className="space-y-4">
 
             <input
               type="text"
               placeholder="Nombre del producto"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full h-14 bg-[#151515] border border-zinc-800 rounded-2xl px-5 outline-none"
+              className="w-full h-12 bg-[#151515] border border-zinc-800 rounded-2xl px-4 outline-none text-sm focus:border-orange-500 transition-all"
             />
 
             <textarea
               placeholder="Descripción"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full h-32 bg-[#151515] border border-zinc-800 rounded-2xl px-5 py-4 outline-none resize-none"
+              className="w-full h-28 bg-[#151515] border border-zinc-800 rounded-2xl px-4 py-4 outline-none resize-none text-sm focus:border-orange-500 transition-all"
             />
 
             <input
@@ -139,15 +142,15 @@ export default function ProductsPage() {
               placeholder="Precio"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full h-14 bg-[#151515] border border-zinc-800 rounded-2xl px-5 outline-none"
+              className="w-full h-12 bg-[#151515] border border-zinc-800 rounded-2xl px-4 outline-none text-sm focus:border-orange-500 transition-all"
             />
 
             <button
               onClick={createProduct}
-              className="bg-orange-500 hover:bg-orange-600 transition-all px-8 h-14 rounded-2xl font-semibold flex items-center gap-3"
+              className="bg-orange-500 hover:bg-orange-600 transition-all px-6 h-12 rounded-2xl font-semibold text-sm flex items-center gap-3 shadow-lg shadow-orange-500/20"
             >
 
-              <Plus size={20} />
+              <Plus size={18} />
 
               Crear producto
 
@@ -157,13 +160,20 @@ export default function ProductsPage() {
 
         </div>
 
-        <div className="mt-14">
+        <div className="mt-12">
 
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-6">
 
-            <Package size={28} />
+            <div className="w-11 h-11 rounded-2xl bg-orange-500/10 flex items-center justify-center">
 
-            <h2 className="text-3xl font-black">
+              <Package
+                size={20}
+                className="text-orange-500"
+              />
+
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-black">
 
               Productos creados
 
@@ -173,7 +183,7 @@ export default function ProductsPage() {
 
           {products.length === 0 ? (
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-10 text-center text-zinc-400">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-[28px] p-8 text-center text-zinc-400 text-sm">
 
               No hay productos creados todavía.
 
@@ -181,36 +191,40 @@ export default function ProductsPage() {
 
           ) : (
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
               {products.map((product) => (
 
                 <div
                   key={product.id}
-                  className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6 hover:border-orange-500 transition-all"
+                  className="group bg-zinc-900 border border-zinc-800 rounded-[28px] p-5 hover:border-orange-500/40 hover:bg-zinc-900/80 transition-all duration-300"
                 >
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-start justify-between gap-4">
 
-                    <h3 className="text-2xl font-bold">
+                    <div>
 
-                      {product.name}
+                      <h3 className="text-xl font-black leading-tight">
 
-                    </h3>
+                        {product.name}
 
-                    <div className="bg-orange-500 px-4 py-2 rounded-xl font-bold">
+                      </h3>
+
+                      <p className="text-zinc-400 mt-3 text-sm leading-relaxed">
+
+                        {product.description}
+
+                      </p>
+
+                    </div>
+
+                    <div className="bg-orange-500 px-4 py-2 rounded-2xl font-bold text-sm whitespace-nowrap shadow-lg shadow-orange-500/20">
 
                       ${product.price}
 
                     </div>
 
                   </div>
-
-                  <p className="text-zinc-400 mt-4">
-
-                    {product.description}
-
-                  </p>
 
                 </div>
 

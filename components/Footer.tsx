@@ -8,15 +8,15 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[#0f0f10] text-white mt-32">
+    <footer className="relative overflow-hidden bg-[#0f0f10] text-white mt-24">
 
-      <div className="absolute top-[-250px] right-[-250px] w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-3xl" />
+      <div className="absolute top-[-200px] right-[-200px] w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-3xl" />
 
-      <div className="absolute bottom-[-250px] left-[-250px] w-[500px] h-[500px] bg-orange-400/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-[-200px] left-[-200px] w-[400px] h-[400px] bg-orange-400/5 rounded-full blur-3xl" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-6 py-14">
 
-        <div className="grid lg:grid-cols-[1.3fr_1fr_1fr_1fr] gap-14">
+        <div className="grid lg:grid-cols-[1.2fr_.8fr_.8fr_1fr] gap-10">
 
           <div>
 
@@ -26,9 +26,9 @@ export default function Footer() {
 
                 <div className="absolute inset-0 bg-orange-500 blur-xl opacity-30 rounded-2xl" />
 
-                <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-xl shadow-orange-500/20">
+                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
 
-                  <span className="text-white text-xl font-black">
+                  <span className="text-white text-lg font-black">
                     F
                   </span>
 
@@ -38,13 +38,13 @@ export default function Footer() {
 
               <div>
 
-                <h2 className="text-3xl font-black tracking-[-1px]">
+                <h2 className="text-2xl font-black tracking-[-1px]">
 
                   FASTY
 
                 </h2>
 
-                <p className="text-zinc-500 mt-1">
+                <p className="text-zinc-500 text-sm mt-1">
 
                   Delivery Platform
 
@@ -54,30 +54,30 @@ export default function Footer() {
 
             </div>
 
-            <p className="text-zinc-400 leading-relaxed mt-8 max-w-md text-lg">
+            <p className="text-zinc-400 leading-relaxed mt-6 max-w-md text-sm md:text-base">
 
               Plataforma moderna de delivery y domicilios
               para restaurantes, supermercados y negocios locales en Quibdó.
 
             </p>
 
-            <div className="flex items-center gap-4 mt-10">
+            <div className="flex items-center gap-3 mt-8">
 
-              <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
+              <button className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
 
-                <ArrowUpRight size={20} />
-
-              </button>
-
-              <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
-
-                <Mail size={20} />
+                <ArrowUpRight size={18} />
 
               </button>
 
-              <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
+              <button className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
 
-                <Phone size={20} />
+                <Mail size={18} />
+
+              </button>
+
+              <button className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
+
+                <Phone size={18} />
 
               </button>
 
@@ -87,13 +87,13 @@ export default function Footer() {
 
           <div>
 
-            <h3 className="text-xl font-black mb-8">
+            <h3 className="text-lg font-black mb-6">
 
               Navegación
 
             </h3>
 
-            <div className="flex flex-col gap-5 text-zinc-400">
+            <div className="flex flex-col gap-4 text-sm text-zinc-400">
 
               <Link
                 href="/"
@@ -129,13 +129,13 @@ export default function Footer() {
 
           <div>
 
-            <h3 className="text-xl font-black mb-8">
+            <h3 className="text-lg font-black mb-6">
 
               Categorías
 
             </h3>
 
-            <div className="flex flex-col gap-5 text-zinc-400">
+            <div className="flex flex-col gap-4 text-sm text-zinc-400">
 
               <p>Restaurantes</p>
 
@@ -153,19 +153,19 @@ export default function Footer() {
 
           <div>
 
-            <h3 className="text-xl font-black mb-8">
+            <h3 className="text-lg font-black mb-6">
 
               Contacto
 
             </h3>
 
-            <div className="space-y-5 text-zinc-400">
+            <div className="space-y-4 text-sm text-zinc-400">
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3">
 
                 <MapPin
-                  size={18}
-                  className="text-orange-500 mt-1"
+                  size={16}
+                  className="text-orange-500 mt-0.5"
                 />
 
                 <p>
@@ -174,11 +174,11 @@ export default function Footer() {
 
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3">
 
                 <Mail
-                  size={18}
-                  className="text-orange-500 mt-1"
+                  size={16}
+                  className="text-orange-500 mt-0.5"
                 />
 
                 <p>
@@ -187,11 +187,11 @@ export default function Footer() {
 
               </div>
 
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3">
 
                 <Phone
-                  size={18}
-                  className="text-orange-500 mt-1"
+                  size={16}
+                  className="text-orange-500 mt-0.5"
                 />
 
                 <p>
@@ -206,15 +206,15 @@ export default function Footer() {
 
         </div>
 
-        <div className="border-t border-white/5 mt-20 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="border-t border-white/5 mt-12 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
 
-          <p className="text-zinc-500">
+          <p className="text-zinc-500 text-sm">
 
             © 2026 FASTY. Todos los derechos reservados.
 
           </p>
 
-          <p className="text-zinc-600">
+          <p className="text-zinc-600 text-sm">
 
             Hecho en Quibdó, Colombia 🇨🇴
 

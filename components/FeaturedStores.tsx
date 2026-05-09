@@ -34,27 +34,27 @@ const stores = [
 
 export default function FeaturedStores() {
   return (
-    <section className="px-6">
+    <section className="px-5 md:px-6">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-10">
 
           <div>
 
-            <p className="text-orange-500 uppercase tracking-[4px] text-sm font-semibold">
+            <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
 
               Restaurantes
 
             </p>
 
-            <h2 className="text-5xl font-black text-[#18181b] mt-4">
+            <h2 className="text-4xl md:text-5xl font-black text-[#18181b] mt-3 leading-none">
 
               Negocios destacados
 
             </h2>
 
-            <p className="text-[#666] mt-4 text-lg max-w-2xl leading-relaxed">
+            <p className="text-[#666] mt-4 text-base md:text-lg max-w-2xl leading-relaxed">
 
               Descubre los restaurantes y tiendas más populares dentro de FASTY.
 
@@ -62,23 +62,23 @@ export default function FeaturedStores() {
 
           </div>
 
-          <button className="bg-white border border-[#ececec] hover:border-orange-300 transition-all px-7 h-14 rounded-2xl font-semibold flex items-center gap-3 shadow-sm">
+          <button className="bg-white border border-[#ececec] hover:border-orange-300 hover:shadow-md transition-all px-6 h-12 rounded-2xl font-semibold flex items-center gap-3 text-sm">
 
             Ver todos
 
-            <ArrowUpRight size={18} />
+            <ArrowUpRight size={16} />
 
           </button>
 
         </div>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
 
           {stores.map((store) => (
 
             <div
               key={store.name}
-              className="group bg-white border border-[#ececec] rounded-[34px] overflow-hidden hover:shadow-[0_25px_60px_rgba(0,0,0,.08)] hover:-translate-y-1 transition-all duration-500"
+              className="group bg-white border border-[#ececec] rounded-[28px] overflow-hidden hover:shadow-[0_15px_40px_rgba(0,0,0,.06)] hover:-translate-y-1 transition-all duration-300"
             >
 
               <div className="relative overflow-hidden">
@@ -86,28 +86,28 @@ export default function FeaturedStores() {
                 <img
                   src={store.image}
                   alt={store.name}
-                  className="w-full h-72 object-cover group-hover:scale-105 transition-all duration-700"
+                  className="w-full h-56 object-cover group-hover:scale-105 transition-all duration-500"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/0 to-black/0" />
 
-                <button className="absolute top-5 right-5 w-12 h-12 rounded-2xl bg-white/90 backdrop-blur-xl flex items-center justify-center shadow-lg">
+                <button className="absolute top-4 right-4 w-10 h-10 rounded-2xl bg-white/90 backdrop-blur-xl flex items-center justify-center shadow-lg">
 
                   <Heart
-                    size={20}
+                    size={18}
                     className="text-[#18181b]"
                   />
 
                 </button>
 
-                <div className="absolute bottom-5 left-5 flex items-center gap-2 bg-white/95 backdrop-blur-xl px-4 py-2 rounded-2xl shadow-lg">
+                <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/95 backdrop-blur-xl px-3 py-2 rounded-2xl shadow-lg">
 
                   <Star
-                    size={16}
+                    size={14}
                     className="text-orange-500 fill-orange-500"
                   />
 
-                  <span className="font-semibold text-sm text-[#18181b]">
+                  <span className="font-semibold text-xs text-[#18181b]">
 
                     {store.rating}
 
@@ -117,19 +117,19 @@ export default function FeaturedStores() {
 
               </div>
 
-              <div className="p-6">
+              <div className="p-5">
 
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
 
                   <div>
 
-                    <h3 className="text-2xl font-black text-[#18181b]">
+                    <h3 className="text-xl font-black text-[#18181b] leading-tight">
 
                       {store.name}
 
                     </h3>
 
-                    <p className="text-[#777] mt-2 text-lg">
+                    <p className="text-[#777] mt-1 text-sm">
 
                       {store.category}
 
@@ -137,7 +137,7 @@ export default function FeaturedStores() {
 
                   </div>
 
-                  <div className="bg-orange-100 text-orange-600 px-4 py-2 rounded-2xl text-sm font-semibold">
+                  <div className="bg-orange-100 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap">
 
                     Popular
 
@@ -145,14 +145,14 @@ export default function FeaturedStores() {
 
                 </div>
 
-                <div className="flex items-center justify-between mt-8">
+                <div className="flex items-center justify-between mt-6">
 
                   <div className="flex items-center gap-3 text-[#666]">
 
-                    <div className="w-11 h-11 rounded-2xl bg-[#f5f5f5] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#f5f5f5] flex items-center justify-center">
 
                       <Clock3
-                        size={18}
+                        size={16}
                         className="text-orange-500"
                       />
 
@@ -160,11 +160,11 @@ export default function FeaturedStores() {
 
                     <div>
 
-                      <p className="text-sm text-[#999]">
+                      <p className="text-xs text-[#999]">
                         Delivery
                       </p>
 
-                      <p className="font-semibold text-[#18181b]">
+                      <p className="font-semibold text-sm text-[#18181b]">
                         {store.time}
                       </p>
 
@@ -172,9 +172,9 @@ export default function FeaturedStores() {
 
                   </div>
 
-                  <button className="bg-[#18181b] hover:bg-black text-white w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg">
+                  <button className="bg-[#18181b] hover:bg-black text-white w-11 h-11 rounded-2xl flex items-center justify-center transition-all shadow-md">
 
-                    <ArrowUpRight size={22} />
+                    <ArrowUpRight size={18} />
 
                   </button>
 

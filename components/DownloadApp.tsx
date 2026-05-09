@@ -1,61 +1,97 @@
-import { Smartphone } from 'lucide-react'
+import { Smartphone, Download } from 'lucide-react'
 
 export default function DownloadApp() {
   return (
-    <section className="py-28 px-6 bg-black">
+    <section className="py-20 px-5 md:px-6 bg-black">
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-[40px] p-12 md:p-20 relative overflow-hidden">
+        <div className="relative overflow-hidden bg-zinc-900 border border-zinc-800 rounded-[36px] px-6 md:px-12 py-12 md:py-16 shadow-[0_20px_70px_rgba(0,0,0,.25)]">
 
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-orange-500/10 blur-3xl rounded-full" />
+          <div className="absolute top-[-120px] right-[-120px] w-[320px] h-[320px] bg-orange-500/10 blur-3xl rounded-full" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="absolute bottom-[-120px] left-[-120px] w-[320px] h-[320px] bg-orange-400/5 blur-3xl rounded-full" />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
             <div>
 
-              <h2 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
-                Descarga FASTY
-                <span className="text-orange-500"> App</span>
+              <div className="inline-flex items-center gap-3 bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-full mb-6">
+
+                <Download className="w-4 h-4 text-orange-500" />
+
+                <span className="text-orange-400 text-sm font-medium">
+
+                  Disponible próximamente
+
+                </span>
+
+              </div>
+
+              <h2 className="text-4xl md:text-6xl font-black text-white leading-[0.95] tracking-[-2px]">
+
+                Descarga
+                <span className="text-orange-500">
+                  {' '}FASTY
+                </span>
+
+                <br />
+
+                App
+
               </h2>
 
-              <p className="text-gray-400 mt-8 text-xl">
-                Pide comida, compra productos y recibe entregas rápidas desde tu celular.
+              <p className="text-zinc-400 mt-6 text-base md:text-lg leading-relaxed max-w-xl">
+
+                Pide comida, compra productos y recibe entregas rápidas desde tu celular con una experiencia moderna y rápida.
+
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-5 mt-12">
+              <div className="flex flex-col sm:flex-row gap-4 mt-10">
 
-                <button className="bg-orange-500 hover:bg-orange-600 transition-all px-8 py-5 rounded-2xl font-bold text-lg">
+                <button className="bg-orange-500 hover:bg-orange-600 transition-all px-7 h-14 rounded-2xl font-semibold text-white shadow-lg shadow-orange-500/20">
+
                   Google Play
+
                 </button>
 
-                <button className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition-all px-8 py-5 rounded-2xl font-bold text-lg">
+                <button className="border border-zinc-700 hover:border-orange-500 text-white hover:bg-orange-500 transition-all px-7 h-14 rounded-2xl font-semibold">
+
                   App Store
+
                 </button>
 
               </div>
 
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center lg:justify-end">
 
-              <div className="w-[280px] h-[560px] bg-black border-4 border-zinc-700 rounded-[50px] shadow-2xl shadow-orange-500/20 overflow-hidden">
+              <div className="relative">
 
-                <div className="bg-orange-500 h-24 flex items-center justify-center">
+                <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full scale-110" />
 
-                  <Smartphone className="w-12 h-12 text-white" />
+                <div className="relative w-[250px] h-[500px] bg-black border-[5px] border-zinc-700 rounded-[42px] shadow-2xl overflow-hidden">
 
-                </div>
+                  <div className="bg-orange-500 h-20 flex items-center justify-center">
 
-                <div className="p-6 space-y-5">
+                    <Smartphone className="w-9 h-9 text-white" />
 
-                  <div className="bg-zinc-800 rounded-3xl h-24" />
+                  </div>
 
-                  <div className="bg-zinc-800 rounded-3xl h-24" />
+                  <div className="p-5 space-y-4">
 
-                  <div className="bg-zinc-800 rounded-3xl h-24" />
+                    <div className="bg-zinc-800 rounded-[24px] h-20" />
 
-                  <div className="bg-zinc-800 rounded-3xl h-24" />
+                    <div className="bg-zinc-800 rounded-[24px] h-20" />
+
+                    <div className="bg-zinc-800 rounded-[24px] h-20" />
+
+                    <div className="bg-zinc-800 rounded-[24px] h-20" />
+
+                  </div>
+
+                  <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-24 h-1.5 bg-zinc-700 rounded-full" />
 
                 </div>
 

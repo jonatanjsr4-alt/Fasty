@@ -11,8 +11,14 @@ import HowItWorks from '@/components/HowItWorks'
 import Testimonials from '@/components/Testimonials'
 import DownloadApp from '@/components/DownloadApp'
 import CTA from '@/components/CTA'
+
 import Link from 'next/link'
-import { ArrowRight, Star, Clock3 } from 'lucide-react'
+
+import {
+  ArrowRight,
+  Star,
+  Clock3,
+} from 'lucide-react'
 
 export default function Home() {
   return (
@@ -22,21 +28,21 @@ export default function Home() {
 
       <section className="relative overflow-hidden">
 
-        <div className="absolute top-[-250px] right-[-250px] w-[700px] h-[700px] bg-orange-200 blur-3xl rounded-full opacity-40" />
+        <div className="absolute top-[-250px] right-[-250px] w-[600px] h-[600px] bg-orange-200 blur-3xl rounded-full opacity-30" />
 
-        <div className="absolute bottom-[-300px] left-[-300px] w-[600px] h-[600px] bg-orange-100 blur-3xl rounded-full opacity-50" />
+        <div className="absolute bottom-[-250px] left-[-250px] w-[500px] h-[500px] bg-orange-100 blur-3xl rounded-full opacity-40" />
 
-        <div className="max-w-7xl mx-auto px-6 pt-32 pb-24 relative z-10">
+        <div className="max-w-7xl mx-auto px-5 md:px-6 pt-24 md:pt-28 pb-16 md:pb-20 relative z-10">
 
-          <div className="grid lg:grid-cols-2 gap-24 items-center">
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-16 items-center">
 
             <div>
 
-              <div className="inline-flex items-center gap-3 bg-white border border-orange-100 shadow-sm px-5 py-3 rounded-full mb-10">
+              <div className="inline-flex items-center gap-3 bg-white border border-orange-100 shadow-sm px-4 py-2 rounded-full mb-7">
 
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
 
-                <p className="text-sm font-medium text-[#444]">
+                <p className="text-xs md:text-sm font-medium text-[#444]">
 
                   Delivery rápido en Quibdó
 
@@ -44,7 +50,7 @@ export default function Home() {
 
               </div>
 
-              <h1 className="text-6xl md:text-7xl xl:text-[88px] font-black leading-[0.92] tracking-[-5px] text-[#18181b] max-w-3xl">
+              <h1 className="text-5xl md:text-6xl xl:text-[76px] font-black leading-[0.92] tracking-[-4px] text-[#18181b] max-w-3xl">
 
                 Pide comida,
                 <br />
@@ -59,7 +65,7 @@ export default function Home() {
 
               </h1>
 
-              <p className="mt-10 text-xl text-[#666] leading-relaxed max-w-2xl">
+              <p className="mt-7 text-base md:text-lg text-[#666] leading-relaxed max-w-2xl">
 
                 La nueva forma de pedir en Quibdó.
                 Restaurantes, tiendas y domicilios rápidos
@@ -67,22 +73,22 @@ export default function Home() {
 
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-5 mt-12">
+              <div className="flex flex-col sm:flex-row gap-4 mt-9">
 
                 <Link
                   href="/auth"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-9 h-16 rounded-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-lg shadow-orange-500/20"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 h-14 rounded-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-lg shadow-orange-500/20"
                 >
 
                   Pedir ahora
 
-                  <ArrowRight size={20} />
+                  <ArrowRight size={18} />
 
                 </Link>
 
                 <Link
                   href="/business"
-                  className="bg-white hover:bg-[#f3f3f3] border border-[#e5e5e5] text-[#18181b] px-9 h-16 rounded-2xl font-semibold transition-all flex items-center justify-center"
+                  className="bg-white hover:bg-[#f3f3f3] border border-[#e5e5e5] text-[#18181b] px-8 h-14 rounded-2xl font-semibold transition-all flex items-center justify-center"
                 >
 
                   Registrar negocio
@@ -91,15 +97,15 @@ export default function Home() {
 
               </div>
 
-              <div className="flex flex-wrap items-center gap-10 mt-16">
+              <div className="flex flex-wrap items-center gap-8 mt-12">
 
                 <div>
 
-                  <h2 className="text-4xl font-black text-[#18181b]">
+                  <h2 className="text-3xl md:text-4xl font-black text-[#18181b]">
                     +10K
                   </h2>
 
-                  <p className="text-[#777] mt-2">
+                  <p className="text-[#777] mt-1 text-sm">
                     Pedidos
                   </p>
 
@@ -107,11 +113,11 @@ export default function Home() {
 
                 <div>
 
-                  <h2 className="text-4xl font-black text-[#18181b]">
+                  <h2 className="text-3xl md:text-4xl font-black text-[#18181b]">
                     +500
                   </h2>
 
-                  <p className="text-[#777] mt-2">
+                  <p className="text-[#777] mt-1 text-sm">
                     Negocios
                   </p>
 
@@ -119,11 +125,11 @@ export default function Home() {
 
                 <div>
 
-                  <h2 className="text-4xl font-black text-[#18181b]">
+                  <h2 className="text-3xl md:text-4xl font-black text-[#18181b]">
                     24/7
                   </h2>
 
-                  <p className="text-[#777] mt-2">
+                  <p className="text-[#777] mt-1 text-sm">
                     Soporte
                   </p>
 
@@ -137,28 +143,28 @@ export default function Home() {
 
               <div className="absolute inset-0 bg-orange-300/20 blur-3xl rounded-full scale-125" />
 
-              <div className="relative">
+              <div className="relative scale-95 md:scale-100">
 
                 <PhoneMockup />
 
-                <div className="absolute -left-10 top-10 bg-white border border-[#ececec] shadow-xl rounded-3xl px-5 py-4 hidden lg:flex items-center gap-4">
+                <div className="absolute -left-6 top-10 bg-white border border-[#ececec] shadow-lg rounded-2xl px-4 py-3 hidden xl:flex items-center gap-3">
 
-                  <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center">
 
                     <Star
                       className="text-orange-500 fill-orange-500"
-                      size={24}
+                      size={20}
                     />
 
                   </div>
 
                   <div>
 
-                    <h3 className="font-bold text-[#18181b]">
+                    <h3 className="font-bold text-sm text-[#18181b]">
                       4.9 Rating
                     </h3>
 
-                    <p className="text-[#777] text-sm mt-1">
+                    <p className="text-[#777] text-xs mt-1">
                       Restaurantes premium
                     </p>
 
@@ -166,24 +172,24 @@ export default function Home() {
 
                 </div>
 
-                <div className="absolute -right-10 bottom-10 bg-white border border-[#ececec] shadow-xl rounded-3xl px-5 py-4 hidden lg:flex items-center gap-4">
+                <div className="absolute -right-6 bottom-10 bg-white border border-[#ececec] shadow-lg rounded-2xl px-4 py-3 hidden xl:flex items-center gap-3">
 
-                  <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center">
 
                     <Clock3
                       className="text-orange-500"
-                      size={24}
+                      size={20}
                     />
 
                   </div>
 
                   <div>
 
-                    <h3 className="font-bold text-[#18181b]">
+                    <h3 className="font-bold text-sm text-[#18181b]">
                       15 Min
                     </h3>
 
-                    <p className="text-[#777] text-sm mt-1">
+                    <p className="text-[#777] text-xs mt-1">
                       Delivery rápido
                     </p>
 
@@ -201,13 +207,13 @@ export default function Home() {
 
       </section>
 
-      <div className="max-w-6xl mx-auto px-6 -mt-6 relative z-20">
+      <div className="max-w-6xl mx-auto px-5 md:px-6 -mt-4 relative z-20">
 
         <SearchBar />
 
       </div>
 
-      <div className="space-y-28 py-28">
+      <div className="space-y-20 md:space-y-24 py-20 md:py-24">
 
         <Categories />
 
