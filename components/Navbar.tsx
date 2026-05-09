@@ -1,4 +1,5 @@
 'use client'
+
 import CartSidebar from '@/components/CartSidebar'
 import { useCart } from '@/components/CartContext'
 import Link from 'next/link'
@@ -130,8 +131,9 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
 
               <button
-  onClick={() => setCartOpen(true)}
-  className="relative w-12 h-12 rounded-2xl bg-white border border-[#ececec] flex items-center justify-center hover:border-orange-500 transition-all">
+                onClick={() => setCartOpen(true)}
+                className="relative w-12 h-12 rounded-2xl bg-white border border-[#ececec] flex items-center justify-center hover:border-orange-500 transition-all"
+              >
 
                 <ShoppingBag
                   size={20}
@@ -305,10 +307,11 @@ export default function Navbar() {
         )}
 
       </AnimatePresence>
+
       <CartSidebar
-  open={cartOpen}
-  onClose={() => setCartOpen(false)}
-/>
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+      />
     </>
   )
 }
