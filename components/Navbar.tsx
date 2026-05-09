@@ -73,7 +73,7 @@ export default function Navbar() {
 
                 <div className="absolute inset-0 bg-orange-500 blur-2xl opacity-30 rounded-2xl group-hover:opacity-50 transition-all" />
 
-                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-orange">
+                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
 
                   <span className="text-white text-lg font-black">
 
@@ -128,11 +128,11 @@ export default function Navbar() {
 
             <div className="flex items-center gap-3">
 
-              <button className="relative w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-orange-500 transition-all">
+              <button className="relative w-12 h-12 rounded-2xl bg-white border border-[#ececec] flex items-center justify-center hover:border-orange-500 transition-all">
 
                 <ShoppingBag
                   size={20}
-                  className="text-white"
+                  className="text-[#111111]"
                 />
 
                 {cart.length > 0 && (
@@ -149,7 +149,7 @@ export default function Navbar() {
 
               <Link
                 href="/auth"
-                className="hidden md:flex bg-[#111111] hover:bg-black text-white px-6 h-11 rounded-2xl font-semibold items-center transition-all shadow-lg hover:scale-[1.03]"
+                className="hidden md:flex bg-[#111111] hover:bg-black text-white px-6 h-11 rounded-2xl font-semibold items-center transition-all"
               >
 
                 Ingresar
