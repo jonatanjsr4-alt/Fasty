@@ -46,8 +46,6 @@ export default function CheckoutModal({
     }
 
     console.log(orderData)
-    
-    alert('Intentando guardar pedido')
 
     const { data, error } = await supabase
       .from('orders')
@@ -94,7 +92,7 @@ $${total}
 
     window.open(whatsappUrl, '_blank')
 
-    alert('Pedido enviado correctamente')
+    alert('Intentando guardar pedido')
 
     setLoading(false)
 
