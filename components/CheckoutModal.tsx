@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+
 import { X } from 'lucide-react'
 
 import { useCart } from '@/components/CartContext'
+import { supabase } from '@/lib/supabase'
 
 type Props = {
   open: boolean
@@ -19,6 +21,7 @@ export default function CheckoutModal({
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
+  const [loading, setLoading] = useState(false)
 
   if (!open) return null
 
@@ -27,7 +30,30 @@ export default function CheckoutModal({
     0
   )
 
-  function sendOrder() {
+  async function sendOrder() {
+    if (!name || !phone || !address) {
+      alert('Completa todos los campos')
+      return
+    }
+
+    setLoading(true)
+
+    const { error } = await supabase
+      .from('orders')
+      .insert({
+        customer_name: name,
+        customer_phone: phone,
+        customer_address: address,
+        products: cart,
+        total,
+      })
+
+    if (error) {
+      alert(error.message)
+      setLoading(false)
+      return
+    }
+
     const productsText = cart
       .map(
         (item) =>
@@ -57,6 +83,12 @@ $${total}
     const whatsappUrl = `https://wa.me/573001112233?text=${message}`
 
     window.open(whatsappUrl, '_blank')
+
+    alert('Pedido guardado correctamente')
+
+    setLoading(false)
+
+    onClose()
   }
 
   return (
@@ -110,10 +142,13 @@ $${total}
 
           <button
             onClick={sendOrder}
-            className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg"
+            disabled={loading}
+            className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg disabled:opacity-50"
           >
 
-            Enviar pedido
+            {loading
+              ? 'Enviando...'
+              : 'Enviar pedido'}
 
           </button>
 
