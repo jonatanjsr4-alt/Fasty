@@ -1,29 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f7f5;
-  --foreground: #18181b;
-
+  --background: #f8f7f4;
   --card: #ffffff;
-  --card-dark: #111111;
-
+  --foreground: #111111;
   --muted: #71717a;
-
-  --border: #ececec;
-
+  --border: #ebe5dc;
   --orange: #f97316;
-
-  --radius: 28px;
 }
 
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-*::before,
-*::after {
   box-sizing: border-box;
 }
 
@@ -34,13 +22,8 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-
   overflow-x: hidden;
-
-  font-family: sans-serif;
-
   text-rendering: optimizeLegibility;
-
   -webkit-font-smoothing: antialiased;
 }
 
@@ -50,41 +33,16 @@ section {
 
 button {
   cursor: pointer;
-
-  transition:
-    background .2s ease,
-    border .2s ease,
-    color .2s ease,
-    transform .2s ease,
-    opacity .2s ease,
-    box-shadow .2s ease;
+  transition: all .25s ease;
 }
 
 button:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 img {
   user-select: none;
-
-  -webkit-user-drag: none;
-}
-
-input,
-textarea {
-  transition:
-    border .2s ease,
-    background .2s ease,
-    box-shadow .2s ease;
-}
-
-input:focus,
-textarea:focus {
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, .12);
-}
-
-a {
-  text-decoration: none;
+  transition: all .4s ease;
 }
 
 ::selection {
@@ -97,26 +55,38 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f7f7f5;
+  background: #f8f7f4;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
+  background: #d8ccbe;
   border-radius: 999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #bfb8ae;
+/* TITULOS MODERNOS */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.04em;
 }
 
-/* Responsive fixes */
+/* EFECTO PREMIUM */
 
-@media (max-width: 768px) {
-  h1 {
-    line-height: 1 !important;
-  }
+.glass {
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(20px);
+}
 
-  section {
-    overflow: hidden;
-  }
+/* SOMBRAS */
+
+.shadow-soft {
+  box-shadow: 0 20px 60px rgba(0,0,0,.06);
+}
+
+.shadow-orange {
+  box-shadow: 0 20px 50px rgba(249,115,22,.20);
 }
