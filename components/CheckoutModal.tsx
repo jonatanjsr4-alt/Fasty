@@ -46,6 +46,8 @@ export default function CheckoutModal({
     }
 
     console.log(orderData)
+    
+    alert('Intentando guardar pedido')
 
     const { data, error } = await supabase
       .from('orders')
