@@ -47,19 +47,20 @@ export default function CheckoutModal({
 
     console.log(orderData)
 
-    const { data, error } = await supabase
-      .from('orders')
-      .insert([orderData])
-      .select()
+ const { data, error } = await supabase
+  .from('orders')
+  .insert([orderData])
+  .select()
 
-    console.log(data)
-    console.log(error)
+console.log('DATA:', data)
+console.log('ERROR:', error)
 
-    if (error) {
-      alert(error.message)
-      setLoading(false)
-      return
-    }
+if (error) {
+  alert(JSON.stringify(error))
+  return
+}
+
+alert('Pedido enviado correctamente')
 
     const productsText = cart
       .map(
@@ -92,8 +93,8 @@ $${total}
 
     window.open(whatsappUrl, '_blank')
 
-    alert('Intentando guardar pedido')
-
+    alert('Pedido enviado correctamente')
+    
     setLoading(false)
 
     onClose()
