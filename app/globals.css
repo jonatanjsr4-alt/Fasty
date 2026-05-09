@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+:root {
+  --background: #f5efe6;
+  --card: #fffaf4;
+  --foreground: #18181b;
+  --muted: #71717a;
+  --border: #e7ded4;
+  --orange: #f97316;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -26,10 +35,15 @@ img {
   user-select: none;
 }
 
-img {
-  user-select: none;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5efe6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6c8b8;
+  border-radius: 999px;
 }
