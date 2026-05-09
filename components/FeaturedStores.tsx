@@ -31,13 +31,13 @@ export default function FeaturedStores() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="mb-12">
+        <div className="mb-14">
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#18181b]">
             Negocios destacados
           </h2>
 
-          <p className="text-zinc-500 mt-3">
+          <p className="text-[#7c6f64] mt-3 text-lg">
             Restaurantes y tiendas populares en FASTY.
           </p>
 
@@ -48,7 +48,7 @@ export default function FeaturedStores() {
           {stores.map((store) => (
             <div
               key={store.name}
-              className="bg-[#111111] border border-zinc-900 hover:border-zinc-700 transition-all rounded-[32px] overflow-hidden"
+              className="bg-[#fffaf4] border border-[#e7ded4] rounded-[32px] overflow-hidden hover:shadow-[0_10px_40px_rgba(0,0,0,.06)] transition-all duration-300"
             >
 
               <div className="overflow-hidden">
@@ -65,17 +65,17 @@ export default function FeaturedStores() {
 
                 <div className="flex items-center justify-between">
 
-                  <h3 className="text-white text-xl font-semibold">
+                  <h3 className="text-[#18181b] text-xl font-semibold">
                     {store.name}
                   </h3>
 
-                  <span className="text-orange-400 text-sm font-medium">
+                  <span className="text-orange-500 text-sm font-medium">
                     ★ {store.rating}
                   </span>
 
                 </div>
 
-                <div className="flex items-center gap-3 mt-3 text-zinc-500 text-sm">
+                <div className="flex items-center gap-3 mt-3 text-[#7c6f64] text-sm">
 
                   <span>{store.category}</span>
 
