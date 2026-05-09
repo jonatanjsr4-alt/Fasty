@@ -1,4 +1,5 @@
 'use client'
+
 import { useCart } from '@/components/CartContext'
 import Link from 'next/link'
 
@@ -20,6 +21,7 @@ import {
 
 export default function Navbar() {
   const { cart } = useCart()
+
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -55,9 +57,10 @@ export default function Navbar() {
               duration: 0.35,
             }}
             className={`glass border border-white/10 flex items-center justify-between px-6 shadow-[0_10px_40px_rgba(0,0,0,.08)]
-            ${scrolled
-              ? 'bg-white/70 backdrop-blur-2xl'
-              : 'bg-white/40 backdrop-blur-xl'
+            ${
+              scrolled
+                ? 'bg-white/70 backdrop-blur-2xl'
+                : 'bg-white/40 backdrop-blur-xl'
             }`}
           >
 
@@ -125,32 +128,24 @@ export default function Navbar() {
 
             <div className="flex items-center gap-3">
 
-              <button className="hidden md:flex w-11 h-11 rounded-2xl bg-white border border-[#ececec] items-center justify-center hover:border-orange-300 hover:bg-orange-50 transition-all">
-
-                <ShoppingBag
-                  size={18}
-                  className="text-[#111111]"
-                />
-
-              </button>
               <button className="relative w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-orange-500 transition-all">
 
-  <ShoppingBag
-    size={20}
-    className="text-white"
-  />
+                <ShoppingBag
+                  size={20}
+                  className="text-white"
+                />
 
-  {cart.length > 0 && (
+                {cart.length > 0 && (
 
-    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center font-bold">
+                  <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center font-bold">
 
-      {cart.length}
+                    {cart.length}
 
-    </div>
+                  </div>
 
-  )}
+                )}
 
-</button>
+              </button>
 
               <Link
                 href="/auth"
