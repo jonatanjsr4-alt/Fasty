@@ -1,19 +1,5 @@
 @import "tailwindcss";
 
-:root {
-<<<<<<< HEAD
-  --background: #f5efe6;
-  --card: #fffaf4;
-  --foreground: #18181b;
-  --muted: #71717a;
-  --border: #e7ded4;
-  --orange: #f97316;
-=======
-  --background: #0b0b0c;
-  --foreground: #ffffff;
->>>>>>> 5ac8a322193d06d7c957bdbf7f624d70a035be28
-}
-
 * {
   margin: 0;
   padding: 0;
