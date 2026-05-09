@@ -1,11 +1,9 @@
 import Link from 'next/link'
 import {
-  Instagram,
-  Facebook,
-  Twitter,
   MapPin,
   Mail,
   Phone,
+  ArrowUpRight,
 } from 'lucide-react'
 
 export default function Footer() {
@@ -67,19 +65,19 @@ export default function Footer() {
 
               <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
 
-                <Instagram size={20} />
+                <ArrowUpRight size={20} />
 
               </button>
 
               <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
 
-                <Facebook size={20} />
+                <Mail size={20} />
 
               </button>
 
               <button className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
 
-                <Twitter size={20} />
+                <Phone size={20} />
 
               </button>
 
