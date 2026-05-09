@@ -1,8 +1,7 @@
 import Link from 'next/link'
+
 import {
   ArrowRight,
-  Store,
-  ShoppingBag,
 } from 'lucide-react'
 
 export default function CTA() {
@@ -11,29 +10,33 @@ export default function CTA() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="relative overflow-hidden rounded-[36px] bg-[#111111] px-6 md:px-12 py-12 md:py-16 shadow-[0_20px_70px_rgba(0,0,0,.12)]">
+        <div className="relative overflow-hidden rounded-[42px] min-h-[620px] shadow-[0_30px_100px_rgba(0,0,0,.14)]">
 
-          <div className="absolute top-[-200px] right-[-200px] w-[400px] h-[400px] bg-orange-500/20 rounded-full blur-3xl" />
+          <img
+            src="https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=1800&auto=format&fit=crop"
+            alt="FASTY Delivery"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
 
-          <div className="absolute bottom-[-200px] left-[-200px] w-[400px] h-[400px] bg-orange-400/10 rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20" />
 
-          <div className="relative z-10 grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          <div className="relative z-10 h-full flex items-center">
 
-            <div>
+            <div className="max-w-3xl px-8 md:px-14 py-16 md:py-24">
 
-              <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full mb-6">
+              <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xl border border-white/10 rounded-full px-5 py-2 mb-8">
 
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
 
-                <p className="text-xs md:text-sm text-white/80 font-medium">
+                <p className="text-white/90 text-sm font-medium">
 
-                  FASTY disponible en Quibdó
+                  FASTY está creciendo en Quibdó
 
                 </p>
 
               </div>
 
-              <h2 className="text-white text-4xl md:text-6xl font-black leading-[0.95] tracking-[-2px] max-w-2xl">
+              <h2 className="text-5xl md:text-7xl font-bold leading-[0.92] tracking-[-5px] text-white">
 
                 Todo lo que
                 <br />
@@ -41,44 +44,35 @@ export default function CTA() {
                 necesitas,
                 <br />
 
-                entregado
-                <span className="text-orange-500">
-                  {' '}rápido
-                </span>
+                en minutos.
 
               </h2>
 
-              <p className="text-zinc-400 text-base md:text-lg mt-6 leading-relaxed max-w-xl">
+              <p className="text-white/70 text-lg md:text-xl leading-relaxed mt-8 max-w-2xl">
 
-                Restaurantes, supermercados, farmacias
-                y negocios locales en una sola plataforma moderna.
+                Restaurantes, supermercados y negocios
+                locales conectados en una experiencia moderna,
+                elegante y rápida.
 
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mt-10">
+              <div className="flex flex-wrap gap-4 mt-12">
 
                 <Link
                   href="/auth"
-                  className="group bg-orange-500 hover:bg-orange-600 transition-all text-white px-7 h-14 rounded-2xl font-semibold flex items-center justify-center gap-3 shadow-lg shadow-orange-500/20"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 h-14 rounded-2xl font-medium flex items-center gap-3 transition-all shadow-xl shadow-orange-500/20"
                 >
-
-                  <ShoppingBag size={18} />
 
                   Pedir ahora
 
-                  <ArrowRight
-                    size={16}
-                    className="group-hover:translate-x-1 transition-all"
-                  />
+                  <ArrowRight size={18} />
 
                 </Link>
 
                 <Link
                   href="/business"
-                  className="bg-white/10 hover:bg-white/15 backdrop-blur-xl border border-white/10 transition-all text-white px-7 h-14 rounded-2xl font-semibold flex items-center justify-center gap-3"
+                  className="bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 text-white px-8 h-14 rounded-2xl font-medium flex items-center transition-all"
                 >
-
-                  <Store size={18} />
 
                   Registrar negocio
 
@@ -86,85 +80,53 @@ export default function CTA() {
 
               </div>
 
-              <div className="flex flex-wrap items-center gap-8 mt-12">
+              <div className="flex items-center gap-12 mt-14 flex-wrap">
 
                 <div>
 
-                  <h3 className="text-3xl md:text-4xl font-black text-white">
+                  <h3 className="text-4xl font-bold tracking-[-2px] text-white">
+
                     +10K
+
                   </h3>
 
-                  <p className="text-zinc-500 mt-1 text-sm">
-                    Pedidos
+                  <p className="text-white/60 text-sm mt-1">
+
+                    Pedidos entregados
+
                   </p>
 
                 </div>
 
                 <div>
 
-                  <h3 className="text-3xl md:text-4xl font-black text-white">
+                  <h3 className="text-4xl font-bold tracking-[-2px] text-white">
+
                     +500
+
                   </h3>
 
-                  <p className="text-zinc-500 mt-1 text-sm">
-                    Negocios
+                  <p className="text-white/60 text-sm mt-1">
+
+                    Negocios activos
+
                   </p>
 
                 </div>
 
                 <div>
 
-                  <h3 className="text-3xl md:text-4xl font-black text-white">
+                  <h3 className="text-4xl font-bold tracking-[-2px] text-white">
+
                     24/7
-                  </h3>
-
-                  <p className="text-zinc-500 mt-1 text-sm">
-                    Soporte
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="relative">
-
-              <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full scale-110" />
-
-              <div className="relative">
-
-                <img
-                  src="https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=1400&auto=format&fit=crop"
-                  alt="Delivery"
-                  className="w-full h-[360px] md:h-[460px] object-cover rounded-[32px] shadow-2xl"
-                />
-
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xl px-4 py-3 rounded-2xl shadow-xl">
-
-                  <p className="text-[#999] text-xs">
-                    Delivery promedio
-                  </p>
-
-                  <h3 className="text-2xl md:text-3xl font-black text-[#18181b] mt-1">
-
-                    15 min
 
                   </h3>
 
-                </div>
+                  <p className="text-white/60 text-sm mt-1">
 
-                <div className="absolute bottom-4 right-4 bg-[#111111]/90 backdrop-blur-xl border border-white/10 px-5 py-4 rounded-2xl shadow-2xl">
+                    Soporte premium
 
-                  <p className="text-zinc-500 text-xs">
-                    Restaurantes activos
                   </p>
-
-                  <h3 className="text-3xl font-black text-white mt-1">
-
-                    +500
-
-                  </h3>
 
                 </div>
 

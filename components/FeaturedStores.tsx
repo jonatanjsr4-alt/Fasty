@@ -1,9 +1,12 @@
 import {
-  Star,
   Clock3,
+  Star,
+  ArrowRight,
   Heart,
-  ArrowUpRight,
 } from 'lucide-react'
+
+import FloatingCard from './FloatingCard'
+import Reveal from './Reveal'
 
 const stores = [
   {
@@ -12,7 +15,7 @@ const stores = [
     time: '20 min',
     rating: '4.9',
     image:
-      'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1400&auto=format&fit=crop',
   },
   {
     name: 'Burger House',
@@ -20,7 +23,7 @@ const stores = [
     time: '15 min',
     rating: '4.8',
     image:
-      'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1400&auto=format&fit=crop',
   },
   {
     name: 'Helados Frost',
@@ -28,7 +31,7 @@ const stores = [
     time: '10 min',
     rating: '4.7',
     image:
-      'https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1400&auto=format&fit=crop',
   },
 ]
 
@@ -38,151 +41,153 @@ export default function FeaturedStores() {
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-10">
+        <Reveal>
 
-          <div>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
 
-            <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
+            <div>
 
-              Restaurantes
+              <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
 
-            </p>
+                Negocios destacados
 
-            <h2 className="text-4xl md:text-5xl font-black text-[#18181b] mt-3 leading-none">
+              </p>
 
-              Negocios destacados
+              <h2 className="text-4xl md:text-5xl xl:text-6xl font-black text-[#111111] mt-4 leading-[0.95] tracking-[-3px]">
 
-            </h2>
+                Descubre los
+                <br />
 
-            <p className="text-[#666] mt-4 text-base md:text-lg max-w-2xl leading-relaxed">
+                mejores sabores
 
-              Descubre los restaurantes y tiendas más populares dentro de FASTY.
+              </h2>
+
+            </div>
+
+            <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-xl">
+
+              Restaurantes y negocios locales conectados
+              dentro de la experiencia premium FASTY.
 
             </p>
 
           </div>
 
-          <button className="bg-white border border-[#ececec] hover:border-orange-300 hover:shadow-md transition-all px-6 h-12 rounded-2xl font-semibold flex items-center gap-3 text-sm">
+        </Reveal>
 
-            Ver todos
-
-            <ArrowUpRight size={16} />
-
-          </button>
-
-        </div>
-
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
           {stores.map((store) => (
 
-            <div
-              key={store.name}
-              className="group bg-white border border-[#ececec] rounded-[28px] overflow-hidden hover:shadow-[0_15px_40px_rgba(0,0,0,.06)] hover:-translate-y-1 transition-all duration-300"
-            >
+            <FloatingCard key={store.name}>
 
-              <div className="relative overflow-hidden">
+              <div className="group relative overflow-hidden rounded-[32px] h-[420px] shadow-[0_20px_60px_rgba(0,0,0,.08)] bg-black">
 
                 <img
                   src={store.image}
                   alt={store.name}
-                  className="w-full h-56 object-cover group-hover:scale-105 transition-all duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/0 to-black/0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-                <button className="absolute top-4 right-4 w-10 h-10 rounded-2xl bg-white/90 backdrop-blur-xl flex items-center justify-center shadow-lg">
+                <button className="absolute top-5 right-5 w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/30 flex items-center justify-center hover:bg-white transition-all">
 
                   <Heart
-                    size={18}
+                    size={20}
                     className="text-[#18181b]"
                   />
 
                 </button>
 
-                <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/95 backdrop-blur-xl px-3 py-2 rounded-2xl shadow-lg">
+                <div className="absolute top-5 left-5">
 
-                  <Star
-                    size={14}
-                    className="text-orange-500 fill-orange-500"
-                  />
+                  <div className="bg-white/80 backdrop-blur-xl border border-white/30 rounded-full px-4 py-2 flex items-center gap-2 shadow-lg">
 
-                  <span className="font-semibold text-xs text-[#18181b]">
+                    <Star
+                      size={14}
+                      className="text-orange-500 fill-orange-500"
+                    />
 
-                    {store.rating}
+                    <span className="text-sm font-semibold text-[#111111]">
 
-                  </span>
+                      {store.rating}
+
+                    </span>
+
+                  </div>
+
+                </div>
+
+                <div className="absolute bottom-5 left-5 right-5">
+
+                  <div className="bg-white/85 backdrop-blur-2xl border border-white/30 rounded-[28px] p-5 shadow-2xl">
+
+                    <div className="flex items-start justify-between gap-4">
+
+                      <div>
+
+                        <p className="text-sm text-[#777] font-medium">
+
+                          {store.category}
+
+                        </p>
+
+                        <h3 className="text-2xl md:text-3xl font-black tracking-[-2px] text-[#111111] mt-1">
+
+                          {store.name}
+
+                        </h3>
+
+                      </div>
+
+                      <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-all">
+
+                        <ArrowRight
+                          size={18}
+                          className="text-white"
+                        />
+
+                      </div>
+
+                    </div>
+
+                    <div className="flex items-center gap-3 mt-5 text-[#666]">
+
+                      <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center">
+
+                        <Clock3
+                          size={16}
+                          className="text-orange-500"
+                        />
+
+                      </div>
+
+                      <div>
+
+                        <p className="text-xs text-[#999]">
+
+                          Delivery
+
+                        </p>
+
+                        <span className="text-sm font-semibold text-[#111111]">
+
+                          {store.time}
+
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  </div>
 
                 </div>
 
               </div>
 
-              <div className="p-5">
-
-                <div className="flex items-start justify-between gap-3">
-
-                  <div>
-
-                    <h3 className="text-xl font-black text-[#18181b] leading-tight">
-
-                      {store.name}
-
-                    </h3>
-
-                    <p className="text-[#777] mt-1 text-sm">
-
-                      {store.category}
-
-                    </p>
-
-                  </div>
-
-                  <div className="bg-orange-100 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap">
-
-                    Popular
-
-                  </div>
-
-                </div>
-
-                <div className="flex items-center justify-between mt-6">
-
-                  <div className="flex items-center gap-3 text-[#666]">
-
-                    <div className="w-10 h-10 rounded-xl bg-[#f5f5f5] flex items-center justify-center">
-
-                      <Clock3
-                        size={16}
-                        className="text-orange-500"
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <p className="text-xs text-[#999]">
-                        Delivery
-                      </p>
-
-                      <p className="font-semibold text-sm text-[#18181b]">
-                        {store.time}
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  <button className="bg-[#18181b] hover:bg-black text-white w-11 h-11 rounded-2xl flex items-center justify-center transition-all shadow-md">
-
-                    <ArrowUpRight size={18} />
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
+            </FloatingCard>
 
           ))}
 

@@ -4,68 +4,66 @@ import Navbar from '@/components/Navbar'
 import Categories from '@/components/Categories'
 import FeaturedStores from '@/components/FeaturedStores'
 import Footer from '@/components/Footer'
-import PhoneMockup from '@/components/PhoneMockup'
 import SearchBar from '@/components/SearchBar'
 import Stats from '@/components/Stats'
 import HowItWorks from '@/components/HowItWorks'
 import Testimonials from '@/components/Testimonials'
 import DownloadApp from '@/components/DownloadApp'
 import CTA from '@/components/CTA'
-
 import Link from 'next/link'
-
+import Reveal from '@/components/Reveal'
 import {
   ArrowRight,
 } from 'lucide-react'
 
 export default function Home() {
   return (
-    <main className="bg-[#f8f7f4] text-[#18181b] min-h-screen overflow-hidden">
+    <main className="bg-[#f6f3ee] min-h-screen overflow-hidden">
 
       <Navbar />
 
-      <section className="relative overflow-hidden">
+      <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 px-5 md:px-6 overflow-hidden">
 
-        <div className="absolute top-[-250px] right-[-250px] w-[500px] h-[500px] bg-orange-200 blur-3xl rounded-full opacity-30" />
+        <div className="absolute top-[-300px] right-[-300px] w-[700px] h-[700px] bg-orange-200/40 blur-3xl rounded-full" />
 
-        <div className="max-w-7xl mx-auto px-5 md:px-6 pt-16 md:pt-24 pb-14 md:pb-20 relative z-10">
+        <div className="max-w-7xl mx-auto">
 
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+          <div className="grid lg:grid-cols-[1fr_.9fr] gap-16 items-center">
 
-            <div className="max-w-xl mx-auto lg:mx-0">
+            <div className="max-w-2xl">
 
-              <div className="inline-flex items-center gap-3 bg-white border border-orange-100 shadow-sm px-4 py-2 rounded-full mb-7">
+              <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-xl border border-white/50 shadow-sm px-4 py-2 rounded-full mb-8">
 
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
 
-                <p className="text-sm font-medium text-[#444]">
+                <p className="text-sm text-[#444] font-medium">
 
-                Entregas rápidas en Quibdó
+                  Delivery moderno en Quibdó
 
                 </p>
 
               </div>
 
-              <h1 className="text-[52px] md:text-[68px] xl:text-[82px] font-black leading-[0.90] tracking-[-4px] text-[#111111]">
+              <h1 className="text-[58px] md:text-[84px] xl:text-[96px] font-bold leading-[0.88] tracking-[-6px] text-[#111111]">
 
-                Pide comida,
+                Todo lo que
                 <br />
 
-                supermercados
+                necesitas,
                 <br />
 
-                y más con
+                entregado
                 <span className="text-orange-500">
-                  {' '}FASTY
+                  {' '}rápido.
                 </span>
 
               </h1>
 
-              <p className="mt-7 text-lg text-[#666] leading-relaxed max-w-lg">
+              <p className="text-[#666] text-lg md:text-xl leading-relaxed mt-8 max-w-xl">
 
-                La nueva forma de pedir en Quibdó.
-                Restaurantes, tiendas y domicilios rápidos
-                en una experiencia moderna y elegante.
+                FASTY conecta restaurantes, supermercados
+                y negocios locales en una experiencia moderna,
+                rápida y premium.
 
               </p>
 
@@ -73,7 +71,7 @@ export default function Home() {
 
                 <Link
                   href="/auth"
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 h-14 rounded-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-orange"
+                  className="bg-[#111111] hover:bg-black text-white h-14 px-8 rounded-2xl font-medium flex items-center gap-3 transition-all shadow-xl"
                 >
 
                   Pedir ahora
@@ -84,7 +82,7 @@ export default function Home() {
 
                 <Link
                   href="/business"
-                  className="bg-white hover:bg-[#f3f3f3] border border-[#e5e5e5] text-[#18181b] px-8 h-14 rounded-2xl font-semibold transition-all flex items-center justify-center shadow-soft"
+                  className="bg-white/80 backdrop-blur-xl border border-white/50 h-14 px-8 rounded-2xl font-medium text-[#111111] flex items-center transition-all shadow-sm"
                 >
 
                   Registrar negocio
@@ -93,40 +91,36 @@ export default function Home() {
 
               </div>
 
-              <div className="flex items-center gap-12 mt-12 flex-wrap">
+              <div className="flex items-center gap-12 mt-14 flex-wrap">
 
                 <div>
 
-                  <h2 className="text-4xl font-black text-[#18181b]">
+                  <h2 className="text-4xl md:text-5xl font-bold tracking-[-2px] text-[#111111]">
+
                     +10K
+
                   </h2>
 
-                  <p className="text-[#777] text-sm mt-1">
-                    Pedidos
+                  <p className="text-sm text-[#777] mt-1">
+
+                    Pedidos entregados
+
                   </p>
 
                 </div>
 
                 <div>
 
-                  <h2 className="text-4xl font-black text-[#18181b]">
+                  <h2 className="text-4xl md:text-5xl font-bold tracking-[-2px] text-[#111111]">
+
                     +500
+
                   </h2>
 
-                  <p className="text-[#777] text-sm mt-1">
-                    Negocios
-                  </p>
+                  <p className="text-sm text-[#777] mt-1">
 
-                </div>
+                    Negocios activos
 
-                <div>
-
-                  <h2 className="text-4xl font-black text-[#18181b]">
-                    24/7
-                  </h2>
-
-                  <p className="text-[#777] text-sm mt-1">
-                    Soporte
                   </p>
 
                 </div>
@@ -135,11 +129,51 @@ export default function Home() {
 
             </div>
 
-            <div className="relative flex justify-center lg:justify-end">
+            <div className="relative">
 
-              <div className="scale-[0.76] md:scale-[0.85] lg:scale-95 origin-center">
+              <div className="relative overflow-hidden rounded-[40px] shadow-[0_30px_80px_rgba(0,0,0,.12)]">
 
-                <PhoneMockup />
+                <img
+                  src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop"
+                  alt="FASTY"
+                  className="w-full h-[620px] object-cover"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+
+                <div className="absolute bottom-6 left-6 right-6">
+
+                  <div className="bg-white/80 backdrop-blur-2xl border border-white/40 rounded-[28px] p-5 shadow-xl">
+
+                    <div className="flex items-center justify-between gap-4">
+
+                      <div>
+
+                        <p className="text-sm text-[#777]">
+
+                          Delivery promedio
+
+                        </p>
+
+                        <h3 className="text-3xl font-bold tracking-[-2px] text-[#111111] mt-1">
+
+                          15 min
+
+                        </h3>
+
+                      </div>
+
+                      <div className="bg-orange-500 text-white px-5 py-3 rounded-2xl text-sm font-medium shadow-lg shadow-orange-500/20">
+
+                        En vivo
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
 
               </div>
 
@@ -151,7 +185,7 @@ export default function Home() {
 
       </section>
 
-      <div className="max-w-6xl mx-auto px-5 md:px-6 -mt-6 relative z-20">
+      <div className="max-w-6xl mx-auto px-5 md:px-6 -mt-10 relative z-20">
 
         <SearchBar />
 
@@ -159,19 +193,33 @@ export default function Home() {
 
       <div className="space-y-20 md:space-y-24 py-20 md:py-24">
 
-        <Categories />
+        <Reveal>
+  <Categories />
+</Reveal>
 
-        <FeaturedStores />
+        <Reveal delay={0.1}>
+  <FeaturedStores />
+</Reveal>
 
-        <Stats />
+        <Reveal delay={0.15}>
+  <Stats />
+</Reveal>
 
-        <HowItWorks />
+        <Reveal delay={0.2}>
+  <HowItWorks />
+</Reveal>
 
-        <Testimonials />
+        <Reveal delay={0.25}>
+  <Testimonials />
+</Reveal>
 
-        <DownloadApp />
+        <Reveal delay={0.3}>
+  <DownloadApp />
+</Reveal>
 
-        <CTA />
+        <Reveal delay={0.35}>
+  <CTA />
+</Reveal>
 
         <Footer />
 

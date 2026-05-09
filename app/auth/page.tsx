@@ -10,8 +10,6 @@ import Link from 'next/link'
 
 import {
   ArrowRight,
-  Loader2,
-  ShoppingBag,
 } from 'lucide-react'
 
 export default function AuthPage() {
@@ -51,8 +49,6 @@ export default function AuthPage() {
     if (error) {
       alert(error.message)
     } else {
-      alert('Bienvenido a FASTY')
-
       router.push('/dashboard')
     }
 
@@ -60,25 +56,28 @@ export default function AuthPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f7f5] overflow-hidden relative flex items-center justify-center px-5 py-10">
+    <main className="min-h-screen bg-[#f6f3ee] overflow-hidden relative flex items-center justify-center px-5 py-10">
 
-      <div className="absolute top-[-250px] right-[-250px] w-[500px] h-[500px] bg-orange-200 blur-3xl rounded-full opacity-40" />
+      <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-orange-200/40 blur-3xl rounded-full" />
 
-      <div className="absolute bottom-[-250px] left-[-250px] w-[500px] h-[500px] bg-orange-100 blur-3xl rounded-full opacity-50" />
+      <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-orange-100/40 blur-3xl rounded-full" />
 
-      <div className="relative z-10 w-full max-w-6xl grid lg:grid-cols-2 bg-white border border-[#ececec] rounded-[36px] overflow-hidden shadow-[0_20px_70px_rgba(0,0,0,.06)]">
+      <div className="relative z-10 grid lg:grid-cols-2 max-w-6xl w-full overflow-hidden rounded-[40px] border border-white/40 bg-white/70 backdrop-blur-2xl shadow-[0_30px_80px_rgba(0,0,0,.08)]">
 
-        <div className="hidden lg:flex relative bg-[#111111] p-12 flex-col justify-between overflow-hidden">
+        <div className="hidden lg:flex relative overflow-hidden bg-[#111111] p-14 flex-col justify-between">
 
-          <div className="absolute top-[-150px] right-[-150px] w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] bg-orange-500/20 blur-3xl rounded-full" />
 
           <div className="relative z-10">
 
-            <div className="flex items-center gap-4">
+            <Link
+              href="/"
+              className="flex items-center gap-3"
+            >
 
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+              <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center">
 
-                <span className="text-white text-lg font-black">
+                <span className="text-white font-bold">
                   F
                 </span>
 
@@ -86,72 +85,69 @@ export default function AuthPage() {
 
               <div>
 
-                <h1 className="text-2xl font-black text-white">
+                <h1 className="text-2xl font-bold text-white tracking-[-1px]">
+
                   FASTY
+
                 </h1>
 
-                <p className="text-zinc-500 text-sm mt-1">
+                <p className="text-xs text-zinc-400 mt-1">
+
                   Delivery Platform
+
                 </p>
 
               </div>
 
-            </div>
-
-            <div className="mt-20">
-
-              <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
-
-                DELIVERY MODERNO
-
-              </p>
-
-              <h2 className="text-5xl font-black text-white mt-5 leading-[0.95] tracking-[-3px]">
-
-                Pide comida,
-                <br />
-
-                supermercados
-                <br />
-
-                y más.
-
-              </h2>
-
-              <p className="text-zinc-400 mt-7 text-lg leading-relaxed max-w-md">
-
-                FASTY conecta usuarios y negocios
-                en una experiencia rápida, moderna y elegante.
-
-              </p>
-
-            </div>
+            </Link>
 
           </div>
 
-          <div className="relative z-10 flex items-center gap-4 bg-white/5 border border-white/10 rounded-3xl p-5 backdrop-blur-xl">
+          <div className="relative z-10">
 
-            <div className="w-14 h-14 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <h2 className="text-5xl font-bold text-white leading-[1] tracking-[-3px]">
 
-              <ShoppingBag
-                size={24}
-                className="text-white"
-              />
+              Delivery
+              <br />
+
+              moderno para
+              <br />
+
+              Quibdó.
+
+            </h2>
+
+            <p className="text-zinc-400 text-lg leading-relaxed mt-8 max-w-md">
+
+              Restaurantes, supermercados y negocios
+              locales conectados en una experiencia premium.
+
+            </p>
+
+          </div>
+
+          <div className="relative z-10 flex items-center gap-10">
+
+            <div>
+
+              <h3 className="text-3xl font-bold text-white">
+                +10K
+              </h3>
+
+              <p className="text-sm text-zinc-500 mt-1">
+                Pedidos
+              </p>
 
             </div>
 
             <div>
 
-              <h3 className="text-white font-bold text-lg">
-
-                +10K Pedidos
-
+              <h3 className="text-3xl font-bold text-white">
+                +500
               </h3>
 
-              <p className="text-zinc-400 text-sm mt-1">
-
-                Entregados exitosamente
-
+              <p className="text-sm text-zinc-500 mt-1">
+                Negocios
               </p>
 
             </div>
@@ -160,18 +156,15 @@ export default function AuthPage() {
 
         </div>
 
-        <div className="p-6 md:p-10 lg:p-14 flex items-center">
+        <div className="p-8 md:p-14 flex items-center">
 
-          <div className="w-full">
+          <div className="w-full max-w-md mx-auto">
 
-            <Link
-              href="/"
-              className="inline-flex items-center gap-3 mb-8"
-            >
+            <div className="lg:hidden flex items-center gap-3 mb-10">
 
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+              <div className="w-11 h-11 rounded-2xl bg-[#111111] flex items-center justify-center">
 
-                <span className="text-white font-black">
+                <span className="text-white font-bold">
                   F
                 </span>
 
@@ -179,100 +172,78 @@ export default function AuthPage() {
 
               <div>
 
-                <h1 className="text-2xl font-black text-[#18181b]">
+                <h1 className="text-xl font-bold tracking-[-1px]">
+
                   FASTY
+
                 </h1>
 
-                <p className="text-[#888] text-xs mt-1">
+                <p className="text-xs text-[#888]">
+
                   Delivery Platform
+
                 </p>
 
               </div>
 
-            </Link>
+            </div>
 
-            <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
+            <p className="text-orange-500 text-sm font-medium uppercase tracking-[3px]">
 
-              ACCESO
+              Bienvenido
 
             </p>
 
-            <h2 className="text-4xl md:text-5xl font-black text-[#18181b] mt-3 tracking-[-2px] leading-none">
+            <h2 className="text-5xl font-bold tracking-[-3px] text-[#111111] mt-4 leading-none">
 
-              Bienvenido 👋
+              Inicia sesión
+              <br />
+
+              en FASTY
 
             </h2>
 
-            <p className="text-[#666] mt-4 text-sm md:text-base leading-relaxed max-w-md">
+            <p className="text-[#666] leading-relaxed mt-6">
 
-              Inicia sesión o crea tu cuenta
-              para comenzar en FASTY.
+              Accede a tu cuenta o crea una nueva
+              experiencia dentro de FASTY.
 
             </p>
 
-            <div className="mt-10 space-y-4">
+            <div className="space-y-5 mt-10">
 
-              <div>
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full h-14 rounded-2xl border border-[#e7e2da] bg-white px-5 outline-none focus:border-orange-400 transition-all"
+              />
 
-                <p className="text-sm font-medium text-[#444] mb-2">
-
-                  Correo electrónico
-
-                </p>
-
-                <input
-                  type="email"
-                  placeholder="correo@fasty.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 rounded-2xl border border-[#ececec] bg-[#fafafa] px-4 outline-none text-sm focus:border-orange-500 transition-all"
-                />
-
-              </div>
-
-              <div>
-
-                <p className="text-sm font-medium text-[#444] mb-2">
-
-                  Contraseña
-
-                </p>
-
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-12 rounded-2xl border border-[#ececec] bg-[#fafafa] px-4 outline-none text-sm focus:border-orange-500 transition-all"
-                />
-
-              </div>
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full h-14 rounded-2xl border border-[#e7e2da] bg-white px-5 outline-none focus:border-orange-400 transition-all"
+              />
 
               <button
                 onClick={signIn}
                 disabled={loading}
-                className="w-full h-12 rounded-2xl bg-[#18181b] hover:bg-black transition-all text-white font-semibold text-sm flex items-center justify-center gap-3 shadow-lg"
+                className="w-full h-14 rounded-2xl bg-[#111111] hover:bg-black text-white font-medium transition-all flex items-center justify-center gap-3 shadow-xl"
               >
 
-                {loading ? (
-                  <Loader2
-                    size={18}
-                    className="animate-spin"
-                  />
-                ) : (
-                  <>
-                    Iniciar sesión
+                Ingresar
 
-                    <ArrowRight size={16} />
-                  </>
-                )}
+                <ArrowRight size={18} />
 
               </button>
 
               <button
                 onClick={signUp}
                 disabled={loading}
-                className="w-full h-12 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-semibold text-sm shadow-lg shadow-orange-500/20"
+                className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-medium transition-all shadow-lg shadow-orange-500/20"
               >
 
                 Crear cuenta
