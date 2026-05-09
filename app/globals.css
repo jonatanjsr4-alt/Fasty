@@ -22,7 +22,6 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
 
@@ -46,4 +45,24 @@ img {
 ::-webkit-scrollbar-thumb {
   background: #d6c8b8;
   border-radius: 999px;
+}
+::selection {
+  background: #f97316;
+  color: white;
+}
+
+section {
+  position: relative;
+}
+
+button {
+  transform: translateY(0);
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+img {
+  transition: all .5s ease;
 }

@@ -1,64 +1,56 @@
 const testimonials = [
   {
-    name: 'Carlos Martínez',
-    role: 'Cliente',
-    comment:
-      'FASTY cambió totalmente la forma en que hago pedidos en Quibdó.',
-  },
-  {
     name: 'Laura Mosquera',
-    role: 'Negocio',
-    comment:
-      'Ahora recibimos muchos más pedidos gracias a FASTY.',
+    role: 'Cliente FASTY',
+    text: 'La experiencia es rápida, moderna y mucho más cómoda para pedir en Quibdó.',
   },
   {
-    name: 'Andrés Córdoba',
-    role: 'Domiciliario',
-    comment:
-      'La plataforma es rápida, moderna y muy fácil de usar.',
+    name: 'Kevin Cuesta',
+    role: 'Negocio aliado',
+    text: 'FASTY nos ayudó a aumentar pedidos y mejorar la atención a nuestros clientes.',
   },
 ]
 
 export default function Testimonials() {
   return (
-    <section className="py-28 px-6 bg-zinc-950">
+    <section className="px-6 py-10">
 
-      <div className="max-w-7xl mx-auto text-center">
+      <div className="max-w-7xl mx-auto">
 
-        <h2 className="text-5xl font-extrabold text-white">
-          Lo que dicen nuestros usuarios
-        </h2>
+        <div className="grid lg:grid-cols-2 gap-10">
 
-        <p className="text-gray-400 mt-6 text-xl">
-          Personas y negocios que ya usan FASTY.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-
-          {testimonials.map((testimonial) => (
+          {testimonials.map((item) => (
             <div
-              key={testimonial.name}
-              className="glass-card rounded-3xl p-10 text-left"
+              key={item.name}
+              className="bg-[#fffaf4] border border-[#e7ded4] rounded-[40px] p-10 shadow-[0_10px_40px_rgba(0,0,0,.04)]"
             >
 
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-4 mb-8">
 
-                <div className="w-14 h-14 bg-orange-500 rounded-full" />
+                <div className="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-lg">
+
+                  {item.name.charAt(0)}
+
+                </div>
 
                 <div>
-                  <h3 className="text-white font-bold text-xl">
-                    {testimonial.name}
+
+                  <h3 className="text-[#18181b] font-bold text-lg">
+                    {item.name}
                   </h3>
 
-                  <p className="text-gray-400">
-                    {testimonial.role}
+                  <p className="text-[#7c6f64] text-sm mt-1">
+                    {item.role}
                   </p>
+
                 </div>
 
               </div>
 
-              <p className="text-gray-300 text-lg leading-relaxed">
-                “{testimonial.comment}”
+              <p className="text-2xl leading-relaxed text-[#18181b] font-medium">
+
+                “{item.text}”
+
               </p>
 
             </div>

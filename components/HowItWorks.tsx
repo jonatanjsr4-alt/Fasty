@@ -1,69 +1,66 @@
-import {
-  Search,
-  ShoppingCart,
-  Bike
-} from 'lucide-react'
-
 const steps = [
   {
-    title: 'Busca',
-    description: 'Encuentra restaurantes, tiendas y servicios cerca de ti.',
-    icon: Search,
+    number: '01',
+    title: 'Explora negocios',
+    text: 'Encuentra restaurantes, supermercados y tiendas locales cerca de ti.',
   },
   {
-    title: 'Ordena',
-    description: 'Realiza pedidos rápidos y seguros desde FASTY.',
-    icon: ShoppingCart,
+    number: '02',
+    title: 'Realiza tu pedido',
+    text: 'Ordena fácilmente desde una experiencia rápida y moderna.',
   },
   {
-    title: 'Recibe',
-    description: 'Tu pedido llega rápido y en tiempo real.',
-    icon: Bike,
+    number: '03',
+    title: 'Recibe en minutos',
+    text: 'FASTY conecta tu pedido con entregas rápidas y seguras.',
   },
 ]
 
 export default function HowItWorks() {
   return (
-    <section className="py-28 px-6 bg-black">
+    <section className="px-6 py-10">
 
-      <div className="max-w-7xl mx-auto text-center">
+      <div className="max-w-7xl mx-auto">
 
-        <h2 className="text-5xl font-extrabold text-white">
-          ¿Cómo funciona?
-        </h2>
+        <div className="mb-20">
 
-        <p className="text-gray-400 mt-6 text-xl max-w-3xl mx-auto">
-          FASTY conecta usuarios, negocios y domiciliarios en una sola plataforma.
-        </p>
+          <p className="text-[#9b8773] uppercase tracking-[4px] text-sm font-semibold">
+            CÓMO FUNCIONA
+          </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-20">
+          <h2 className="text-5xl md:text-6xl font-black text-[#18181b] leading-[1] tracking-[-3px] mt-6 max-w-3xl">
 
-          {steps.map((step) => {
-            const Icon = step.icon
+            Delivery diseñado para ser simple.
 
-            return (
-              <div
-                key={step.title}
-                className="bg-zinc-900 border border-zinc-800 rounded-3xl p-10 hover:border-orange-500 transition-all"
-              >
+          </h2>
 
-                <div className="w-20 h-20 bg-orange-500/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
+        </div>
 
-                  <Icon className="w-10 h-10 text-orange-500" />
+        <div className="grid md:grid-cols-3 gap-16">
 
-                </div>
+          {steps.map((step) => (
+            <div key={step.number}>
 
-                <h3 className="text-3xl font-bold text-white">
-                  {step.title}
-                </h3>
+              <span className="text-[5rem] font-black text-orange-200 leading-none">
 
-                <p className="text-gray-400 mt-5 text-lg">
-                  {step.description}
-                </p>
+                {step.number}
 
-              </div>
-            )
-          })}
+              </span>
+
+              <h3 className="text-2xl font-bold text-[#18181b] mt-6">
+
+                {step.title}
+
+              </h3>
+
+              <p className="text-[#7c6f64] leading-relaxed mt-5 text-lg">
+
+                {step.text}
+
+              </p>
+
+            </div>
+          ))}
 
         </div>
 

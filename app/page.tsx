@@ -135,7 +135,7 @@ export default function Home() {
 
       </div>
 
-      <div className="space-y-28 mt-28">
+      <div className="space-y-40 mt-40">
 
         <Categories />
 

@@ -1,35 +1,66 @@
 export default function CTA() {
   return (
-    <section className="py-32 px-6 bg-black">
+    <section className="px-6 py-24">
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
 
-        <div className="relative overflow-hidden bg-zinc-900 border border-zinc-800 rounded-[50px] p-14 md:p-24 text-center">
+        <div className="relative overflow-hidden rounded-[50px] bg-[#18181b] px-10 md:px-20 py-24">
 
-          <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-orange-500/20 blur-3xl rounded-full" />
+          <div className="absolute top-[-200px] right-[-200px] w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-3xl" />
 
-          <div className="absolute bottom-[-100px] right-[-100px] w-[300px] h-[300px] bg-orange-500/10 blur-3xl rounded-full" />
+          <div className="relative z-10 grid lg:grid-cols-2 gap-20 items-center">
 
-          <div className="relative">
+            <div>
 
-            <h2 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
-              Únete hoy a
-              <span className="text-orange-500"> FASTY</span>
-            </h2>
+              <p className="text-orange-400 uppercase tracking-[4px] text-sm font-semibold">
 
-            <p className="text-gray-400 text-xl mt-8 max-w-3xl mx-auto">
-              Miles de usuarios, negocios y domiciliarios ya están usando FASTY en Quibdó.
-            </p>
+                FASTY PREMIUM DELIVERY
 
-            <div className="flex flex-col sm:flex-row gap-5 justify-center mt-14">
+              </p>
 
-              <button className="bg-orange-500 hover:bg-orange-600 transition-all px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/30">
-                Pedir Ahora
-              </button>
+              <h2 className="text-white text-5xl md:text-7xl leading-[0.95] tracking-[-4px] font-black mt-8">
 
-              <button className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition-all px-10 py-5 rounded-2xl font-bold text-lg">
-                Registrar Negocio
-              </button>
+                Todo lo que necesitas,
+                <br />
+
+                entregado
+                <br />
+
+                rápidamente.
+
+              </h2>
+
+              <p className="text-zinc-400 text-xl leading-relaxed mt-10 max-w-xl">
+
+                Desde restaurantes hasta supermercados y negocios locales.
+
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-5 mt-14">
+
+                <button className="bg-orange-500 hover:bg-orange-600 transition-all text-white px-9 py-5 rounded-2xl font-semibold text-lg">
+
+                  Pedir ahora
+
+                </button>
+
+                <button className="border border-zinc-700 hover:border-zinc-500 transition-all text-white px-9 py-5 rounded-2xl font-semibold text-lg">
+
+                  Conocer más
+
+                </button>
+
+              </div>
+
+            </div>
+
+            <div className="relative">
+
+              <img
+                src="https://images.unsplash.com/photo-1526367790999-0150786686a2?q=80&w=1400&auto=format&fit=crop"
+                alt="Delivery"
+                className="rounded-[40px] h-[500px] w-full object-cover"
+              />
 
             </div>
 
