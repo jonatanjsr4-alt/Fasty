@@ -5,66 +5,82 @@ import { motion } from 'framer-motion'
 export default function PhoneMockup() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 80 }}
+      initial={{ opacity: 0, y: 60 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
       className="relative"
     >
 
-      <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full scale-110" />
+      <div className="absolute inset-0 bg-orange-500/10 blur-3xl rounded-full scale-125" />
 
       <motion.div
-        animate={{ y: [0, -12, 0] }}
+        animate={{ y: [0, -10, 0] }}
         transition={{
           repeat: Infinity,
-          duration: 4,
+          duration: 5,
         }}
-        className="relative w-[260px] h-[540px] bg-zinc-900 border-4 border-zinc-700 rounded-[45px] shadow-2xl shadow-orange-500/30 overflow-hidden"
+        className="relative w-[250px] h-[520px] bg-[#0f0f10] border border-zinc-800 rounded-[42px] shadow-2xl shadow-black/50 overflow-hidden"
       >
 
-        <div className="bg-orange-500 h-20 flex items-center justify-center">
+        <div className="bg-gradient-to-r from-orange-500 to-orange-400 h-20 flex items-center justify-center">
 
-          <h2 className="text-4xl font-extrabold text-white">
+          <h2 className="text-3xl font-black tracking-wide text-white">
             FASTY
           </h2>
 
         </div>
 
-        <div className="p-5 space-y-4">
+        <div className="p-4 space-y-4">
 
-          <div className="glass-card rounded-3xl p-4 hover:bg-zinc-700 transition-all">
+          <div className="glass-card rounded-3xl overflow-hidden">
 
-            <h3 className="text-white font-bold text-lg">
-              Burger House
-            </h3>
+            <div className="h-28 bg-[url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd')] bg-cover bg-center" />
 
-            <p className="text-gray-400 mt-1 text-sm">
-              Hamburguesas • 15 min
-            </p>
+            <div className="p-4">
+
+              <div className="flex items-center justify-between">
+
+                <h3 className="text-white font-semibold text-sm">
+                  Burger House
+                </h3>
+
+                <span className="text-orange-400 text-xs">
+                  ⭐ 4.9
+                </span>
+
+              </div>
+
+              <p className="text-zinc-400 text-xs mt-1">
+                Hamburguesas • 15 min
+              </p>
+
+            </div>
 
           </div>
 
-          <div className="glass-card rounded-3xl p-4 hover:bg-zinc-700 transition-all">
+          <div className="glass-card rounded-3xl overflow-hidden">
 
-            <h3 className="text-white font-bold text-lg">
-              Pizza Gold
-            </h3>
+            <div className="h-28 bg-[url('https://images.unsplash.com/photo-1513104890138-7c749659a591')] bg-cover bg-center" />
 
-            <p className="text-gray-400 mt-1 text-sm">
-              Pizza • 20 min
-            </p>
+            <div className="p-4">
 
-          </div>
+              <div className="flex items-center justify-between">
 
-          <div className="glass-card rounded-3xl p-4 hover:bg-zinc-700 transition-all">
+                <h3 className="text-white font-semibold text-sm">
+                  Pizza Gold
+                </h3>
 
-            <h3 className="text-white font-bold text-lg">
-              Helados Frost
-            </h3>
+                <span className="text-orange-400 text-xs">
+                  ⭐ 4.8
+                </span>
 
-            <p className="text-gray-400 mt-1 text-sm">
-              Postres • 10 min
-            </p>
+              </div>
+
+              <p className="text-zinc-400 text-xs mt-1">
+                Pizza • 20 min
+              </p>
+
+            </div>
 
           </div>
 

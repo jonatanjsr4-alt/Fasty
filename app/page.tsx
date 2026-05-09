@@ -26,31 +26,31 @@ export default function Home() {
 
       <Navbar />
 
-      <section className="relative min-h-screen px-6 pt-40 pb-24 overflow-hidden">
+      <section className="relative min-h-screen px-6 pt-36 pb-20 overflow-hidden">
 
         <div className="absolute inset-0 overflow-hidden">
 
-          <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute top-[-250px] left-[-250px] w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-3xl" />
 
-          <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-[-250px] right-[-250px] w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-3xl" />
 
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-32 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_.85fr] gap-24 items-center relative z-10">
 
           <div>
 
-            <div className="flex flex-wrap gap-4 mb-8">
+            <div className="flex flex-wrap gap-3 mb-6">
 
-              <div className="glass-card px-5 py-3 rounded-full text-sm text-orange-400 font-semibold">
+              <div className="glass-card px-4 py-2 rounded-full text-xs text-orange-300 font-medium">
                 ⚡ Entregas rápidas
               </div>
 
-              <div className="glass-card px-5 py-3 rounded-full text-sm text-orange-400 font-semibold">
-                🛵 Domicilios en tiempo real
+              <div className="glass-card px-4 py-2 rounded-full text-xs text-orange-300 font-medium">
+                🛵 Tracking en vivo
               </div>
 
-              <div className="glass-card px-5 py-3 rounded-full text-sm text-orange-400 font-semibold">
+              <div className="glass-card px-4 py-2 rounded-full text-xs text-orange-300 font-medium">
                 🏪 +500 negocios
               </div>
 
@@ -60,7 +60,7 @@ export default function Home() {
               initial={{ opacity: 0, y: -40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-5xl md:text-7xl font-extrabold text-white leading-[1.05] max-w-3xl"
+              className="text-4xl md:text-6xl font-extrabold text-white leading-[1.02] tracking-[-2px] max-w-2xl"
             >
               Tus pedidos
               <span className="text-orange-500"> rápidos</span>
@@ -72,26 +72,26 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="mt-10 text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed"
+              className="mt-6 text-base md:text-lg text-zinc-400 max-w-lg leading-relaxed"
             >
-              Pide comida, compra productos y recibe entregas rápidas con FASTY.
+              Comida, supermercados y domicilios rápidos desde una sola plataforma moderna.
             </motion.p>
 
-            <div className="flex flex-col sm:flex-row gap-5 mt-12">
+            <div className="flex flex-col sm:flex-row gap-4 mt-10">
 
-              <button className="premium-button bg-orange-500 hover:bg-orange-600 transition-all px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-500/40">
-                Pedir Ahora
+              <button className="premium-button bg-orange-500 hover:bg-orange-600 transition-all px-8 py-4 rounded-2xl font-semibold text-base shadow-lg shadow-orange-500/20">
+                Pedir ahora
               </button>
 
-              <button className="premium-button border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition-all px-10 py-5 rounded-2xl font-bold text-lg">
-                Registrar Negocio
+              <button className="premium-button border border-zinc-700 text-white hover:border-orange-500 hover:text-orange-400 transition-all px-8 py-4 rounded-2xl font-semibold text-base">
+                Registrar negocio
               </button>
 
             </div>
 
           </div>
 
-          <div className="flex justify-center lg:justify-center mt-20 lg:mt-0">
+          <div className="flex justify-center lg:justify-end">
 
             <PhoneMockup />
 
@@ -101,11 +101,11 @@ export default function Home() {
 
       </section>
 
-      <div className="relative z-20 -mt-10">
+      <div className="relative z-20 -mt-2">
         <SearchBar />
       </div>
 
-      <div className="space-y-20">
+      <div className="space-y-16">
 
         <Categories />
 
