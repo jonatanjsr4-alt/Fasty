@@ -40,7 +40,7 @@ export default function Home() {
 
                 <p className="text-sm font-medium text-[#444]">
 
-                  Delivery rápido en Quibdó
+                  Entregas rápidas en Quibdó
 
                 </p>
 
