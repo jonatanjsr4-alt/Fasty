@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 
+import { useCart } from '@/components/CartContext'
+
 type Props = {
   open: boolean
   onClose: () => void
@@ -12,11 +14,50 @@ export default function CheckoutModal({
   open,
   onClose,
 }: Props) {
+  const { cart } = useCart()
+
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
 
   if (!open) return null
+
+  const total = cart.reduce(
+    (acc, item) => acc + Number(item.price),
+    0
+  )
+
+  function sendOrder() {
+    const productsText = cart
+      .map(
+        (item) =>
+          `• ${item.name} - $${item.price}`
+      )
+      .join('%0A')
+
+    const message = `
+🚀 *NUEVO PEDIDO FASTY*
+
+👤 Cliente:
+${name}
+
+📞 WhatsApp:
+${phone}
+
+📍 Dirección:
+${address}
+
+🛒 Productos:
+${productsText}
+
+💰 Total:
+$${total}
+`
+
+    const whatsappUrl = `https://wa.me/573001112233?text=${message}`
+
+    window.open(whatsappUrl, '_blank')
+  }
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -68,10 +109,7 @@ export default function CheckoutModal({
           />
 
           <button
-            onClick={() => {
-              alert('Pedido enviado correctamente')
-              onClose()
-            }}
+            onClick={sendOrder}
             className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg"
           >
 
