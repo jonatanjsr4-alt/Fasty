@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabase'
-
+import { useCart } from '@/components/CartContext'
 import {
   Clock3,
   Star,
@@ -20,6 +20,7 @@ type Product = {
 
 export default function FeaturedStores() {
   const [products, setProducts] = useState<Product[]>([])
+  const { addToCart } = useCart()
 
   useEffect(() => {
     getProducts()
@@ -119,22 +120,33 @@ export default function FeaturedStores() {
 
                     </div>
 
-                    <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center">
+                    <button
+  onClick={() =>
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+    })
+  }
+  className="w-12 h-12 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all flex items-center justify-center"
+>
 
-                      <ArrowRight
-                        size={18}
-                        className="text-white"
-                      />
+  <ArrowRight
+    size={18}
+    className="text-white"
+  />
 
-                    </div>
+</button>
 
-                  </div>
+                      
+  </div>
 
-                  <p className="text-zinc-300 mt-4 line-clamp-2">
+     <p className="text-zinc-300 mt-4 line-clamp-2">
 
-                    {product.description}
+     {product.description}
 
-                  </p>
+     </p>
 
                   <div className="flex items-center justify-between mt-5">
 

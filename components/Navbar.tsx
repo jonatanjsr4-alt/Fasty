@@ -1,5 +1,5 @@
 'use client'
-
+import { useCart } from '@/components/CartContext'
 import Link from 'next/link'
 
 import {
@@ -19,6 +19,7 @@ import {
 } from 'react'
 
 export default function Navbar() {
+  const { cart } = useCart()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -132,6 +133,24 @@ export default function Navbar() {
                 />
 
               </button>
+              <button className="relative w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-orange-500 transition-all">
+
+  <ShoppingBag
+    size={20}
+    className="text-white"
+  />
+
+  {cart.length > 0 && (
+
+    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-orange-500 text-white text-xs flex items-center justify-center font-bold">
+
+      {cart.length}
+
+    </div>
+
+  )}
+
+</button>
 
               <Link
                 href="/auth"
