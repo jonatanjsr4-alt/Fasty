@@ -69,7 +69,7 @@ export default function CheckoutModal({
 
           <button
             onClick={() => {
-              alert('Pedido enviado correctamente')
+             alert('Intentando guardar pedido')
               onClose()
             }}
             className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg"
