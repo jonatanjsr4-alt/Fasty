@@ -1,16 +1,24 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { CartProvider } from '@/components/CartContext'
 
 export const metadata: Metadata = {
-  title: 'FASTY — Delivery Quibdó',
-  description: 'Restaurantes, supermercados, farmacias y negocios locales en una sola plataforma. Delivery moderno para Quibdó.',
-  keywords: 'delivery, domicilios, Quibdó, restaurantes, comida',
+  title: 'FASTY',
+  description: 'Delivery moderno para Quibdó',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <CartProvider>
+          {children}
+        </CartProvider>
+      </body>
     </html>
   )
 }
