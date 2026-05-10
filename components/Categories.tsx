@@ -1,138 +1,140 @@
-import {
-  Wine,
-  Utensils,
-  IceCream,
-  GraduationCap,
-  Coffee,
-  ShoppingCart,
-  Shirt,
-  Sparkles,
-  HeartPulse,
-  Home,
-  Smartphone,
-  Wrench,
-  Dumbbell,
-  ArrowUpRight,
-} from 'lucide-react'
+'use client'
 
 const categories = [
-  { name: 'Licores', icon: Wine },
-  { name: 'Restaurantes', icon: Utensils },
-  { name: 'Heladerías', icon: IceCream },
-  { name: 'Educación', icon: GraduationCap },
-  { name: 'Cafeterías', icon: Coffee },
-  { name: 'Supermercados', icon: ShoppingCart },
-  { name: 'Moda', icon: Shirt },
-  { name: 'Belleza', icon: Sparkles },
-  { name: 'Salud', icon: HeartPulse },
-  { name: 'Hogar', icon: Home },
-  { name: 'Tecnología', icon: Smartphone },
-  { name: 'Mantenimiento', icon: Wrench },
-  { name: 'Deporte', icon: Dumbbell },
+
+  {
+    name: 'Hamburguesas',
+    image:
+      'https://cdn-icons-png.flaticon.com/512/3075/3075977.png',
+  },
+
+  {
+    name: 'Pizza',
+    image:
+      'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
+  },
+
+  {
+    name: 'Pollo',
+    image:
+      'https://cdn-icons-png.flaticon.com/512/5787/5787016.png',
+  },
+
+  {
+    name: 'Bebidas',
+    image:
+      'https://cdn-icons-png.flaticon.com/512/2405/2405479.png',
+  },
+
+  {
+    name: 'Postres',
+    image:
+      'https://cdn-icons-png.flaticon.com/512/2553/2553691.png',
+  },
+
+  {
+    name: 'Mercado',
+    image:
+      'https://cdn-icons-png.flaticon.com/512/3081/3081822.png',
+  },
+
 ]
 
 export default function Categories() {
+
   return (
-   
-  <section className="px-5 md:px-6">
 
-    <div className="max-w-7xl mx-auto">
+    <section
+      id="categorias"
+      className="px-6 py-28"
+    >
 
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14">
+      <div className="max-w-7xl mx-auto">
 
-        <div>
+        <div className="mb-16">
 
-          <p className="text-orange-500 uppercase tracking-[4px] text-sm font-medium">
+          <span className="text-orange-500 font-bold uppercase tracking-[4px]">
 
             Categorías
 
-          </p>
+          </span>
 
-          <h2 className="text-5xl md:text-6xl font-black text-[#111111] mt-5 leading-[0.95] tracking-[-4px]">
+          <h2 className="text-6xl font-black mt-4 leading-none">
 
-            Explora FASTY
+            Todo en un solo lugar
 
           </h2>
 
-          <p className="text-[#666] mt-5 text-lg leading-relaxed max-w-2xl">
+          <p className="text-zinc-400 text-lg mt-5 max-w-2xl">
 
-            Descubre restaurantes, tiendas y servicios
-            disponibles dentro de FASTY.
+            Explora restaurantes, bebidas,
+            supermercados y mucho más en FASTY.
 
           </p>
 
         </div>
 
-        <button className="glass border border-white/10 hover:border-orange-500/30 transition-all px-7 h-14 rounded-2xl font-semibold flex items-center gap-3 text-white bg-[#111111]">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
 
-          Ver categorías
+          {categories.map((category) => (
 
-          <ArrowUpRight size={18} />
-
-        </button>
-
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
-
-        {categories.map((category) => {
-          const Icon = category.icon
-
-          return (
             <div
               key={category.name}
-              className="group relative overflow-hidden bg-white rounded-[32px] p-6 border border-[#ececec] hover:border-orange-200 hover:shadow-[0_20px_50px_rgba(249,115,22,.12)] transition-all duration-500 hover:-translate-y-2"
+              className="
+                glass
+                rounded-[32px]
+                p-7
+                flex
+                flex-col
+                items-center
+                justify-center
+                text-center
+                card-hover
+                cursor-pointer
+                min-h-[220px]
+              "
             >
 
-              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+              <div
+                className="
+                  w-24
+                  h-24
+                  rounded-3xl
+                  bg-white
+                  flex
+                  items-center
+                  justify-center
+                  overflow-hidden
+                "
+              >
 
-              <div className="relative z-10">
-
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6 shadow-orange">
-
-                  <Icon className="w-7 h-7 text-white" />
-
-                </div>
-
-                <div className="flex items-start justify-between gap-3">
-
-                  <div>
-
-                    <h3 className="text-[#111111] font-black text-lg leading-snug">
-
-                      {category.name}
-
-                    </h3>
-
-                    <p className="text-[#888] text-sm mt-2">
-
-                      FASTY
-
-                    </p>
-
-                  </div>
-
-                  <div className="w-11 h-11 rounded-2xl bg-[#f5f5f5] group-hover:bg-orange-500 transition-all flex items-center justify-center">
-
-                    <ArrowUpRight
-                      size={18}
-                      className="text-[#111111] group-hover:text-white transition-all"
-                    />
-
-                  </div>
-
-                </div>
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="
+                    w-16
+                    h-16
+                    object-contain
+                  "
+                />
 
               </div>
 
+              <h3 className="text-3xl font-black mt-7">
+
+                {category.name}
+
+              </h3>
+
             </div>
-          )
-        })}
+
+          ))}
+
+        </div>
 
       </div>
 
-    </div>
+    </section>
 
-  </section>
-)
+  )
 }
