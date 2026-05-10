@@ -1,29 +1,29 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
-import MarqueeBand from '@/components/MarqueeBand'
 import Categories from '@/components/Categories'
-import HowItWorks from '@/components/HowItWorks'
-import Stats from '@/components/Stats'
-import Testimonials from '@/components/Testimonials'
+import FeaturedStores from '@/components/FeaturedStores'
 import CtaFinal from '@/components/CtaFinal'
 import Footer from '@/components/Footer'
-import Cursor from '@/components/Cursor'
 
-export default function Home() {
+export default function HomePage() {
+
   return (
-    <>
-      <Cursor />
+
+    <main className="overflow-hidden">
+
       <Navbar />
-      <main>
-        <Hero />
-        <MarqueeBand />
-        <Categories />
-        <HowItWorks />
-        <Stats />
-        <Testimonials />
-        <CtaFinal />
-      </main>
+
+      <Hero />
+
+      <Categories />
+
+      <FeaturedStores />
+
+      <CtaFinal />
+
       <Footer />
-    </>
+
+    </main>
+
   )
 }
