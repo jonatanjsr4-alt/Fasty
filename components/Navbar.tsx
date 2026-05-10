@@ -309,9 +309,11 @@ export default function Navbar() {
       </AnimatePresence>
 
       <CartSidebar
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-      />
+  open={cartOpen}
+  onClose={() => setCartOpen(false)}
+  cart={cart}
+  total={0}
+/>
     </>
   )
 }
