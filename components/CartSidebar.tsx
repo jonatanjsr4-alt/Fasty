@@ -27,12 +27,14 @@ export default function CheckoutModal({
   async function sendOrder() {
 
     const orderData = {
-      customer_name: name,
-      customer_phone: phone,
-      customer_address: address,
-      products: cart,
-      total,
-    }
+  customer_name: name,
+  customer_phone: phone,
+  customer_address: address,
+
+  products: JSON.stringify(cart),
+
+  total: total || 0,
+}
 
     const { data, error } = await supabase
       .from('orders')
