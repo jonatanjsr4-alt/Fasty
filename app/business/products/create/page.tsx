@@ -215,23 +215,71 @@ export default function CreateProductPage() {
             "
           />
 
-          <input
-            type="text"
-            placeholder="URL imagen"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            className="
-              w-full
-              h-16
-              rounded-2xl
-              bg-white/5
-              border
-              border-white/10
-              px-5
-              text-white
-              outline-none
-            "
-          />
+          <div>
+
+  <input
+    type="file"
+    accept="image/*"
+
+    onChange={async (e) => {
+
+      const file = e.target.files?.[0]
+
+      if (!file) return
+
+      const fileName = `${Date.now()}-${file.name}`
+
+      const { error } = await supabase.storage
+        .from('products')
+        .upload(fileName, file)
+
+      if (error) {
+
+        console.log(error)
+
+        alert('Error subiendo imagen')
+
+        return
+
+      }
+
+      const { data } = supabase.storage
+        .from('products')
+        .getPublicUrl(fileName)
+
+      setImage(data.publicUrl)
+
+    }}
+
+    className="
+      w-full
+      rounded-2xl
+      bg-white/5
+      border
+      border-white/10
+      px-5
+      py-5
+      text-white
+    "
+  />
+
+  {image && (
+
+    <img
+      src={image}
+      alt="preview"
+      className="
+        mt-6
+        w-full
+        h-72
+        object-cover
+        rounded-3xl
+      "
+    />
+
+  )}
+
+</div>
 
           <button
             onClick={createProduct}
