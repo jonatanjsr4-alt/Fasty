@@ -1,151 +1,51 @@
-import {
-  Star,
-  Quote,
-} from 'lucide-react'
+'use client'
+import { useEffect, useRef, useState } from 'react'
 
-import FloatingCard from './FloatingCard'
-import Reveal from './Reveal'
-
-const testimonials = [
-  {
-    name: 'Laura Mosquera',
-    role: 'Cliente FASTY',
-    text: 'La experiencia es rápida y muy cómoda para pedir en Quibdó.',
-    image:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    name: 'Kevin Cuesta',
-    role: 'Negocio aliado',
-    text: 'FASTY nos ayudó a aumentar pedidos y mejorar la atención.',
-    image:
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
-  },
+const TESTIS = [
+  {i:'LM',name:'Laura Mosquera',role:'Cliente FASTY',color:'linear-gradient(135deg,var(--orange),#ff8a50)',stars:5,quote:'La experiencia es rápida y muy cómoda para pedir en Quibdó. Ya no salgo a buscar nada, todo llega a mi casa en minutos.'},
+  {i:'KC',name:'Kevin Cuesta',role:'Negocio aliado',color:'linear-gradient(135deg,var(--lime),#89a800)',stars:5,quote:'FASTY nos ayudó a aumentar los pedidos y mejorar la atención al cliente. La plataforma es muy fácil de usar.',tc:'var(--dark)'},
+  {i:'AP',name:'Adriana Palacios',role:'Cliente FASTY',color:'linear-gradient(135deg,#a855f7,#7c3aed)',stars:5,quote:'Increíble app, la uso todos los días. Los repartidores son súper amables y siempre llegan rápido. 100% recomendada.'},
+  {i:'JR',name:'José Rentería',role:'Restaurante aliado',color:'linear-gradient(135deg,#0ea5e9,#0284c7)',stars:5,quote:'Como restaurante, FASTY nos conectó con cientos de clientes nuevos. La interfaz es hermosa y muy intuitiva.'},
 ]
 
 export default function Testimonials() {
+  const ref=useRef<HTMLDivElement>(null)
+  const [vis,setVis]=useState(false)
+  useEffect(()=>{
+    const io=new IntersectionObserver(([e])=>{if(e.isIntersecting)setVis(true)},{threshold:0.1})
+    if(ref.current)io.observe(ref.current)
+    return()=>io.disconnect()
+  },[])
+
   return (
-    <section className="px-5 md:px-6">
-
-      <div className="max-w-7xl mx-auto">
-
-        <Reveal>
-
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
-
-            <div>
-
-              <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
-
-                Testimonios
-
-              </p>
-
-              <h2 className="text-4xl md:text-5xl font-black text-[#18181b] mt-3 leading-none tracking-[-2px]">
-
-                Lo que dicen
-                <br />
-
-                nuestros usuarios
-
-              </h2>
-
-            </div>
-
-            <p className="text-[#666] text-sm md:text-base leading-relaxed max-w-xl">
-
-              FASTY conecta usuarios y negocios locales
-              en una experiencia moderna, rápida y confiable.
-
-            </p>
-
-          </div>
-
-        </Reveal>
-
-        <div className="grid lg:grid-cols-2 gap-5">
-
-          {testimonials.map((item) => (
-
-            <FloatingCard key={item.name}>
-
-              <div className="group relative overflow-hidden bg-white border border-[#ececec] rounded-[30px] p-6 hover:shadow-[0_15px_40px_rgba(0,0,0,.06)] transition-all duration-300">
-
-                <div className="absolute top-0 right-0 w-28 h-28 bg-orange-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
-                <div className="relative z-10">
-
-                  <div className="flex items-start justify-between gap-4">
-
-                    <div className="flex items-center gap-4">
-
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-14 h-14 rounded-2xl object-cover shadow-md"
-                      />
-
-                      <div>
-
-                        <h3 className="text-lg font-black text-[#18181b] leading-none">
-
-                          {item.name}
-
-                        </h3>
-
-                        <p className="text-[#777] text-sm mt-1.5">
-
-                          {item.role}
-
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    <div className="w-11 h-11 rounded-2xl bg-orange-100 flex items-center justify-center flex-shrink-0">
-
-                      <Quote
-                        size={18}
-                        className="text-orange-500"
-                      />
-
-                    </div>
-
-                  </div>
-
-                  <div className="flex items-center gap-1 mt-6">
-
-                    {[1, 2, 3, 4, 5].map((star) => (
-
-                      <Star
-                        key={star}
-                        size={15}
-                        className="text-orange-500 fill-orange-500"
-                      />
-
-                    ))}
-
-                  </div>
-
-                  <p className="text-[#18181b] text-lg md:text-xl leading-relaxed font-medium mt-6">
-
-                    “{item.text}”
-
-                  </p>
-
-                </div>
-
-              </div>
-
-            </FloatingCard>
-
-          ))}
-
+    <div style={{ padding:'5rem 2rem',background:'var(--dark2)' }}>
+      <div ref={ref} className={vis?'reveal visible':'reveal'} style={{ maxWidth:1300,margin:'0 auto' }}>
+        <p style={{ fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'var(--orange)',marginBottom:'1rem' }}>Lo dicen nuestros usuarios</p>
+        <h2 style={{ fontFamily:'var(--font-display)',fontSize:'clamp(2rem,4vw,3.2rem)',fontWeight:800,lineHeight:1,letterSpacing:'-0.03em',marginBottom:'3rem' }}>
+          Opiniones <span style={{ color:'var(--lime)' }}>reales</span>
+        </h2>
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'1.5rem' }}>
+          {TESTIS.map(t=><TestiCard key={t.name} {...t}/>)}
         </div>
-
       </div>
+    </div>
+  )
+}
 
-    </section>
+function TestiCard({i,name,role,color,stars,quote,tc}:{i:string,name:string,role:string,color:string,stars:number,quote:string,tc?:string}){
+  const [h,setH]=useState(false)
+  return (
+    <div style={{ background:'var(--dark3)',border:'1px solid rgba(255,255,255,0.06)',borderRadius:'var(--radius)',padding:'2rem',transition:'transform 0.25s',transform:h?'translateY(-4px)':'none',position:'relative' }}
+      onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}>
+      <div style={{ color:'var(--lime)',fontSize:'0.8rem',marginBottom:'0.8rem' }}>{'★'.repeat(stars)}</div>
+      <div style={{ fontSize:'1.05rem',lineHeight:1.7,color:'rgba(255,255,255,0.85)',marginBottom:'1.5rem',paddingTop:'1.5rem',borderTop:'1px solid rgba(255,255,255,0.06)' }}>{quote}</div>
+      <div style={{ display:'flex',alignItems:'center',gap:12 }}>
+        <div style={{ width:40,height:40,borderRadius:'50%',background:color,color:tc??'var(--white)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:700,fontSize:'0.85rem',flexShrink:0 }}>{i}</div>
+        <div>
+          <div style={{ fontWeight:600,fontSize:'0.9rem' }}>{name}</div>
+          <div style={{ color:'var(--muted)',fontSize:'0.78rem' }}>{role}</div>
+        </div>
+      </div>
+    </div>
   )
 }

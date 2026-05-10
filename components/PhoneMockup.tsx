@@ -1,191 +1,48 @@
-'use client'
-
-import {
-  Star,
-  Clock3,
-  Search,
-} from 'lucide-react'
-
 export default function PhoneMockup() {
   return (
-    <div className="relative">
-
-      <div className="absolute inset-0 bg-orange-500/20 blur-3xl rounded-full scale-110" />
-
-      <div className="relative w-[310px] h-[640px] rounded-[48px] bg-black border-[6px] border-zinc-800 shadow-[0_40px_120px_rgba(0,0,0,.45)] overflow-hidden">
-
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-black rounded-b-3xl z-30" />
-
-        <div className="w-full h-full bg-[#f8f6f2] overflow-hidden">
-
-          <div className="px-5 pt-12 pb-5 bg-white border-b border-[#ececec]">
-
-            <div className="flex items-center justify-between">
-
-              <div>
-
-                <p className="text-xs text-[#888]">
-
-                  Delivery rápido
-
-                </p>
-
-                <h2 className="text-2xl font-black tracking-[-1px] text-[#111111] mt-1">
-
-                  FASTY
-
-                </h2>
-
-              </div>
-
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-orange">
-
-                <span className="text-white font-black">
-                  F
-                </span>
-
-              </div>
-
-            </div>
-
-            <div className="mt-5 bg-[#f5f5f5] rounded-2xl h-14 px-4 flex items-center gap-3">
-
-              <Search
-                size={18}
-                className="text-[#999]"
-              />
-
-              <p className="text-[#777] text-sm">
-
-                Buscar restaurantes
-
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="p-4 space-y-5">
-
-            <div className="relative overflow-hidden rounded-[30px] shadow-lg">
-
-              <img
-                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop"
-                alt="Pizza"
-                className="w-full h-44 object-cover"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-              <div className="absolute top-4 left-4">
-
-                <div className="bg-white/90 backdrop-blur-xl rounded-full px-3 py-1.5 flex items-center gap-2">
-
-                  <Star
-                    size={13}
-                    className="text-orange-500 fill-orange-500"
-                  />
-
-                  <span className="text-xs font-semibold">
-
-                    4.9
-
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div className="absolute bottom-4 left-4 right-4">
-
-                <div className="bg-white/85 backdrop-blur-2xl rounded-[24px] p-4 border border-white/20">
-
-                  <div className="flex items-start justify-between gap-3">
-
-                    <div>
-
-                      <p className="text-xs text-[#888]">
-
-                        Pizza
-
-                      </p>
-
-                      <h3 className="text-xl font-black tracking-[-1px] text-[#111111] mt-1">
-
-                        Pizza Gold
-
-                      </h3>
-
-                    </div>
-
-                    <div className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shadow-orange">
-
-                      <Clock3
-                        size={18}
-                        className="text-white"
-                      />
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="bg-white rounded-[28px] p-4 border border-[#ececec] shadow-sm">
-
-              <div className="flex items-center gap-4">
-
-                <img
-                  src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1200&auto=format&fit=crop"
-                  alt="Burger"
-                  className="w-20 h-20 rounded-2xl object-cover"
-                />
-
-                <div className="flex-1">
-
-                  <p className="text-xs text-[#888]">
-
-                    Hamburguesas
-
-                  </p>
-
-                  <h3 className="text-lg font-black tracking-[-1px] text-[#111111] mt-1">
-
-                    Burger House
-
-                  </h3>
-
-                  <div className="flex items-center gap-2 mt-2">
-
-                    <Star
-                      size={14}
-                      className="text-orange-500 fill-orange-500"
-                    />
-
-                    <span className="text-sm font-medium text-[#666]">
-
-                      4.8
-
-                    </span>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
+    <div style={{ width:280,background:'var(--dark2)',borderRadius:44,border:'1px solid rgba(255,255,255,0.1)',overflow:'hidden',boxShadow:'0 40px 80px rgba(0,0,0,0.6)',animation:'floatPhone 4s ease-in-out infinite',position:'relative',zIndex:2 }}>
+      <div style={{ width:80,height:22,background:'var(--dark)',borderRadius:'0 0 16px 16px',position:'absolute',top:0,left:'50%',transform:'translateX(-50%)' }} />
+      <div style={{ height:22 }} />
+      <div style={{ padding:'10px 16px 0',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
+        <div>
+          <div style={{ color:'var(--muted)',fontSize:'0.7rem' }}>Buenos días 👋</div>
+          <div style={{ fontFamily:'var(--font-display)',fontWeight:700,fontSize:'0.95rem' }}>Kevin C.</div>
         </div>
-
+        <div style={{ width:32,height:32,borderRadius:'50%',background:'var(--orange)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'0.7rem',fontWeight:700 }}>KC</div>
       </div>
-
+      <div style={{ margin:'12px 16px',background:'rgba(255,255,255,0.06)',borderRadius:12,padding:'10px 14px',fontSize:'0.75rem',color:'var(--muted)' }}>🔍 &nbsp;¿Qué se te antoja hoy?</div>
+      <div style={{ display:'flex',gap:8,padding:'0 16px',overflow:'hidden' }}>
+        {[{l:'🍕 Comida',a:true},{l:'🛒 Super',a:false},{l:'💊 Farma',a:false}].map(c=>(
+          <div key={c.l} style={{ padding:'6px 12px',borderRadius:20,fontSize:'0.65rem',whiteSpace:'nowrap',background:c.a?'var(--orange)':'transparent',border:`1px solid ${c.a?'var(--orange)':'rgba(255,255,255,0.1)'}`,color:c.a?'var(--white)':'var(--muted)' }}>{c.l}</div>
+        ))}
+      </div>
+      <div style={{ padding:'14px 16px 0',fontFamily:'var(--font-display)',fontWeight:700,fontSize:'0.8rem' }}>Destacados 🔥</div>
+      <div style={{ display:'flex',gap:10,padding:'10px 16px',overflow:'hidden' }}>
+        {[{e:'🍕',n:'Pizza Gold',t:'25 min'},{e:'🍔',n:'Burger House',t:'20 min'}].map(c=>(
+          <div key={c.n} style={{ minWidth:120,background:'var(--dark3)',borderRadius:16,overflow:'hidden',border:'1px solid rgba(255,255,255,0.06)' }}>
+            <div style={{ width:'100%',height:70,background:'linear-gradient(135deg,#2a2a2a,#1a1a1a)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.8rem' }}>{c.e}</div>
+            <div style={{ padding:8 }}>
+              <div style={{ fontSize:'0.65rem',fontWeight:600,marginBottom:2 }}>{c.n}</div>
+              <div style={{ fontSize:'0.55rem',color:'var(--muted)',display:'flex',gap:6,alignItems:'center' }}>
+                <span style={{ display:'inline-block',width:3,height:3,background:'var(--lime)',borderRadius:'50%',animation:'pulse 1.5s infinite' }} />
+                {c.t} · ⭐4.9
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ margin:'14px 16px',background:'rgba(200,241,53,0.08)',border:'1px solid rgba(200,241,53,0.2)',borderRadius:14,padding:'10px 12px' }}>
+        <div style={{ fontSize:'0.6rem',color:'var(--lime)',marginBottom:6,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.05em' }}>📦 Tu pedido en camino</div>
+        <div style={{ background:'rgba(255,255,255,0.06)',borderRadius:4,height:4,marginBottom:6,overflow:'hidden' }}>
+          <div style={{ height:'100%',background:'var(--lime)',borderRadius:4,animation:'trackFill 3s ease-in-out infinite alternate',width:'65%' }} />
+        </div>
+        <div style={{ fontSize:'0.6rem',color:'var(--muted)' }}>Llega en ~8 minutos</div>
+      </div>
+      <div style={{ height:40,display:'flex',alignItems:'center',justifyContent:'center',gap:28,borderTop:'1px solid rgba(255,255,255,0.05)',marginTop:8,paddingBottom:8 }}>
+        {['🏠','🔍','🛒','👤'].map((ic,i)=>(
+          <div key={ic} style={{ fontSize:'1rem',opacity:i===0?1:0.4,filter:i===0?'drop-shadow(0 0 8px var(--orange))':'none' }}>{ic}</div>
+        ))}
+      </div>
     </div>
   )
 }

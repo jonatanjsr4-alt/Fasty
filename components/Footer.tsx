@@ -1,229 +1,40 @@
 import Link from 'next/link'
-import {
-  MapPin,
-  Mail,
-  Phone,
-  ArrowUpRight,
-} from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[#0f0f10] text-white mt-24">
-
-      <div className="absolute top-[-200px] right-[-200px] w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-3xl" />
-
-      <div className="absolute bottom-[-200px] left-[-200px] w-[400px] h-[400px] bg-orange-400/5 rounded-full blur-3xl" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-6 py-14">
-
-        <div className="grid lg:grid-cols-[1.2fr_.8fr_.8fr_1fr] gap-10">
-
-          <div>
-
-            <div className="flex items-center gap-4">
-
-              <div className="relative">
-
-                <div className="absolute inset-0 bg-orange-500 blur-xl opacity-30 rounded-2xl" />
-
-                <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-
-                  <span className="text-white text-lg font-black">
-                    F
-                  </span>
-
-                </div>
-
-              </div>
-
-              <div>
-
-                <h2 className="text-2xl font-black tracking-[-1px]">
-
-                  FASTY
-
-                </h2>
-
-                <p className="text-zinc-500 text-sm mt-1">
-
-                  Delivery Platform
-
-                </p>
-
-              </div>
-
-            </div>
-
-            <p className="text-zinc-400 leading-relaxed mt-6 max-w-md text-sm md:text-base">
-
-              Plataforma moderna de delivery y domicilios
-              para restaurantes, supermercados y negocios locales en Quibdó.
-
-            </p>
-
-            <div className="flex items-center gap-3 mt-8">
-
-              <button className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
-
-                <ArrowUpRight size={18} />
-
-              </button>
-
-              <button className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
-
-                <Mail size={18} />
-
-              </button>
-
-              <button className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-orange-500 transition-all flex items-center justify-center border border-white/5 hover:border-orange-500">
-
-                <Phone size={18} />
-
-              </button>
-
-            </div>
-
-          </div>
-
-          <div>
-
-            <h3 className="text-lg font-black mb-6">
-
-              Navegación
-
-            </h3>
-
-            <div className="flex flex-col gap-4 text-sm text-zinc-400">
-
-              <Link
-                href="/"
-                className="hover:text-white transition-all"
-              >
-                Inicio
-              </Link>
-
-              <Link
-                href="/business"
-                className="hover:text-white transition-all"
-              >
-                Negocios
-              </Link>
-
-              <Link
-                href="/dashboard"
-                className="hover:text-white transition-all"
-              >
-                Dashboard
-              </Link>
-
-              <Link
-                href="/auth"
-                className="hover:text-white transition-all"
-              >
-                Ingresar
-              </Link>
-
-            </div>
-
-          </div>
-
-          <div>
-
-            <h3 className="text-lg font-black mb-6">
-
-              Categorías
-
-            </h3>
-
-            <div className="flex flex-col gap-4 text-sm text-zinc-400">
-
-              <p>Restaurantes</p>
-
-              <p>Supermercados</p>
-
-              <p>Farmacias</p>
-
-              <p>Licores</p>
-
-              <p>Moda</p>
-
-            </div>
-
-          </div>
-
-          <div>
-
-            <h3 className="text-lg font-black mb-6">
-
-              Contacto
-
-            </h3>
-
-            <div className="space-y-4 text-sm text-zinc-400">
-
-              <div className="flex items-start gap-3">
-
-                <MapPin
-                  size={16}
-                  className="text-orange-500 mt-0.5"
-                />
-
-                <p>
-                  Quibdó, Chocó
-                </p>
-
-              </div>
-
-              <div className="flex items-start gap-3">
-
-                <Mail
-                  size={16}
-                  className="text-orange-500 mt-0.5"
-                />
-
-                <p>
-                  contacto@fasty.com
-                </p>
-
-              </div>
-
-              <div className="flex items-start gap-3">
-
-                <Phone
-                  size={16}
-                  className="text-orange-500 mt-0.5"
-                />
-
-                <p>
-                  +57 300 000 0000
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
+    <footer id="contacto" style={{ borderTop:'1px solid rgba(255,255,255,0.06)',padding:'3rem 2rem 2rem',maxWidth:1300,margin:'0 auto' }}>
+      <div style={{ display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:'3rem',marginBottom:'3rem' }}>
+        <div>
+          <div style={{ fontFamily:'var(--font-display)',fontWeight:800,fontSize:'1.5rem',marginBottom:'1rem' }}>FASTY</div>
+          <p style={{ color:'var(--muted)',fontSize:'0.85rem',lineHeight:1.7,maxWidth:280 }}>Plataforma moderna de delivery y domicilios para restaurantes, supermercados y negocios locales en Quibdó.</p>
         </div>
-
-        <div className="border-t border-white/5 mt-12 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-
-          <p className="text-zinc-500 text-sm">
-
-            © 2026 FASTY. Todos los derechos reservados.
-
-          </p>
-
-          <p className="text-zinc-600 text-sm">
-
-            Hecho en Quibdó, Colombia 🇨🇴
-
-          </p>
-
-        </div>
-
+        <FooterCol title="Navegación" links={[{l:'Inicio',h:'/'},{l:'Negocios',h:'/business'},{l:'Dashboard',h:'/dashboard'},{l:'Ingresar',h:'/auth'}]}/>
+        <FooterCol title="Categorías" links={['Restaurantes','Supermercados','Farmacias','Licores','Moda'].map(l=>({l,h:'#'}))}/>
+        <FooterCol title="Contacto" links={[{l:'Quibdó, Chocó',h:'#'},{l:'contacto@fasty.com',h:'mailto:contacto@fasty.com'},{l:'+57 300 000 0000',h:'tel:+573000000000'}]}/>
       </div>
-
+      <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)',paddingTop:'1.5rem',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
+        <div style={{ color:'var(--muted)',fontSize:'0.8rem' }}>© 2026 FASTY. Todos los derechos reservados.</div>
+        <div style={{ color:'var(--muted)',fontSize:'0.8rem',display:'flex',alignItems:'center',gap:6 }}>
+          Hecho con <span style={{ color:'var(--orange)' }}>❤️</span> en Quibdó, Colombia 🇨🇴
+        </div>
+      </div>
     </footer>
+  )
+}
+
+function FooterCol({title,links}:{title:string,links:{l:string,h:string}[]}){
+  return (
+    <div>
+      <div style={{ fontWeight:600,fontSize:'0.7rem',marginBottom:'1.2rem',color:'rgba(255,255,255,0.5)',textTransform:'uppercase',letterSpacing:'0.08em' }}>{title}</div>
+      <ul style={{ listStyle:'none',display:'flex',flexDirection:'column',gap:'0.6rem' }}>
+        {links.map(({l,h})=>(
+          <li key={l}>
+            <Link href={h} style={{ color:'var(--muted)',fontSize:'0.85rem',transition:'color 0.2s' }}
+              onMouseEnter={e=>(e.currentTarget.style.color='var(--white)')}
+              onMouseLeave={e=>(e.currentTarget.style.color='var(--muted)')}>{l}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

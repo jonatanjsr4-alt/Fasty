@@ -1,129 +1,55 @@
-import {
-  ShoppingBag,
-  Store,
-  Users,
-  Headphones,
-} from 'lucide-react'
+'use client'
+import { useEffect, useRef, useState } from 'react'
 
-const stats = [
-  {
-    title: '+10K',
-    subtitle: 'Pedidos entregados',
-    icon: ShoppingBag,
-    gradient: 'from-orange-500 to-orange-600',
-  },
-  {
-    title: '+500',
-    subtitle: 'Negocios activos',
-    icon: Store,
-    gradient: 'from-[#18181b] to-[#2a2a2a]',
-  },
-  {
-    title: '+20K',
-    subtitle: 'Usuarios registrados',
-    icon: Users,
-    gradient: 'from-orange-400 to-orange-500',
-  },
-  {
-    title: '24/7',
-    subtitle: 'Soporte disponible',
-    icon: Headphones,
-    gradient: 'from-[#18181b] to-[#2a2a2a]',
-  },
+const STATS = [
+  {target:10000,label:'Pedidos entregados',fmt:(n:number)=>`+${Math.round(n/1000)}K`},
+  {target:500,label:'Negocios activos',fmt:(n:number)=>`+${Math.round(n)}`},
+  {target:20000,label:'Usuarios registrados',fmt:(n:number)=>`+${Math.round(n/1000)}K`},
+  {target:null,label:'Soporte disponible',fmt:()=>'24/7'},
 ]
 
 export default function Stats() {
+  const ref = useRef<HTMLElement>(null)
+  const [vis,setVis]=useState(false)
+  useEffect(()=>{
+    const io=new IntersectionObserver(([e])=>{if(e.isIntersecting)setVis(true)},{threshold:0.1})
+    if(ref.current)io.observe(ref.current)
+    return()=>io.disconnect()
+  },[])
+
   return (
-    <section className="px-5 md:px-6">
-
-      <div className="max-w-7xl mx-auto">
-
-        <div className="relative overflow-hidden rounded-[34px] dark-section p-7 md:p-10 glow-orange-[0_20px_60px_rgba(0,0,0,.10)]">
-
-          <div className="absolute top-[-180px] right-[-180px] w-[380px] h-[380px] bg-orange-500/10 blur-3xl rounded-full" />
-
-          <div className="relative z-10">
-
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-
-              <div>
-
-                <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
-
-                  FASTY EN NÚMEROS
-
-                </p>
-
-                <h2 className="text-4xl md:text-5xl font-black text-white mt-3 leading-none tracking-[-2px]">
-
-                  Delivery moderno
-                  <br />
-
-                  para Quibdó
-
-                </h2>
-
-              </div>
-
-              <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl">
-
-                FASTY conecta miles de usuarios con restaurantes,
-                supermercados y negocios locales diariamente.
-
-              </p>
-
-            </div>
-
-            <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-
-              {stats.map((stat) => {
-                const Icon = stat.icon
-
-                return (
-                  <div
-                    key={stat.title}
-                    className="group relative overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 rounded-[26px] p-5 hover:bg-white/[0.08] transition-all duration-300"
-                  >
-
-                    <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${stat.gradient} opacity-10 blur-3xl rounded-full`} />
-
-                    <div className="relative z-10">
-
-                      <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg`}>
-
-                        <Icon
-                          size={24}
-                          className="text-white"
-                        />
-
-                      </div>
-
-                      <h3 className="text-4xl font-black text-white mt-6 tracking-[-2px]">
-
-                        {stat.title}
-
-                      </h3>
-
-                      <p className="text-zinc-400 mt-3 text-sm md:text-base leading-relaxed">
-
-                        {stat.subtitle}
-
-                      </p>
-
-                    </div>
-
-                  </div>
-                )
-              })}
-
-            </div>
-
-          </div>
-
-        </div>
-
+    <section ref={ref} className={vis?'reveal visible':'reveal'} style={{ padding:'5rem 2rem',maxWidth:1300,margin:'0 auto' }}>
+      <p style={{ fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'var(--orange)',marginBottom:'1rem' }}>FASTY en números</p>
+      <h2 style={{ fontFamily:'var(--font-display)',fontSize:'clamp(2rem,4vw,3.2rem)',fontWeight:800,lineHeight:1,letterSpacing:'-0.03em',marginBottom:'3rem' }}>
+        Delivery moderno<br/>para <span style={{ color:'var(--lime)' }}>Quibdó</span>
+      </h2>
+      <div style={{ display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'1.5rem' }}>
+        {STATS.map((s,i)=><StatCard key={i} {...s} animate={vis}/>)}
       </div>
-
     </section>
+  )
+}
+
+function StatCard({target,label,fmt,animate}:{target:number|null,label:string,fmt:(n:number)=>string,animate:boolean}){
+  const [count,setCount]=useState(0)
+  const [h,setH]=useState(false)
+  const started=useRef(false)
+  useEffect(()=>{
+    if(!animate||target===null||started.current)return
+    started.current=true
+    let v=0; const step=target/60
+    const t=setInterval(()=>{ v+=step; if(v>=target){v=target;clearInterval(t)} setCount(v) },16)
+    return()=>clearInterval(t)
+  },[animate,target])
+
+  return (
+    <div style={{ background:'var(--dark3)',border:`1px solid ${h?'rgba(200,241,53,0.3)':'rgba(255,255,255,0.06)'}`,borderRadius:'var(--radius)',padding:'2rem 1.5rem',position:'relative',overflow:'hidden',transition:'transform 0.25s,border-color 0.25s',transform:h?'translateY(-4px)':'none' }}
+      onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}>
+      {h&&<div style={{ position:'absolute',bottom:0,left:0,right:0,height:3,background:'linear-gradient(90deg,var(--orange),var(--lime))' }}/>}
+      <div style={{ fontFamily:'var(--font-display)',fontSize:'2.8rem',fontWeight:800,lineHeight:1,marginBottom:'0.5rem',background:'linear-gradient(135deg,var(--white),rgba(255,255,255,0.6))',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent' }}>
+        {target===null?fmt(0):fmt(count)}
+      </div>
+      <div style={{ color:'var(--muted)',fontSize:'0.85rem' }}>{label}</div>
+    </div>
   )
 }

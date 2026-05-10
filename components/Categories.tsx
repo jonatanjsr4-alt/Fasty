@@ -1,140 +1,44 @@
 'use client'
+import { useState, useEffect, useRef } from 'react'
 
-const categories = [
-
-  {
-    name: 'Hamburguesas',
-    image:
-      'https://cdn-icons-png.flaticon.com/512/3075/3075977.png',
-  },
-
-  {
-    name: 'Pizza',
-    image:
-      'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
-  },
-
-  {
-    name: 'Pollo',
-    image:
-      'https://cdn-icons-png.flaticon.com/512/5787/5787016.png',
-  },
-
-  {
-    name: 'Bebidas',
-    image:
-      'https://cdn-icons-png.flaticon.com/512/2405/2405479.png',
-  },
-
-  {
-    name: 'Postres',
-    image:
-      'https://cdn-icons-png.flaticon.com/512/2553/2553691.png',
-  },
-
-  {
-    name: 'Mercado',
-    image:
-      'https://cdn-icons-png.flaticon.com/512/3081/3081822.png',
-  },
-
+const CATS = [
+  {emoji:'🍺',name:'Licores'},{emoji:'🍽️',name:'Restaurantes'},{emoji:'🍦',name:'Heladerías'},
+  {emoji:'📚',name:'Educación'},{emoji:'☕',name:'Cafeterías'},{emoji:'🛒',name:'Supermercados'},
+  {emoji:'👗',name:'Moda'},{emoji:'💄',name:'Belleza'},{emoji:'💊',name:'Salud'},
+  {emoji:'🏠',name:'Hogar'},{emoji:'📱',name:'Tecnología'},{emoji:'🔧',name:'Mantenimiento'},
+  {emoji:'⚽',name:'Deporte'},{emoji:'🎁',name:'Regalos'},
 ]
 
 export default function Categories() {
+  const ref = useRef<HTMLElement>(null)
+  const [vis, setVis] = useState(false)
+  useEffect(()=>{
+    const io = new IntersectionObserver(([e])=>{ if(e.isIntersecting) setVis(true) },{threshold:0.1})
+    if(ref.current) io.observe(ref.current)
+    return ()=>io.disconnect()
+  },[])
 
   return (
-
-    <section
-      id="categorias"
-      className="px-6 py-28"
-    >
-
-      <div className="max-w-7xl mx-auto">
-
-        <div className="mb-16">
-
-          <span className="text-orange-500 font-bold uppercase tracking-[4px]">
-
-            Categorías
-
-          </span>
-
-          <h2 className="text-6xl font-black mt-4 leading-none">
-
-            Todo en un solo lugar
-
-          </h2>
-
-          <p className="text-zinc-400 text-lg mt-5 max-w-2xl">
-
-            Explora restaurantes, bebidas,
-            supermercados y mucho más en FASTY.
-
-          </p>
-
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-
-          {categories.map((category) => (
-
-            <div
-              key={category.name}
-              className="
-                glass
-                rounded-[32px]
-                p-7
-                flex
-                flex-col
-                items-center
-                justify-center
-                text-center
-                card-hover
-                cursor-pointer
-                min-h-[220px]
-              "
-            >
-
-              <div
-                className="
-                  w-24
-                  h-24
-                  rounded-3xl
-                  bg-white
-                  flex
-                  items-center
-                  justify-center
-                  overflow-hidden
-                "
-              >
-
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className="
-                    w-16
-                    h-16
-                    object-contain
-                  "
-                />
-
-              </div>
-
-              <h3 className="text-3xl font-black mt-7">
-
-                {category.name}
-
-              </h3>
-
-            </div>
-
-          ))}
-
-        </div>
-
+    <section ref={ref} id="categorias" className={vis?'reveal visible':'reveal'} style={{ padding:'5rem 2rem',maxWidth:1300,margin:'0 auto' }}>
+      <p style={{ fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'var(--orange)',marginBottom:'1rem' }}>Todo en un solo lugar</p>
+      <h2 style={{ fontFamily:'var(--font-display)',fontSize:'clamp(2rem,4vw,3.2rem)',fontWeight:800,lineHeight:1,letterSpacing:'-0.03em',marginBottom:'3rem' }}>
+        Explora <span style={{ color:'var(--lime)' }}>FASTY</span>
+      </h2>
+      <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(140px,1fr))',gap:'1rem' }}>
+        {CATS.map(c=><CatCard key={c.name} {...c}/>)}
       </div>
-
     </section>
+  )
+}
 
+function CatCard({emoji,name}:{emoji:string,name:string}){
+  const [h,setH]=useState(false)
+  return (
+    <div style={{ background:'var(--dark3)',border:`1px solid ${h?'rgba(255,80,1,0.3)':'rgba(255,255,255,0.06)'}`,borderRadius:'var(--radius)',padding:'1.5rem 1rem',textAlign:'center',cursor:'none',transition:'transform 0.25s,border-color 0.25s',position:'relative',overflow:'hidden',transform:h?'translateY(-6px)':'none' }}
+      onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} data-cursor>
+      {h&&<div style={{ position:'absolute',inset:0,background:'radial-gradient(circle at 50% 0%,rgba(255,80,1,0.15) 0%,transparent 70%)',pointerEvents:'none' }}/>}
+      <span style={{ fontSize:'2rem',marginBottom:'0.7rem',display:'block' }}>{emoji}</span>
+      <div style={{ fontSize:'0.78rem',fontWeight:500,color:h?'var(--white)':'var(--muted)',transition:'color 0.2s' }}>{name}</div>
+    </div>
   )
 }

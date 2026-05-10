@@ -1,151 +1,46 @@
-import {
-  Search,
-  ShoppingBag,
-  Bike,
-  ArrowRight,
-} from 'lucide-react'
+'use client'
+import { useEffect, useRef, useState } from 'react'
 
-const steps = [
-  {
-    number: '01',
-    title: 'Explora negocios',
-    text: 'Encuentra restaurantes, supermercados y tiendas locales fácilmente.',
-    icon: Search,
-  },
-  {
-    number: '02',
-    title: 'Haz tu pedido',
-    text: 'Ordena rápidamente desde una experiencia moderna y simple.',
-    icon: ShoppingBag,
-  },
-  {
-    number: '03',
-    title: 'Recibe en minutos',
-    text: 'FASTY conecta entregas rápidas y seguras en tu ciudad.',
-    icon: Bike,
-  },
+const STEPS = [
+  {num:'01',icon:'🔍',title:'Explora negocios',desc:'Encuentra restaurantes, supermercados y tiendas locales de Quibdó fácilmente.'},
+  {num:'02',icon:'🛒',title:'Haz tu pedido',desc:'Ordena rápidamente desde una experiencia moderna, bonita y super simple.'},
+  {num:'03',icon:'🚀',title:'Recibe en minutos',desc:'FASTY conecta entregas rápidas y seguras directamente a tu puerta.'},
 ]
 
 export default function HowItWorks() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [vis,setVis]=useState(false)
+  useEffect(()=>{
+    const io=new IntersectionObserver(([e])=>{if(e.isIntersecting)setVis(true)},{threshold:0.1})
+    if(ref.current)io.observe(ref.current)
+    return()=>io.disconnect()
+  },[])
+
   return (
-    <section className="px-5 md:px-6">
-
-      <div className="max-w-7xl mx-auto">
-
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
-
-          <div>
-
-            <p className="text-orange-500 uppercase tracking-[4px] text-xs font-semibold">
-
-              Cómo funciona
-
-            </p>
-
-            <h2 className="text-4xl md:text-5xl font-black text-[#18181b] mt-3 leading-none tracking-[-2px]">
-
-              Delivery simple,
-              <br />
-
-              rápido y moderno
-
-            </h2>
-
-          </div>
-
-          <p className="text-[#666] text-base md:text-lg leading-relaxed max-w-xl">
-
-            FASTY simplifica la forma de pedir comida,
-            supermercados y productos locales en Quibdó.
-
-          </p>
-
+    <div style={{ padding:'5rem 2rem',background:'var(--dark2)' }} id="como">
+      <div ref={ref} className={vis?'reveal visible':'reveal'} style={{ maxWidth:1300,margin:'0 auto' }}>
+        <p style={{ fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'var(--orange)',marginBottom:'1rem' }}>Sencillo como 1, 2, 3</p>
+        <h2 style={{ fontFamily:'var(--font-display)',fontSize:'clamp(2rem,4vw,3.2rem)',fontWeight:800,lineHeight:1,letterSpacing:'-0.03em',marginBottom:'3rem' }}>
+          Delivery simple,<br/><span style={{ color:'var(--lime)' }}>rápido y moderno</span>
+        </h2>
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'1px',background:'rgba(255,255,255,0.06)',borderRadius:24,overflow:'hidden' }}>
+          {STEPS.map((s,i)=><Step key={s.num} {...s} isLast={i===STEPS.length-1}/>)}
         </div>
-
-        <div className="grid lg:grid-cols-3 gap-5">
-
-          {steps.map((step, index) => {
-            const Icon = step.icon
-
-            return (
-              <div
-                key={step.number}
-                className="group relative overflow-hidden bg-white border border-[#ececec] rounded-[30px] p-6 hover:shadow-[0_15px_40px_rgba(0,0,0,.06)] hover:-translate-y-1 transition-all duration-300"
-              >
-
-                <div className="absolute top-0 right-0 w-28 h-28 bg-orange-100 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
-
-                <div className="relative z-10">
-
-                  <div className="flex items-center justify-between mb-7">
-
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-
-                      <Icon
-                        size={24}
-                        className="text-white"
-                      />
-
-                    </div>
-
-                    <span className="text-5xl font-black text-[#f3f3f3] leading-none tracking-[-3px]">
-
-                      {step.number}
-
-                    </span>
-
-                  </div>
-
-                  <h3 className="text-2xl font-black text-[#18181b] leading-tight">
-
-                    {step.title}
-
-                  </h3>
-
-                  <p className="text-[#666] leading-relaxed mt-4 text-sm md:text-base">
-
-                    {step.text}
-
-                  </p>
-
-                  <div className="flex items-center gap-2 mt-7 text-orange-500 text-sm font-semibold">
-
-                    Continuar
-
-                    <ArrowRight
-                      size={16}
-                      className="group-hover:translate-x-1 transition-all"
-                    />
-
-                  </div>
-
-                </div>
-
-                {index !== steps.length - 1 && (
-
-                  <div className="hidden lg:block absolute top-1/2 -right-3 z-20">
-
-                    <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
-
-                      <ArrowRight
-                        size={14}
-                        className="text-white"
-                      />
-
-                    </div>
-
-                  </div>
-
-                )}
-
-              </div>
-            )
-          })}
-
-        </div>
-
       </div>
+    </div>
+  )
+}
 
-    </section>
+function Step({num,icon,title,desc,isLast}:{num:string,icon:string,title:string,desc:string,isLast:boolean}){
+  const [h,setH]=useState(false)
+  return (
+    <div style={{ background:h?'var(--dark3)':'var(--dark2)',padding:'2.5rem',position:'relative',transition:'background 0.3s' }}
+      onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}>
+      <div style={{ fontFamily:'var(--font-display)',fontSize:'5rem',fontWeight:800,color:'rgba(255,255,255,0.04)',lineHeight:1,marginBottom:'1rem' }}>{num}</div>
+      <div style={{ width:52,height:52,background:'rgba(255,80,1,0.1)',border:'1px solid rgba(255,80,1,0.2)',borderRadius:14,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.4rem',marginBottom:'1.2rem',transition:'transform 0.3s',transform:h?'rotate(-5deg) scale(1.1)':'none' }}>{icon}</div>
+      <div style={{ fontFamily:'var(--font-display)',fontWeight:700,fontSize:'1.1rem',marginBottom:'0.6rem' }}>{title}</div>
+      <div style={{ color:'var(--muted)',fontSize:'0.9rem',lineHeight:1.6 }}>{desc}</div>
+      {!isLast&&<div style={{ position:'absolute',top:'50%',right:-1,width:24,height:24,background:'var(--orange)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',transform:'translateY(-50%)',fontSize:'0.7rem',zIndex:2 }}>→</div>}
+    </div>
   )
 }
