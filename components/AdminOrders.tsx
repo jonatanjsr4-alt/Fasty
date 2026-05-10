@@ -102,9 +102,21 @@ export default function AdminOrders() {
 
               </div>
 
-              <div className="mt-6 text-3xl font-black text-orange-500">
-                Total: ${Number(order.total).toLocaleString()}
-              </div>
+             <div className="mt-6 text-3xl font-black text-orange-500">
+
+  Total: $
+  {products.reduce((acc: number, product: any) => {
+
+    const price =
+      typeof product.price === 'string'
+        ? parseFloat(product.price)
+        : product.price || 0
+
+    return acc + price
+
+  }, 0).toLocaleString()}
+
+</div>
 
             </div>
 
