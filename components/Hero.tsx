@@ -1,159 +1,80 @@
 'use client'
+import Link from 'next/link'
+import PhoneMockup from './PhoneMockup'
 
 export default function Hero() {
-
   return (
+    <section style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
+      <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', filter: 'blur(120px)', background: 'rgba(255,80,1,0.12)', top: -100, right: -100, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', filter: 'blur(120px)', background: 'rgba(200,241,53,0.06)', bottom: -50, left: -100, pointerEvents: 'none' }} />
 
-    <section
-      className="
-        relative
-        min-h-screen
-        flex
-        items-center
-        overflow-hidden
-        px-6
-      "
-    >
-
-      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-20 items-center">
-
+      <div className="hero-grid">
+        {/* LEFT */}
         <div>
-
-          <div
-            className="
-              inline-flex
-              items-center
-              gap-3
-              px-5
-              py-3
-              rounded-full
-              bg-white/5
-              border
-              border-white/10
-              mb-8
-            "
-          >
-
-            <div className="w-3 h-3 rounded-full bg-orange-500 animate-pulse" />
-
-            <span className="text-sm text-zinc-300">
-
-              Delivery premium en minutos
-
-            </span>
-
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(200,241,53,0.1)', border: '1px solid rgba(200,241,53,0.25)', borderRadius: '100px', padding: '4px 12px', fontSize: '0.7rem', color: 'var(--lime)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+            <span style={{ display: 'inline-block', width: 6, height: 6, background: 'var(--lime)', borderRadius: '50%', animation: 'pulse 1.5s infinite' }} />
+            Disponible en Quibdó
           </div>
 
-          <h1
-            className="
-              text-6xl
-              md:text-8xl
-              font-black
-              leading-[0.9]
-              tracking-[-5px]
-            "
-          >
-
-            Pide comida
-            <br />
-
-            <span className="text-gradient">
-
-              rápida y brutal
-
-            </span>
-
-          </h1>
-
-          <p
-            className="
-              mt-8
-              text-xl
-              text-zinc-400
-              max-w-xl
-              leading-relaxed
-            "
-          >
-
-            Restaurantes premium, entregas rápidas
-            y una experiencia moderna diseñada para
-            Quibdó.
-
+          <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--orange)', marginBottom: '1.5rem' }}>
+            La app de domicilios
           </p>
 
-          <div className="flex flex-wrap gap-5 mt-10">
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.8rem,7vw,6rem)', fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+            Todo lo<br />
+            que <span style={{ color: 'var(--orange)' }}>necesitas</span><br />
+            <span style={{ WebkitTextStroke: '2px var(--white)', color: 'transparent' }}>al instante</span>
+          </h1>
 
-            <button
-              className="
-                h-16
-                px-10
-                rounded-full
-                orange-gradient
-                text-black
-                font-black
-                text-lg
-                hover:scale-105
-                transition-all
-              "
-            >
+          <p style={{ color: 'var(--muted)', fontSize: '1rem', lineHeight: 1.7, maxWidth: 400, marginBottom: '2rem' }}>
+            Restaurantes, supermercados, farmacias y negocios locales de Quibdó. Rápido, seguro y al mejor precio.
+          </p>
 
+          <div className="hero-actions">
+            <Link href="/auth"
+              style={{ background: 'var(--orange)', color: 'var(--white)', padding: '0.9rem 1.8rem', borderRadius: '100px', fontSize: '1rem', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, animation: 'bounceIn 0.8s 0.4s both' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(255,80,1,0.35)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none' }}>
               Pedir ahora
-
-            </button>
-
-            <button
-              className="
-                h-16
-                px-10
-                rounded-full
-                border
-                border-white/10
-                bg-white/5
-                text-white
-                font-bold
-                hover:bg-white/10
-                transition-all
-              "
-            >
-
-              Ver restaurantes
-
-            </button>
-
+              <span style={{ width: 22, height: 22, background: 'rgba(255,255,255,0.25)', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>→</span>
+            </Link>
+            <Link href="/business"
+              style={{ color: 'var(--white)', padding: '0.9rem 1.8rem', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '100px', fontSize: '1rem', background: 'transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.background = 'transparent' }}>
+              Registrar negocio
+            </Link>
           </div>
 
+          <div className="hero-stats">
+            {[{ num: '+10K', label: 'Pedidos' }, { num: '+500', label: 'Negocios' }, { num: '24/7', label: 'Soporte' }].map(s => (
+              <div key={s.label}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.3rem,3vw,1.8rem)', fontWeight: 800 }}>{s.num}</div>
+                <div style={{ color: 'var(--muted)', fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="relative">
-
-          <div
-            className="
-              absolute
-              inset-0
-              bg-orange-500/20
-              blur-[120px]
-            "
-          />
-
-          <img
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop"
-            alt="Food"
-            className="
-              relative
-              z-10
-              rounded-[40px]
-              object-cover
-              w-full
-              h-[700px]
-              shadow-2xl
-            "
-          />
-
+        {/* RIGHT — oculto en mobile via CSS */}
+        <div className="hero-phone-col">
+          <div style={{ position: 'absolute', top: 60, right: -40, background: 'var(--dark2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, zIndex: 3, animation: 'floatBadge1 4s ease-in-out infinite', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <span style={{ fontSize: '1.3rem' }}>🚀</span>
+            <div>
+              <div style={{ color: 'var(--lime)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>2 min</div>
+              <div style={{ fontSize: '0.65rem', color: 'var(--muted)' }}>Tiempo promedio</div>
+            </div>
+          </div>
+          <PhoneMockup />
+          <div style={{ position: 'absolute', bottom: 80, left: -50, background: 'var(--dark2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, zIndex: 3, animation: 'floatBadge2 4s ease-in-out 1s infinite', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <span style={{ fontSize: '1.3rem' }}>⭐</span>
+            <div>
+              <div style={{ color: 'var(--lime)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>4.9/5</div>
+              <div style={{ fontSize: '0.65rem', color: 'var(--muted)' }}>Calificación</div>
+            </div>
+          </div>
         </div>
-
       </div>
-
     </section>
-
   )
 }
