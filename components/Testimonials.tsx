@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from 'react'
 
 const TESTIS = [
-  { i: 'LM', name: 'Laura Mosquera',  role: 'Cliente FASTY',     color: 'linear-gradient(135deg,var(--orange),#ff8a50)',  stars: 5, quote: 'La experiencia es rápida y muy cómoda para pedir en Quibdó. Ya no salgo a buscar nada, todo llega a mi casa en minutos.' },
-  { i: 'KC', name: 'Kevin Cuesta',    role: 'Negocio aliado',    color: 'linear-gradient(135deg,var(--lime),#89a800)',    stars: 5, quote: 'FASTY nos ayudó a aumentar los pedidos y mejorar la atención al cliente. La plataforma es muy fácil de usar.', tc: 'var(--dark)' },
-  { i: 'AP', name: 'Adriana Palacios',role: 'Cliente FASTY',     color: 'linear-gradient(135deg,#a855f7,#7c3aed)',       stars: 5, quote: 'Increíble app, la uso todos los días. Los repartidores son súper amables y siempre llegan rápido. 100% recomendada.' },
-  { i: 'JR', name: 'José Rentería',   role: 'Restaurante aliado',color: 'linear-gradient(135deg,#0ea5e9,#0284c7)',       stars: 5, quote: 'Como restaurante, FASTY nos conectó con cientos de clientes nuevos. La interfaz es hermosa y muy intuitiva.' },
+  { i: 'LM', name: 'Laura Mosquera',   role: 'Cliente FASTY',     color: 'linear-gradient(135deg,var(--orange),#ff8a50)', stars: 5, quote: 'La experiencia es rápida y muy cómoda para pedir en Quibdó. Ya no salgo a buscar nada, todo llega a mi casa en minutos.' },
+  { i: 'KC', name: 'Kevin Cuesta',     role: 'Negocio aliado',    color: 'linear-gradient(135deg,var(--lime),#89a800)',   stars: 5, quote: 'FASTY nos ayudó a aumentar los pedidos y mejorar la atención al cliente. La plataforma es muy fácil de usar.', tc: 'var(--dark)' },
+  { i: 'AP', name: 'Adriana Palacios', role: 'Cliente FASTY',     color: 'linear-gradient(135deg,#a855f7,#7c3aed)',      stars: 5, quote: 'Increíble app, la uso todos los días. Los repartidores son súper amables y siempre llegan rápido. 100% recomendada.' },
+  { i: 'JR', name: 'José Rentería',    role: 'Restaurante aliado',color: 'linear-gradient(135deg,#0ea5e9,#0284c7)',      stars: 5, quote: 'Como restaurante, FASTY nos conectó con cientos de clientes nuevos. La interfaz es hermosa y muy intuitiva.' },
 ]
 
 export default function Testimonials() {
@@ -18,7 +18,7 @@ export default function Testimonials() {
   }, [])
 
   return (
-    <div className="section-pad-bg" style={{ background: 'var(--dark2)' }}>
+    <div style={{ background: 'var(--dark2)' }} className="section-pad-bg">
       <div ref={ref} className={vis ? 'reveal visible' : 'reveal'}>
         <p className="section-eyebrow">Lo dicen nuestros usuarios</p>
         <h2 className="section-title">Opiniones <span style={{ color: 'var(--lime)' }}>reales</span></h2>

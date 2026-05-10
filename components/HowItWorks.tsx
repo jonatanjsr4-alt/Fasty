@@ -17,7 +17,7 @@ export default function HowItWorks() {
   }, [])
 
   return (
-    <div className="section-pad-bg" id="como">
+    <div style={{ background: 'var(--dark2)' }} className="section-pad-bg" id="como">
       <div ref={ref} className={vis ? 'reveal visible' : 'reveal'}>
         <p className="section-eyebrow">Sencillo como 1, 2, 3</p>
         <h2 className="section-title">
