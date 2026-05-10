@@ -7,6 +7,10 @@ export default function AdminPage() {
 
   const [orders, setOrders] = useState<any[]>([])
 
+  useEffect(() => {
+    getOrders()
+  }, [])
+
   async function getOrders() {
 
     const { data, error } = await supabase
@@ -22,14 +26,10 @@ export default function AdminPage() {
     setOrders(data || [])
   }
 
-  useEffect(() => {
-    getOrders()
-  }, [])
-
   return (
-    <div className="min-h-screen bg-black text-white p-10">
+    <div className="min-h-screen bg-black p-10 text-white">
 
-      <h1 className="text-4xl font-black mb-10">
+      <h1 className="text-5xl font-black mb-10">
         Pedidos
       </h1>
 
@@ -39,7 +39,7 @@ export default function AdminPage() {
 
           <div
             key={order.id}
-            className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6"
+            className="bg-zinc-900 border border-white/10 rounded-3xl p-6"
           >
 
             <h2 className="text-2xl font-bold">
@@ -54,20 +54,49 @@ export default function AdminPage() {
               {order.customer_address}
             </p>
 
-            <div className="mt-5">
+            <div className="mt-6">
 
-              <p className="font-bold mb-2">
-                Productos:
-              </p>
+              <h3 className="text-xl font-bold mb-4">
+                Productos
+              </h3>
 
-              <pre className="text-sm bg-black p-4 rounded-2xl overflow-auto">
-                {JSON.stringify(JSON.parse(order.products), null, 2)}
-              </pre>
+              <div className="space-y-4">
+
+                {order.products?.map((product: any) => (
+
+                  <div
+                    key={product.id}
+                    className="flex items-center gap-4 bg-black/40 rounded-2xl p-4"
+                  >
+
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-20 h-20 object-cover rounded-xl"
+                    />
+
+                    <div>
+
+                      <h4 className="font-bold text-lg">
+                        {product.name}
+                      </h4>
+
+                      <p className="text-orange-400 font-bold">
+                        ${product.price}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
 
             </div>
 
-            <div className="mt-5 text-orange-500 font-black text-2xl">
-              ${order.total}
+            <div className="mt-6 text-3xl font-black text-orange-500">
+              Total: ${order.total}
             </div>
 
           </div>
