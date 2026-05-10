@@ -13,9 +13,9 @@ export default function LoginPage() {
   function handleLogin() {
 
     if (
-      email === 'admin@fasty.com'
+      email === 'jonatan.jsr4@fasty.com'
       &&
-      password === '123456'
+      password === '123456789'
     ) {
 
       localStorage.setItem(
