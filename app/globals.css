@@ -1,100 +1,208 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
- 
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
+
   --orange: #FF5001;
   --lime: #C8F135;
+
   --dark: #0A0A0A;
   --dark2: #111111;
   --dark3: #1A1A1A;
+
   --mid: #2A2A2A;
   --muted: #888888;
+
   --light: #F5F0E8;
   --white: #FFFFFF;
+
   --radius: 20px;
   --radius-sm: 12px;
+
   --font-display: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 }
- 
-*, *::before, *::after {
+
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
- 
+
 html {
   scroll-behavior: smooth;
 }
- 
+
 body {
+
   background: var(--dark);
   color: var(--white);
+
   font-family: var(--font-body);
+
   overflow-x: hidden;
-  cursor: none;
+
 }
- 
+
 body::before {
+
   content: '';
+
   position: fixed;
   inset: 0;
+
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+
   pointer-events: none;
-  z-index: 1000;
+
+  z-index: 9999;
+
   opacity: 0.4;
 }
- 
+
 a {
   text-decoration: none;
   color: inherit;
 }
- 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--dark); }
-::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
- 
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--orange);
+  border-radius: 999px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+
+  font-family: var(--font-display);
+
+  letter-spacing: -2px;
+}
+
+button {
+
+  transition: 0.25s ease;
+}
+
+button:hover {
+
+  transform: translateY(-2px);
+}
+
+.glass {
+
+  background: rgba(255,255,255,0.04);
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(20px);
+}
+
+.card-hover {
+
+  transition: 0.3s ease;
+}
+
+.card-hover:hover {
+
+  transform: translateY(-6px);
+
+  border-color: rgba(255,255,255,0.12);
+}
+
+.orange-gradient {
+
+  background: linear-gradient(
+    135deg,
+    #FF5001,
+    #ff7b00
+  );
+}
+
+.text-gradient {
+
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #888888
+  );
+
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.5); }
+
+  0%, 100% {
+
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+
+    opacity: 0.5;
+    transform: scale(1.5);
+  }
 }
- 
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
- 
+
 @keyframes floatPhone {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-18px) rotate(-2deg); }
+
+  0%, 100% {
+
+    transform: translateY(0) rotate(-2deg);
+  }
+
+  50% {
+
+    transform: translateY(-18px) rotate(-2deg);
+  }
 }
- 
-@keyframes floatBadge1 {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
- 
-@keyframes floatBadge2 {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(8px); }
-}
- 
-@keyframes trackFill {
-  0% { width: 40%; }
-  100% { width: 80%; }
-}
- 
+
 @keyframes bounceIn {
-  0% { transform: translateY(20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+
+  0% {
+
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  100% {
+
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
- 
+
 .reveal {
+
   opacity: 0;
+
   transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
 }
- 
+
 .reveal.visible {
+
   opacity: 1;
+
   transform: none;
 }
