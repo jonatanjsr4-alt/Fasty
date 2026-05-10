@@ -37,15 +37,23 @@ export default function CheckoutModal({
 
     setLoading(true)
 
-    const orderData = {
+   const totalPrice = cart.reduce((acc: number, item: any) => {
+
+  const price =
+    typeof item.price === 'string'
+      ? parseFloat(item.price)
+      : item.price || 0
+
+  return acc + price
+
+}, 0)
+
+const orderData = {
   customer_name: name,
   customer_phone: phone,
   customer_address: address,
   products: cart,
-  total: cart.reduce(
-    (acc, item) => acc + Number(item.price),
-    0
-  ),
+  total: totalPrice,
 }
 
     console.log(orderData)
