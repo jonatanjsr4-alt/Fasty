@@ -60,14 +60,43 @@ export default function AdminOrders() {
                 Productos
               </h3>
 
-              <pre className="bg-black/40 p-4 rounded-2xl overflow-auto text-sm">
-                {JSON.stringify(order.products, null, 2)}
-              </pre>
+              <div className="space-y-4">
+
+                {JSON.parse(order.products || '[]').map((product: any, index: number) => (
+
+                  <div
+                    key={index}
+                    className="bg-black/40 rounded-2xl p-4 flex items-center gap-4"
+                  >
+
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-20 h-20 rounded-2xl object-cover"
+                    />
+
+                    <div>
+
+                      <h4 className="text-xl font-bold">
+                        {product.name}
+                      </h4>
+
+                      <p className="text-orange-500 font-bold">
+                        ${product.price}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
 
             </div>
 
             <div className="mt-6 text-3xl font-black text-orange-500">
-              Total: ${order.total}
+              Total: ${Number(order.total).toLocaleString()}
             </div>
 
           </div>
