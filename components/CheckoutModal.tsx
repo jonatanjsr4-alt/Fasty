@@ -99,7 +99,7 @@ $${totalPrice.toLocaleString()}
 `
 
     const whatsappUrl =
-      `https://wa.me/573001112233?text=${message}`
+      `https://wa.me/573134157991?text=${message}`
 
     window.open(whatsappUrl, '_blank')
 
