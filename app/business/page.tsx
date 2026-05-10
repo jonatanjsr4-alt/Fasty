@@ -1,21 +1,29 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/app/hooks/useAuth'
-import Link from 'next/link'
+import Navbar from '@/components/Navbar'
+import CartSidebar from '@/components/CartSidebar'
+import { useCart } from '@/components/CartContext'
 import {
-  Store, Plus, Package, ShoppingBag,
-  ArrowRight, BarChart3, LogOut,
-  Loader2, Trash2, Edit2, Check, X,
+  Star, Clock, ShoppingBag, ArrowLeft,
+  Plus, Minus, ShoppingCart, MapPin, Phone,
 } from 'lucide-react'
 
 type Restaurant = {
   id: string
   name: string
   description: string
-  address: string
   category: string
+  image_url: string
+  logo_url: string
+  rating: number
+  delivery_time: string
+  delivery_fee: number
+  min_order: number
+  address: string
+  phone: string
   is_active: boolean
 }
 
@@ -29,483 +37,265 @@ type Product = {
   is_available: boolean
 }
 
-const CATEGORIES = [
-  'Restaurantes', 'Supermercados', 'Farmacias',
-  'Licores', 'Heladerías', 'Cafeterías',
-  'Moda', 'Belleza', 'Tecnología', 'Hogar',
-]
-
-export default function BusinessPage() {
-  const { user, loading: authLoading, logout } = useAuth()
+export default function StorePage() {
+  const params = useParams()
+  const router = useRouter()
+  const storeId = params.id as string
 
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
   const [products, setProducts] = useState<Product[]>([])
-  const [loadingData, setLoadingData] = useState(true)
-  const [activeTab, setActiveTab] = useState<'negocio' | 'productos'>('negocio')
+  const [loading, setLoading] = useState(true)
+  const [cartOpen, setCartOpen] = useState(false)
+  const [activeCategory, setActiveCategory] = useState('Todos')
+  const [addedId, setAddedId] = useState<string | null>(null)
 
-  // Form restaurante
-  const [rName, setRName] = useState('')
-  const [rDesc, setRDesc] = useState('')
-  const [rAddress, setRAddress] = useState('')
-  const [rCategory, setRCategory] = useState('Restaurantes')
-  const [savingRest, setSavingRest] = useState(false)
-  const [restSaved, setRestSaved] = useState(false)
-
-  // Form producto
-  const [pName, setPName] = useState('')
-  const [pDesc, setPDesc] = useState('')
-  const [pPrice, setPPrice] = useState('')
-  const [pCategory, setPCategory] = useState('')
-  const [pImage, setPImage] = useState('')
-  const [savingProduct, setSavingProduct] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<string | null>(null)
+  const { addToCart, itemCount, total } = useCart()
 
   useEffect(() => {
-    if (user) fetchData()
-  }, [user])
+    if (storeId) fetchData()
+  }, [storeId])
 
   async function fetchData() {
-    setLoadingData(true)
+    setLoading(true)
 
     const { data: rest } = await supabase
       .from('restaurants')
       .select('*')
-      .eq('owner_id', user!.id)
+      .eq('id', storeId)
       .single()
 
-    if (rest) {
-      setRestaurant(rest)
-      setRName(rest.name)
-      setRDesc(rest.description || '')
-      setRAddress(rest.address || '')
-      setRCategory(rest.category || 'Restaurantes')
+    if (!rest) { router.push('/stores'); return }
+    setRestaurant(rest)
 
-      // Cargar productos
-      const { data: prods } = await supabase
-        .from('products')
-        .select('*')
-        .eq('restaurant_id', rest.id)
-        .order('created_at', { ascending: false })
-
-      setProducts(prods || [])
-    }
-
-    setLoadingData(false)
-  }
-
-  async function saveRestaurant() {
-    if (!rName.trim()) return
-
-    setSavingRest(true)
-
-    if (restaurant) {
-      // Actualizar
-      const { error } = await supabase
-        .from('restaurants')
-        .update({ name: rName, description: rDesc, address: rAddress, category: rCategory })
-        .eq('id', restaurant.id)
-
-      if (!error) {
-        setRestaurant({ ...restaurant, name: rName, description: rDesc, address: rAddress, category: rCategory })
-        setRestSaved(true)
-        setTimeout(() => setRestSaved(false), 2000)
-      }
-    } else {
-      // Crear
-      const { data, error } = await supabase
-        .from('restaurants')
-        .insert({
-          owner_id: user!.id,
-          name: rName,
-          description: rDesc,
-          address: rAddress,
-          category: rCategory,
-        })
-        .select()
-        .single()
-
-      if (!error && data) {
-        setRestaurant(data)
-        setRestSaved(true)
-        setTimeout(() => setRestSaved(false), 2000)
-      }
-    }
-
-    setSavingRest(false)
-  }
-
-  async function addProduct() {
-    if (!restaurant || !pName.trim() || !pPrice) return
-
-    setSavingProduct(true)
-
-    const { data, error } = await supabase
+    const { data: prods } = await supabase
       .from('products')
-      .insert({
-        restaurant_id: restaurant.id,
-        name: pName,
-        description: pDesc,
-        price: parseFloat(pPrice),
-        category: pCategory,
-        image_url: pImage,
-      })
-      .select()
-      .single()
+      .select('*')
+      .eq('restaurant_id', storeId)
+      .eq('is_available', true)
+      .order('category')
 
-    if (!error && data) {
-      setProducts((prev) => [data, ...prev])
-      setPName(''); setPDesc(''); setPPrice(''); setPCategory(''); setPImage('')
-    }
-
-    setSavingProduct(false)
+    setProducts(prods || [])
+    setLoading(false)
   }
 
-  async function deleteProduct(id: string) {
-    await supabase.from('products').delete().eq('id', id)
-    setProducts((prev) => prev.filter((p) => p.id !== id))
+  function handleAddToCart(product: Product) {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image_url || '',
+      restaurant_id: storeId,
+    })
+    setAddedId(product.id)
+    setTimeout(() => setAddedId(null), 1200)
   }
 
-  async function toggleProduct(id: string, current: boolean) {
-    await supabase.from('products').update({ is_available: !current }).eq('id', id)
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, is_available: !current } : p))
-    )
-  }
+  const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))]
+  const filteredProducts = activeCategory === 'Todos'
+    ? products
+    : products.filter(p => p.category === activeCategory)
 
-  if (authLoading || loadingData) {
-    return (
-      <div className="min-h-screen bg-[#070707] flex items-center justify-center">
-        <Loader2 size={32} className="text-orange-500 animate-spin" />
-      </div>
-    )
-  }
+  if (loading) return <LoadingScreen />
+
+  if (!restaurant) return null
+
+  const headerImg = restaurant.image_url ||
+    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop'
 
   return (
-    <main className="min-h-screen bg-[#070707] text-white flex overflow-hidden">
+    <>
+      <Navbar />
+      <main style={{ minHeight: '100vh', background: 'var(--dark)', paddingTop: '4rem' }}>
 
-      {/* Sidebar */}
-      <aside className="hidden lg:flex w-[280px] border-r border-white/5 bg-black/40 backdrop-blur-2xl p-6 flex-col justify-between">
-        <div>
-          <Link href="/" className="flex items-center gap-4 mb-12">
-            <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
-              <span className="text-white text-lg font-bold">F</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-[-1px]">FASTY</h1>
-              <p className="text-zinc-500 text-xs mt-1">Business Platform</p>
-            </div>
-          </Link>
+        {/* HEADER */}
+        <div style={{ position: 'relative', height: 280, overflow: 'hidden' }}>
+          <img src={headerImg} alt={restaurant.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.4) 60%, transparent 100%)' }} />
 
-          {restaurant && (
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-[24px] p-5 shadow-2xl shadow-orange-500/20 mb-8">
-              <p className="text-white/70 text-xs uppercase tracking-widest">Estado</p>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                <h2 className="text-lg font-bold">{restaurant.name}</h2>
-              </div>
-              <div className="flex items-center gap-2 mt-3 text-sm text-white/80">
-                <BarChart3 size={14} />
-                {products.length} producto{products.length !== 1 ? 's' : ''}
-              </div>
-            </div>
-          )}
-
-          <nav className="space-y-2">
-            {[
-              { label: 'Mi negocio', icon: Store, tab: 'negocio' as const },
-              { label: 'Productos', icon: Package, tab: 'productos' as const },
-            ].map(({ label, icon: Icon, tab }) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`w-full h-13 py-3.5 rounded-2xl px-5 flex items-center justify-between transition-all ${
-                  activeTab === tab
-                    ? 'bg-white text-black font-semibold'
-                    : 'bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/5'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Icon size={16} />
-                  {label}
-                </div>
-                <ArrowRight size={14} />
-              </button>
-            ))}
-
-            <Link
-              href="/dashboard"
-              className="w-full h-13 py-3.5 rounded-2xl px-5 flex items-center justify-between bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/5 transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <ShoppingBag size={16} />
-                Pedidos
-              </div>
-              <ArrowRight size={14} />
-            </Link>
-          </nav>
+          <button
+            onClick={() => router.push('/stores')}
+            style={{ position: 'absolute', top: 20, left: 20, width: 40, height: 40, borderRadius: 12, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--white)' }}
+          >
+            <ArrowLeft size={18} />
+          </button>
         </div>
 
-        <button
-          onClick={logout}
-          className="w-full h-12 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-all flex items-center justify-center gap-3 font-medium text-sm"
-        >
-          <LogOut size={16} />
-          Cerrar sesión
-        </button>
-      </aside>
-
-      {/* Contenido */}
-      <section className="flex-1 overflow-y-auto">
-        <div className="max-w-5xl mx-auto px-5 md:px-10 py-10">
-
-          <div className="mb-10">
-            <p className="text-orange-500 uppercase tracking-[4px] text-sm font-medium">
-              PANEL DE NEGOCIOS
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-[-3px] mt-3 leading-none">
-              {activeTab === 'negocio' ? 'Mi restaurante' : 'Mis productos'}
+        {/* INFO */}
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 2rem' }}>
+          <div style={{ marginTop: '-3rem', position: 'relative', zIndex: 10, marginBottom: '2rem' }}>
+            <span style={{ display: 'inline-block', background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '4px 12px', fontSize: '0.72rem', color: 'var(--muted)', marginBottom: '0.8rem' }}>
+              {restaurant.category}
+            </span>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.8rem' }}>
+              {restaurant.name}
             </h1>
+            {restaurant.description && (
+              <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: 560, marginBottom: '1rem' }}>
+                {restaurant.description}
+              </p>
+            )}
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', fontSize: '0.82rem' }}>
+              <InfoBadge icon={<Star size={13} fill="#C8F135" color="#C8F135" />} text={`${restaurant.rating?.toFixed(1) || '4.5'} Calificación`} highlight />
+              <InfoBadge icon={<Clock size={13} />} text={restaurant.delivery_time || '20-35 min'} />
+              <InfoBadge icon={<ShoppingBag size={13} />} text={restaurant.delivery_fee === 0 ? 'Domicilio gratis' : `Domicilio $${restaurant.delivery_fee?.toLocaleString()}`} />
+              {restaurant.address && <InfoBadge icon={<MapPin size={13} />} text={restaurant.address} />}
+            </div>
           </div>
 
-          {/* ── TAB: NEGOCIO ── */}
-          {activeTab === 'negocio' && (
-            <div className="grid xl:grid-cols-2 gap-6">
-              <div className="bg-white/5 border border-white/5 rounded-[32px] p-7">
-                <h2 className="text-xl font-bold mb-2">
-                  {restaurant ? 'Editar negocio' : 'Crear negocio'}
-                </h2>
-                <p className="text-zinc-400 text-sm mb-7">
-                  {restaurant
-                    ? 'Actualiza la información visible a tus clientes.'
-                    : 'Configura tu negocio y empieza a recibir pedidos.'}
-                </p>
-
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Nombre del negocio *"
-                    value={rName}
-                    onChange={(e) => setRName(e.target.value)}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all"
-                  />
-
-                  <textarea
-                    placeholder="Descripción"
-                    value={rDesc}
-                    onChange={(e) => setRDesc(e.target.value)}
-                    className="w-full h-28 rounded-2xl bg-black/40 border border-white/5 px-5 py-4 outline-none resize-none focus:border-orange-500 transition-all"
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="Dirección"
-                    value={rAddress}
-                    onChange={(e) => setRAddress(e.target.value)}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all"
-                  />
-
-                  <select
-                    value={rCategory}
-                    onChange={(e) => setRCategory(e.target.value)}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all text-white"
-                  >
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat} className="bg-[#111]">{cat}</option>
-                    ))}
-                  </select>
-
-                  <button
-                    onClick={saveRestaurant}
-                    disabled={savingRest || !rName.trim()}
-                    className="h-13 py-3.5 px-8 rounded-2xl bg-orange-500 hover:bg-orange-600 disabled:opacity-50 font-medium flex items-center gap-3 transition-all shadow-xl shadow-orange-500/20"
-                  >
-                    {savingRest ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : restSaved ? (
-                      <><Check size={16} /> ¡Guardado!</>
-                    ) : (
-                      <><Plus size={16} /> {restaurant ? 'Guardar cambios' : 'Crear negocio'}</>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-5">
-                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-[32px] p-7 shadow-2xl shadow-orange-500/20">
-                  <p className="text-white/70 text-sm">Productos activos</p>
-                  <h2 className="text-6xl font-bold tracking-[-4px] mt-3">
-                    {products.filter((p) => p.is_available).length}
-                  </h2>
-                  <p className="text-white/80 mt-3 text-sm">
-                    de {products.length} en total
-                  </p>
-                </div>
-
-                <div className="bg-white/5 border border-white/5 rounded-[32px] p-7">
-                  <p className="text-zinc-500 text-sm">Estado</p>
-                  <div className="flex items-center gap-3 mt-4">
-                    <span className={`w-3 h-3 rounded-full ${restaurant ? 'bg-green-400 animate-pulse' : 'bg-zinc-600'}`} />
-                    <p className="font-medium">
-                      {restaurant ? 'Negocio activo' : 'Sin negocio creado'}
-                    </p>
-                  </div>
-                  <p className="text-zinc-500 text-sm mt-4 leading-relaxed">
-                    {restaurant
-                      ? 'Tu restaurante es visible y listo para pedidos.'
-                      : 'Crea tu negocio para aparecer en la plataforma.'}
-                  </p>
-                </div>
-              </div>
+          {/* CATEGORY FILTER */}
+          {categories.length > 1 && (
+            <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  style={{
+                    padding: '6px 16px', borderRadius: 100, fontSize: '0.78rem', whiteSpace: 'nowrap', cursor: 'pointer', transition: 'all 0.2s',
+                    background: activeCategory === cat ? 'var(--orange)' : 'var(--dark3)',
+                    color: activeCategory === cat ? '#fff' : 'var(--muted)',
+                    border: `1px solid ${activeCategory === cat ? 'var(--orange)' : 'rgba(255,255,255,0.08)'}`,
+                  }}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           )}
 
-          {/* ── TAB: PRODUCTOS ── */}
-          {activeTab === 'productos' && (
-            <div className="grid xl:grid-cols-[1fr_1.2fr] gap-6">
-
-              {/* Formulario nuevo producto */}
-              <div className="bg-white/5 border border-white/5 rounded-[32px] p-7 h-fit">
-                <h2 className="text-xl font-bold mb-6">Agregar producto</h2>
-
-                {!restaurant && (
-                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-4 mb-6 text-orange-400 text-sm">
-                    Primero crea tu negocio en la pestaña "Mi negocio".
-                  </div>
-                )}
-
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Nombre del producto *"
-                    value={pName}
-                    onChange={(e) => setPName(e.target.value)}
-                    disabled={!restaurant}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all disabled:opacity-40"
-                  />
-                  <textarea
-                    placeholder="Descripción"
-                    value={pDesc}
-                    onChange={(e) => setPDesc(e.target.value)}
-                    disabled={!restaurant}
-                    className="w-full h-24 rounded-2xl bg-black/40 border border-white/5 px-5 py-4 outline-none resize-none focus:border-orange-500 transition-all disabled:opacity-40"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Precio (COP) *"
-                    value={pPrice}
-                    onChange={(e) => setPPrice(e.target.value)}
-                    disabled={!restaurant}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all disabled:opacity-40"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Categoría"
-                    value={pCategory}
-                    onChange={(e) => setPCategory(e.target.value)}
-                    disabled={!restaurant}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all disabled:opacity-40"
-                  />
-                  <input
-                    type="url"
-                    placeholder="URL de imagen (opcional)"
-                    value={pImage}
-                    onChange={(e) => setPImage(e.target.value)}
-                    disabled={!restaurant}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-black/40 border border-white/5 px-5 outline-none focus:border-orange-500 transition-all disabled:opacity-40"
-                  />
-
-                  <button
-                    onClick={addProduct}
-                    disabled={savingProduct || !restaurant || !pName.trim() || !pPrice}
-                    className="w-full h-13 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 disabled:opacity-40 font-medium flex items-center justify-center gap-3 transition-all"
-                  >
-                    {savingProduct ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : (
-                      <><Plus size={16} /> Agregar producto</>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Lista de productos */}
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <h2 className="text-xl font-bold">
-                    {products.length} producto{products.length !== 1 ? 's' : ''}
-                  </h2>
-                </div>
-
-                {products.length === 0 ? (
-                  <div className="bg-white/5 border border-white/5 rounded-[32px] p-10 text-center">
-                    <Package size={40} className="text-zinc-700 mx-auto mb-4" />
-                    <p className="text-zinc-500">
-                      {restaurant
-                        ? 'Aún no tienes productos. ¡Agrega el primero!'
-                        : 'Crea tu negocio primero.'}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
-                    {products.map((product) => (
-                      <div
-                        key={product.id}
-                        className="bg-white/5 border border-white/5 rounded-2xl p-5 flex items-center gap-4"
-                      >
-                        {product.image_url ? (
-                          <img
-                            src={product.image_url}
-                            alt={product.name}
-                            className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
-                          />
-                        ) : (
-                          <div className="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
-                            <Package size={20} className="text-zinc-600" />
-                          </div>
-                        )}
-
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{product.name}</p>
-                          <p className="text-orange-500 font-bold text-sm mt-0.5">
-                            ${product.price.toLocaleString()}
-                          </p>
-                          {product.category && (
-                            <p className="text-zinc-600 text-xs mt-0.5">{product.category}</p>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {/* Toggle disponible */}
-                          <button
-                            onClick={() => toggleProduct(product.id, product.is_available)}
-                            title={product.is_available ? 'Desactivar' : 'Activar'}
-                            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-                              product.is_available
-                                ? 'bg-green-500/20 text-green-400'
-                                : 'bg-zinc-800 text-zinc-500'
-                            }`}
-                          >
-                            {product.is_available ? <Check size={14} /> : <X size={14} />}
-                          </button>
-
-                          {/* Eliminar */}
-                          <button
-                            onClick={() => deleteProduct(product.id)}
-                            className="w-9 h-9 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-all"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+          {/* PRODUCTS */}
+          {filteredProducts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+              <p style={{ color: 'var(--muted)', fontSize: '1rem' }}>Este negocio aún no tiene productos disponibles.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', paddingBottom: '8rem' }}>
+              {filteredProducts.map(product => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  justAdded={addedId === product.id}
+                  onAdd={() => handleAddToCart(product)}
+                />
+              ))}
             </div>
           )}
-
         </div>
-      </section>
-    </main>
+
+        {/* FLOATING CART BUTTON */}
+        {itemCount > 0 && (
+          <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 800 }}>
+            <button
+              onClick={() => setCartOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--orange)', color: '#fff', padding: '14px 24px', borderRadius: 100, fontSize: '0.95rem', fontWeight: 600, boxShadow: '0 8px 30px rgba(255,80,1,0.5)', cursor: 'pointer', border: 'none', whiteSpace: 'nowrap' }}
+            >
+              <div style={{ background: 'rgba(255,255,255,0.25)', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>
+                {itemCount}
+              </div>
+              <span>Ver carrito</span>
+              <span style={{ opacity: 0.85 }}>· ${total.toLocaleString()}</span>
+            </button>
+          </div>
+        )}
+      </main>
+
+      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+    </>
+  )
+}
+
+function ProductCard({ product, justAdded, onAdd }: { product: Product; justAdded: boolean; onAdd: () => void }) {
+  const [hovered, setHovered] = useState(false)
+  const { cart, increaseQty, decreaseQty } = useCart()
+  const cartItem = cart.find(i => i.id === product.id)
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: 'var(--dark3)',
+        border: `1px solid ${hovered ? 'rgba(255,80,1,0.25)' : 'rgba(255,255,255,0.06)'}`,
+        borderRadius: 20, overflow: 'hidden',
+        transition: 'transform 0.25s, border-color 0.25s',
+        transform: hovered ? 'translateY(-3px)' : 'none',
+      }}
+    >
+      {/* IMAGE */}
+      <div style={{ height: 160, background: 'var(--mid)', overflow: 'hidden', position: 'relative' }}>
+        {product.image_url ? (
+          <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', transform: hovered ? 'scale(1.05)' : 'scale(1)' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem' }}>🍽️</div>
+        )}
+        {product.category && (
+          <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)', borderRadius: 6, padding: '2px 8px', fontSize: '0.65rem', color: 'var(--muted)' }}>
+            {product.category}
+          </div>
+        )}
+      </div>
+
+      {/* CONTENT */}
+      <div style={{ padding: '1rem' }}>
+        <h3 style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.3rem', lineHeight: 1.3 }}>{product.name}</h3>
+        {product.description && (
+          <p style={{ color: 'var(--muted)', fontSize: '0.78rem', lineHeight: 1.5, marginBottom: '0.8rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {product.description}
+          </p>
+        )}
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--orange)' }}>
+            ${product.price.toLocaleString()}
+          </span>
+
+          {cartItem ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <button onClick={() => decreaseQty(product.id)} style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none', color: 'var(--white)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Minus size={13} />
+              </button>
+              <span style={{ fontWeight: 700, fontSize: '0.95rem', minWidth: 20, textAlign: 'center' }}>{cartItem.quantity}</span>
+              <button onClick={() => increaseQty(product.id)} style={{ width: 30, height: 30, borderRadius: 8, background: 'var(--orange)', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Plus size={13} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onAdd}
+              style={{
+                width: 34, height: 34, borderRadius: 10, cursor: 'pointer', border: 'none',
+                background: justAdded ? '#22c55e' : 'var(--orange)',
+                color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'background 0.2s, transform 0.15s',
+                transform: justAdded ? 'scale(1.2)' : 'scale(1)',
+              }}
+            >
+              {justAdded ? '✓' : <Plus size={16} />}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function InfoBadge({ icon, text, highlight }: { icon: React.ReactNode; text: string; highlight?: boolean }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: highlight ? '#C8F135' : 'var(--muted)' }}>
+      {icon}
+      <span>{text}</span>
+    </div>
+  )
+}
+
+function LoadingScreen() {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--dark)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 48, height: 48, borderRadius: '50%', border: '3px solid var(--dark3)', borderTopColor: 'var(--orange)', animation: 'spin 0.8s linear infinite', margin: '0 auto 1rem' }} />
+        <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Cargando tienda...</p>
+      </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
   )
 }
