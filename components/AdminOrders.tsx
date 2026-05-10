@@ -7,33 +7,6 @@ export default function AdminOrders() {
 
   const [orders, setOrders] = useState<any[]>([])
 
-  useEffect(() => {
-
-    fetchOrders()
-
-    const channel = supabase
-      .channel('orders-channel')
-
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'orders',
-        },
-        () => {
-          fetchOrders()
-        }
-      )
-
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-
-  }, [])
-
   async function fetchOrders() {
 
     const { data, error } = await supabase
@@ -48,6 +21,34 @@ export default function AdminOrders() {
 
     setOrders(data || [])
   }
+
+  useEffect(() => {
+
+    fetchOrders()
+
+    const subscription = supabase
+      .channel('orders-realtime')
+
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'orders',
+        },
+
+        () => {
+          fetchOrders()
+        }
+      )
+
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(subscription)
+    }
+
+  }, [])
 
   async function updateStatus(
     id: string,
