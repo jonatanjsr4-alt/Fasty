@@ -38,12 +38,15 @@ export default function CheckoutModal({
     setLoading(true)
 
     const orderData = {
-      customer_name: name,
-      customer_phone: phone,
-      customer_address: address,
-      products: cart,
-      total,
-    }
+  customer_name: name,
+  customer_phone: phone,
+  customer_address: address,
+  products: cart,
+  total: cart.reduce(
+    (acc, item) => acc + Number(item.price),
+    0
+  ),
+}
 
     console.log(orderData)
 
