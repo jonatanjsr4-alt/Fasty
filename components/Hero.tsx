@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import PhoneMockup from './PhoneMockup'
 
@@ -10,12 +11,12 @@ export default function Hero() {
       <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'3rem',alignItems:'center',maxWidth:1300,margin:'0 auto',padding:'8rem 2rem 4rem' }}>
         {/* LEFT */}
         <div>
-          <div style={{ display:'inline-flex',alignItems:'center',gap:6,background:'rgba(200,241,53,0.1)',border:'1px solid rgba(200,241,53,0.25)',borderRadius:'100px',padding:'4px 12px',fontSize:'0.7rem',color:'var(--lime)',fontWeight:600,letterSpacing:'0.05em',textTransform:'uppercase',marginBottom:'1.5rem' }}>
+          <div style={{ display:'inline-flex',alignItems:'center',gap:6,background:'rgba(200,241,53,0.1)',border:'1px solid rgba(200,241,53,0.25)',borderRadius:'100px',padding:'4px 12px',fontSize:'0.7rem',color:'var(--lime)',fontWeight:600,letterSpacing:'0.05em',textTransform:'uppercase' as const,marginBottom:'1.5rem' }}>
             <span style={{ display:'inline-block',width:6,height:6,background:'var(--lime)',borderRadius:'50%',animation:'pulse 1.5s infinite' }} />
             Disponible en Quibdó
           </div>
 
-          <p style={{ fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase',color:'var(--orange)',marginBottom:'1.5rem' }}>
+          <p style={{ fontSize:'0.75rem',letterSpacing:'0.15em',textTransform:'uppercase' as const,color:'var(--orange)',marginBottom:'1.5rem' }}>
             La app de domicilios
           </p>
 
@@ -29,14 +30,16 @@ export default function Hero() {
             Restaurantes, supermercados, farmacias y negocios locales de Quibdó. Rápido, seguro y al mejor precio.
           </p>
 
-          <div style={{ display:'flex',gap:'1rem',flexWrap:'wrap',alignItems:'center' }}>
-            <Link href="/auth" style={{ background:'var(--orange)',color:'var(--white)',padding:'1rem 2rem',borderRadius:'100px',fontSize:'1rem',fontWeight:500,display:'inline-flex',alignItems:'center',gap:8,transition:'transform 0.2s,box-shadow 0.2s',animation:'bounceIn 0.8s 0.4s both' }}
+          <div style={{ display:'flex',gap:'1rem',flexWrap:'wrap' as const,alignItems:'center' }}>
+            <Link href="/auth"
+              style={{ background:'var(--orange)',color:'var(--white)',padding:'1rem 2rem',borderRadius:'100px',fontSize:'1rem',fontWeight:500,display:'inline-flex',alignItems:'center',gap:8,animation:'bounceIn 0.8s 0.4s both' }}
               onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-3px)';e.currentTarget.style.boxShadow='0 20px 40px rgba(255,80,1,0.35)'}}
               onMouseLeave={e=>{e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow='none'}}>
               Pedir ahora
               <span style={{ width:22,height:22,background:'rgba(255,255,255,0.25)',borderRadius:'50%',display:'inline-flex',alignItems:'center',justifyContent:'center' }}>→</span>
             </Link>
-            <Link href="/business" style={{ color:'var(--white)',padding:'1rem 2rem',border:'1px solid rgba(255,255,255,0.15)',borderRadius:'100px',fontSize:'1rem',transition:'border-color 0.2s,background 0.2s',background:'transparent' }}
+            <Link href="/business"
+              style={{ color:'var(--white)',padding:'1rem 2rem',border:'1px solid rgba(255,255,255,0.15)',borderRadius:'100px',fontSize:'1rem',background:'transparent' }}
               onMouseEnter={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.4)';e.currentTarget.style.background='rgba(255,255,255,0.05)'}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(255,255,255,0.15)';e.currentTarget.style.background='transparent'}}>
               Registrar negocio
@@ -47,7 +50,7 @@ export default function Hero() {
             {[{num:'+10K',label:'Pedidos'},{num:'+500',label:'Negocios'},{num:'24/7',label:'Soporte'}].map(s=>(
               <div key={s.label}>
                 <div style={{ fontFamily:'var(--font-display)',fontSize:'1.8rem',fontWeight:800 }}>{s.num}</div>
-                <div style={{ color:'var(--muted)',fontSize:'0.8rem',letterSpacing:'0.05em',textTransform:'uppercase' }}>{s.label}</div>
+                <div style={{ color:'var(--muted)',fontSize:'0.8rem',letterSpacing:'0.05em',textTransform:'uppercase' as const }}>{s.label}</div>
               </div>
             ))}
           </div>
