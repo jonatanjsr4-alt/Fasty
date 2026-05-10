@@ -16,7 +16,7 @@ export default function LoginPage() {
 
     if (
 
-      email === 'admin@fasty.com'
+      email === 'jonatan.jsr4@fasty.com'
 
       &&
 
