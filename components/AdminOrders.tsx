@@ -35,73 +35,81 @@ export default function AdminOrders() {
 
       <div className="space-y-6">
 
-        {orders.map((order) => (
+        {orders.map((order) => {
 
-          <div
-            key={order.id}
-            className="bg-white/5 border border-white/10 rounded-3xl p-6"
-          >
+          const products =
+            typeof order.products === 'string'
+              ? JSON.parse(order.products)
+              : order.products
 
-            <h2 className="text-3xl font-bold">
-              {order.customer_name}
-            </h2>
+          return (
 
-            <p className="mt-2">
-              {order.customer_phone}
-            </p>
+            <div
+              key={order.id}
+              className="bg-white/5 border border-white/10 rounded-3xl p-6"
+            >
 
-            <p>
-              {order.customer_address}
-            </p>
+              <h2 className="text-3xl font-bold">
+                {order.customer_name}
+              </h2>
 
-            <div className="mt-6">
+              <p className="mt-2">
+                {order.customer_phone}
+              </p>
 
-              <h3 className="text-2xl font-bold mb-4">
-                Productos
-              </h3>
+              <p>
+                {order.customer_address}
+              </p>
 
-              <div className="space-y-4">
+              <div className="mt-6">
 
-                {JSON.parse(order.products || '[]').map((product: any, index: number) => (
+                <h3 className="text-2xl font-bold mb-4">
+                  Productos
+                </h3>
 
-                  <div
-                    key={index}
-                    className="bg-black/40 rounded-2xl p-4 flex items-center gap-4"
-                  >
+                <div className="space-y-4">
 
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-20 h-20 rounded-2xl object-cover"
-                    />
+                  {products?.map((product: any, index: number) => (
 
-                    <div>
+                    <div
+                      key={index}
+                      className="bg-black/40 rounded-2xl p-4 flex items-center gap-4"
+                    >
 
-                      <h4 className="text-xl font-bold">
-                        {product.name}
-                      </h4>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-20 h-20 rounded-2xl object-cover"
+                      />
 
-                      <p className="text-orange-500 font-bold">
-                        ${product.price}
-                      </p>
+                      <div>
+
+                        <h4 className="text-xl font-bold">
+                          {product.name}
+                        </h4>
+
+                        <p className="text-orange-500 font-bold">
+                          ${product.price}
+                        </p>
+
+                      </div>
 
                     </div>
 
-                  </div>
+                  ))}
 
-                ))}
+                </div>
 
+              </div>
+
+              <div className="mt-6 text-3xl font-black text-orange-500">
+                Total: ${Number(order.total).toLocaleString()}
               </div>
 
             </div>
 
-            <div className="mt-6 text-3xl font-black text-orange-500">
-              Total: ${Number(order.total).toLocaleString()}
-            </div>
-
-          </div>
-
-        ))}
+          )
+        })}
 
       </div>
 
