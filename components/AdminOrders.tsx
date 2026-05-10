@@ -8,10 +8,10 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([])
 
   useEffect(() => {
-    getOrders()
+    fetchOrders()
   }, [])
 
-  async function getOrders() {
+  async function fetchOrders() {
 
     const { data, error } = await supabase
       .from('orders')
@@ -39,49 +39,48 @@ export default function AdminOrders() {
 
           <div
             key={order.id}
-            className="bg-zinc-900 border border-white/10 rounded-3xl p-6"
+            className="bg-white/5 border border-white/10 rounded-3xl p-6"
           >
 
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-3xl font-bold">
               {order.customer_name}
             </h2>
 
-            <p className="text-zinc-400 mt-2">
+            <p className="mt-2 text-xl">
               {order.customer_phone}
             </p>
 
-            <p className="text-zinc-400">
+            <p className="text-xl">
               {order.customer_address}
             </p>
 
             <div className="mt-6">
-
-              <h3 className="text-xl font-bold mb-4">
+              <h3 className="text-2xl font-bold mb-4">
                 Productos
               </h3>
 
               <div className="space-y-4">
 
-                {order.products?.map((product: any) => (
+                {order.products?.map((product: any, index: number) => (
 
                   <div
-                    key={product.id}
-                    className="flex items-center gap-4 bg-black/40 rounded-2xl p-4"
+                    key={index}
+                    className="bg-black/40 rounded-2xl p-4 flex items-center gap-4"
                   >
 
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-20 h-20 object-cover rounded-xl"
+                      className="w-20 h-20 object-cover rounded-2xl"
                     />
 
                     <div>
 
-                      <h4 className="font-bold text-lg">
+                      <h4 className="text-xl font-bold">
                         {product.name}
                       </h4>
 
-                      <p className="text-orange-400 font-bold">
+                      <p className="text-orange-500 font-bold">
                         ${product.price}
                       </p>
 
@@ -92,7 +91,6 @@ export default function AdminOrders() {
                 ))}
 
               </div>
-
             </div>
 
             <div className="mt-6 text-3xl font-black text-orange-500">
