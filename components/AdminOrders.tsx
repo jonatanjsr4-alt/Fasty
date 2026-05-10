@@ -26,6 +26,16 @@ export default function AdminOrders() {
     setOrders(data || [])
   }
 
+  async function updateStatus(id: string, status: string) {
+
+    await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', id)
+
+    fetchOrders()
+  }
+
   return (
     <div className="min-h-screen bg-black text-white p-10">
 
@@ -49,17 +59,38 @@ export default function AdminOrders() {
               className="bg-white/5 border border-white/10 rounded-3xl p-6"
             >
 
-              <h2 className="text-3xl font-bold">
-                {order.customer_name}
-              </h2>
+              <div className="flex items-center justify-between">
 
-              <p className="mt-2">
-                {order.customer_phone}
-              </p>
+                <div>
 
-              <p>
-                {order.customer_address}
-              </p>
+                  <h2 className="text-3xl font-bold">
+                    {order.customer_name}
+                  </h2>
+
+                  <p className="mt-2">
+                    {order.customer_phone}
+                  </p>
+
+                  <p>
+                    {order.customer_address}
+                  </p>
+
+                </div>
+
+                <select
+                  value={order.status || 'Pendiente'}
+                  onChange={(e) =>
+                    updateStatus(order.id, e.target.value)
+                  }
+                  className="bg-black border border-white/10 rounded-2xl px-4 py-3"
+                >
+                  <option>Pendiente</option>
+                  <option>Preparando</option>
+                  <option>En camino</option>
+                  <option>Entregado</option>
+                </select>
+
+              </div>
 
               <div className="mt-6">
 
@@ -102,21 +133,21 @@ export default function AdminOrders() {
 
               </div>
 
-             <div className="mt-6 text-3xl font-black text-orange-500">
+              <div className="mt-6 text-3xl font-black text-orange-500">
 
-  Total: $
-  {products.reduce((acc: number, product: any) => {
+                Total: $
+                {products.reduce((acc: number, product: any) => {
 
-    const price =
-      typeof product.price === 'string'
-        ? parseFloat(product.price)
-        : product.price || 0
+                  const price =
+                    typeof product.price === 'string'
+                      ? parseFloat(product.price)
+                      : product.price || 0
 
-    return acc + price
+                  return acc + price
 
-  }, 0).toLocaleString()}
+                }, 0).toLocaleString()}
 
-</div>
+              </div>
 
             </div>
 

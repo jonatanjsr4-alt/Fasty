@@ -37,41 +37,40 @@ export default function CheckoutModal({
 
     setLoading(true)
 
-   const totalPrice = cart.reduce((acc: number, item: any) => {
+    const totalPrice = cart.reduce((acc: number, item: any) => {
 
-  const price =
-    typeof item.price === 'string'
-      ? parseFloat(item.price)
-      : item.price || 0
+      const price =
+        typeof item.price === 'string'
+          ? parseFloat(item.price)
+          : item.price || 0
 
-  return acc + price
+      return acc + price
 
-}, 0)
+    }, 0)
 
-const orderData = {
-  customer_name: name,
-  customer_phone: phone,
-  customer_address: address,
-  products: cart,
-  total: totalPrice,
-}
+    const orderData = {
+      customer_name: name,
+      customer_phone: phone,
+      customer_address: address,
+      products: cart,
+      total: totalPrice,
+    }
 
     console.log(orderData)
 
- const { data, error } = await supabase
-  .from('orders')
-  .insert([orderData])
-  .select()
+    const { data, error } = await supabase
+      .from('orders')
+      .insert([orderData])
+      .select()
 
-console.log('DATA:', data)
-console.log('ERROR:', error)
+    console.log('DATA:', data)
+    console.log('ERROR:', error)
 
-if (error) {
-  alert(JSON.stringify(error))
-  return
-}
-
-alert('Pedido enviado correctamente')
+    if (error) {
+      alert(JSON.stringify(error))
+      setLoading(false)
+      return
+    }
 
     const productsText = cart
       .map(
@@ -96,7 +95,7 @@ ${address}
 ${productsText}
 
 💰 Total:
-$${total}
+$${totalPrice.toLocaleString()}
 `
 
     const whatsappUrl =
@@ -105,7 +104,7 @@ $${total}
     window.open(whatsappUrl, '_blank')
 
     alert('Pedido enviado correctamente')
-    
+
     setLoading(false)
 
     onClose()
