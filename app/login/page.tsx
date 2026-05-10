@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
@@ -8,14 +9,19 @@ export default function LoginPage() {
   const router = useRouter()
 
   const [email, setEmail] = useState('')
+
   const [password, setPassword] = useState('')
 
   function handleLogin() {
 
     if (
-      email === 'jonatan.jsr4@fasty.com'
+
+      email === 'admin@fasty.com'
+
       &&
-      password === '123456789'
+
+      password === '123456'
+
     ) {
 
       localStorage.setItem(
@@ -33,15 +39,58 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-5">
 
-      <div className="w-full max-w-md bg-white/5 border border-white/10 rounded-[32px] p-8">
+    <main
+      className="
+        min-h-screen
+        bg-[#0A0A0A]
+        flex
+        items-center
+        justify-center
+        p-6
+        overflow-hidden
+      "
+    >
 
-        <h1 className="text-5xl font-black text-white mb-8">
-          Admin Login
-        </h1>
+      <div className="absolute w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full" />
 
-        <div className="space-y-4">
+      <div
+        className="
+          relative
+          z-10
+          w-full
+          max-w-md
+          glass
+          rounded-[36px]
+          p-8
+          border
+          border-white/10
+        "
+      >
+
+        <div className="mb-10">
+
+          <span className="text-orange-500 font-bold uppercase tracking-[4px]">
+
+            FASTY ADMIN
+
+          </span>
+
+          <h1 className="text-6xl font-black mt-4 leading-none">
+
+            Bienvenido 🚀
+
+          </h1>
+
+          <p className="text-zinc-400 text-lg mt-5">
+
+            Inicia sesión para administrar pedidos.
+
+          </p>
+
+        </div>
+
+        <div className="space-y-5">
 
           <input
             type="email"
@@ -50,7 +99,17 @@ export default function LoginPage() {
             onChange={(e) =>
               setEmail(e.target.value)
             }
-            className="w-full h-14 rounded-2xl bg-black border border-white/10 px-5 text-white outline-none"
+            className="
+              w-full
+              h-16
+              rounded-2xl
+              bg-black/40
+              border
+              border-white/10
+              px-5
+              text-white
+              outline-none
+            "
           />
 
           <input
@@ -60,20 +119,42 @@ export default function LoginPage() {
             onChange={(e) =>
               setPassword(e.target.value)
             }
-            className="w-full h-14 rounded-2xl bg-black border border-white/10 px-5 text-white outline-none"
+            className="
+              w-full
+              h-16
+              rounded-2xl
+              bg-black/40
+              border
+              border-white/10
+              px-5
+              text-white
+              outline-none
+            "
           />
 
           <button
             onClick={handleLogin}
-            className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold"
+            className="
+              w-full
+              h-16
+              rounded-2xl
+              orange-gradient
+              glow-orange
+              font-black
+              text-lg
+              mt-3
+            "
           >
-            Ingresar
+
+            Ingresar al panel
+
           </button>
 
         </div>
 
       </div>
 
-    </div>
+    </main>
+
   )
 }
