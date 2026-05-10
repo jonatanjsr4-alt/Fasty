@@ -61,7 +61,7 @@ export default function Hero() {
           <div style={{ position: 'absolute', top: 60, right: -40, background: 'var(--dark2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, zIndex: 3, animation: 'floatBadge1 4s ease-in-out infinite', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
             <span style={{ fontSize: '1.3rem' }}>🚀</span>
             <div>
-              <div style={{ color: 'var(--lime)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>2 min</div>
+              <div style={{ color: 'var(--lime)', fontFamily: 'var(--font-display)', fontWeight: 700 }}>30 - 45 min</div>
               <div style={{ fontSize: '0.65rem', color: 'var(--muted)' }}>Tiempo promedio</div>
             </div>
           </div>
