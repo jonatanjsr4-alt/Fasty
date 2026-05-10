@@ -5,6 +5,8 @@
 :root {
 
   --orange: #FF5001;
+  --orange-light: #ff7b00;
+
   --lime: #C8F135;
 
   --dark: #0A0A0A;
@@ -17,8 +19,8 @@
   --light: #F5F0E8;
   --white: #FFFFFF;
 
-  --radius: 20px;
-  --radius-sm: 12px;
+  --radius: 24px;
+  --radius-sm: 16px;
 
   --font-display: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
@@ -37,6 +39,7 @@ html {
 body {
 
   background: var(--dark);
+
   color: var(--white);
 
   font-family: var(--font-body);
@@ -66,8 +69,20 @@ a {
   color: inherit;
 }
 
+button {
+  transition: 0.25s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+img {
+  user-select: none;
+}
+
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -91,16 +106,6 @@ h6 {
   letter-spacing: -2px;
 }
 
-button {
-
-  transition: 0.25s ease;
-}
-
-button:hover {
-
-  transform: translateY(-2px);
-}
-
 .glass {
 
   background: rgba(255,255,255,0.04);
@@ -112,12 +117,12 @@ button:hover {
 
 .card-hover {
 
-  transition: 0.3s ease;
+  transition: 0.35s ease;
 }
 
 .card-hover:hover {
 
-  transform: translateY(-6px);
+  transform: translateY(-8px);
 
   border-color: rgba(255,255,255,0.12);
 }
@@ -126,8 +131,8 @@ button:hover {
 
   background: linear-gradient(
     135deg,
-    #FF5001,
-    #ff7b00
+    var(--orange),
+    var(--orange-light)
   );
 }
 
@@ -136,13 +141,18 @@ button:hover {
   background: linear-gradient(
     135deg,
     #ffffff,
-    #888888
+    #7a7a7a
   );
 
-  background-clip: text;
   -webkit-background-clip: text;
 
   -webkit-text-fill-color: transparent;
+}
+
+.glow-orange {
+
+  box-shadow:
+    0 0 30px rgba(255,80,1,.35);
 }
 
 @keyframes pulse {
@@ -195,8 +205,8 @@ button:hover {
   transform: translateY(30px);
 
   transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
+    opacity .7s ease,
+    transform .7s ease;
 }
 
 .reveal.visible {

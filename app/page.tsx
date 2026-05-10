@@ -1,35 +1,35 @@
 import Navbar from '@/components/Navbar'
+import FeaturedStores from '@/components/FeaturedStores'
 
 export default function HomePage() {
 
   return (
 
-    <main className="min-h-screen bg-black text-white overflow-hidden">
+    <main className="min-h-screen bg-[#0A0A0A] text-white overflow-hidden">
 
       <Navbar />
 
-      <section
-        id="inicio"
-        className="relative min-h-screen flex items-center px-6 pt-40"
-      >
+      <section className="relative min-h-screen flex items-center px-6 pt-40 pb-24">
 
-        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-20 items-center">
+        <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-orange-500/10 blur-[140px] rounded-full" />
+
+        <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-20 items-center relative z-10">
 
           <div>
 
             <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full glass mb-8">
 
-              <div className="w-2 h-2 bg-lime-400 rounded-full animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" />
 
               <span className="text-sm text-zinc-300">
 
-                FASTY disponible en Quibdó
+                Delivery moderno en Quibdó
 
               </span>
 
             </div>
 
-            <h1 className="text-[70px] md:text-[110px] leading-[0.9] font-black tracking-[-6px]">
+            <h1 className="text-[68px] md:text-[110px] leading-[0.9] font-black tracking-[-7px]">
 
               Todo lo que necesitas,
 
@@ -41,14 +41,14 @@ export default function HomePage() {
 
             <p className="mt-8 text-xl text-zinc-400 max-w-xl leading-relaxed">
 
-              Restaurantes, supermercados, farmacias
-              y negocios locales en una sola plataforma moderna.
+              FASTY conecta restaurantes, supermercados,
+              farmacias y negocios locales en una sola plataforma moderna.
 
             </p>
 
             <div className="flex flex-wrap gap-4 mt-10">
 
-              <button className="h-16 px-8 rounded-2xl orange-gradient font-bold text-lg">
+              <button className="h-16 px-8 rounded-2xl orange-gradient glow-orange font-bold text-lg">
 
                 Pedir ahora
 
@@ -62,7 +62,7 @@ export default function HomePage() {
 
             </div>
 
-            <div className="flex gap-14 mt-16">
+            <div className="flex gap-14 mt-16 flex-wrap">
 
               <div>
 
@@ -71,7 +71,7 @@ export default function HomePage() {
                 </h3>
 
                 <p className="text-zinc-500 mt-2">
-                  Pedidos
+                  Pedidos realizados
                 </p>
 
               </div>
@@ -83,7 +83,7 @@ export default function HomePage() {
                 </h3>
 
                 <p className="text-zinc-500 mt-2">
-                  Negocios
+                  Negocios activos
                 </p>
 
               </div>
@@ -95,7 +95,7 @@ export default function HomePage() {
                 </h3>
 
                 <p className="text-zinc-500 mt-2">
-                  Soporte
+                  Soporte FASTY
                 </p>
 
               </div>
@@ -106,21 +106,19 @@ export default function HomePage() {
 
           <div className="relative flex justify-center">
 
-            <div className="absolute w-[600px] h-[600px] bg-orange-500/20 blur-[140px] rounded-full" />
+            <div className="relative w-[360px] h-[720px] rounded-[52px] glass overflow-hidden border border-white/10 animate-[floatPhone_5s_ease-in-out_infinite]">
 
-            <div className="relative w-[360px] h-[720px] rounded-[50px] glass border border-white/10 overflow-hidden animate-[floatPhone_5s_ease-in-out_infinite]">
+              <div className="h-14 flex items-center justify-center">
 
-              <div className="h-16 flex items-center justify-center">
-
-                <div className="w-40 h-8 rounded-full bg-black" />
+                <div className="w-40 h-7 rounded-full bg-black mt-3" />
 
               </div>
 
               <div className="p-6">
 
-                <div className="w-full h-16 rounded-2xl bg-white text-black flex items-center px-5 font-medium">
+                <div className="glass rounded-2xl h-16 flex items-center px-5 text-zinc-400">
 
-                  Buscar restaurantes
+                  Buscar restaurantes...
 
                 </div>
 
@@ -130,7 +128,7 @@ export default function HomePage() {
 
                     <div
                       key={item}
-                      className="glass rounded-3xl overflow-hidden"
+                      className="glass rounded-[28px] overflow-hidden card-hover"
                     >
 
                       <div className="h-40 bg-zinc-800" />
@@ -172,6 +170,8 @@ export default function HomePage() {
         </div>
 
       </section>
+
+      <FeaturedStores />
 
     </main>
   )
