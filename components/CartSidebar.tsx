@@ -2,21 +2,54 @@
 
 import { useState } from 'react'
 import { X } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 type Props = {
   open: boolean
   onClose: () => void
+  cart: any[]
+  total: number
 }
 
 export default function CheckoutModal({
   open,
   onClose,
+  cart,
+  total,
 }: Props) {
+
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
 
   if (!open) return null
+
+  async function sendOrder() {
+
+    const orderData = {
+      customer_name: name,
+      customer_phone: phone,
+      customer_address: address,
+      products: cart,
+      total,
+    }
+
+    const { data, error } = await supabase
+      .from('orders')
+      .insert([orderData])
+      .select()
+
+    console.log('DATA:', data)
+    console.log('ERROR:', error)
+
+    if (error) {
+      alert(JSON.stringify(error))
+      return
+    }
+
+    alert('Pedido enviado correctamente')
+    onClose()
+  }
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -26,18 +59,14 @@ export default function CheckoutModal({
         <div className="flex items-center justify-between p-6 border-b border-white/10">
 
           <h2 className="text-3xl font-black text-white">
-
             Finalizar pedido
-
           </h2>
 
           <button
             onClick={onClose}
             className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center"
           >
-
             <X className="text-white" />
-
           </button>
 
         </div>
@@ -68,15 +97,10 @@ export default function CheckoutModal({
           />
 
           <button
-            onClick={() => {
-             alert('Intentando guardar pedido')
-              onClose()
-            }}
+            onClick={sendOrder}
             className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 transition-all text-white font-bold text-lg"
           >
-
             Enviar pedido
-
           </button>
 
         </div>
