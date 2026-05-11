@@ -96,7 +96,7 @@ export default function CreateBusinessPage() {
 
       console.log(error)
 
-      alert('Error creando restaurante')
+      alert(JSON.stringify(error))
 
       return
 
@@ -277,7 +277,7 @@ export default function CreateBusinessPage() {
 
             <p className="text-white/60">
 
-              Banner negocio
+              Imagen de portada
 
             </p>
 
