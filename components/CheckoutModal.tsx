@@ -73,7 +73,10 @@ export default function CheckoutModal({
 
       user_id: user?.id ?? null,
 
-      restaurant_id: restaurantId ?? null,
+      restaurant_id:
+  restaurantId ||
+  cart[0]?.restaurant_id ||
+  null,
 
       customer_name: name.trim(),
 
