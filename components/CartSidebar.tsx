@@ -138,12 +138,10 @@ export default function CartSidebar({ isOpen, onClose }: Props) {
       </aside>
 
       {showCheckout && (
-        <CheckoutModal
-          onClose={() => {
-            setShowCheckout(false)
-            onClose()
-          }}
-        />
+<CheckoutModal
+  onClose={() => setShowCheckout(false)}
+  restaurantId={cart[0]?.restaurant_id}
+/>
       )}
     </>
   )
