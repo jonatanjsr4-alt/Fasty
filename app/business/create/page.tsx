@@ -72,6 +72,7 @@ export default function CreateBusinessPage() {
     const {
       data: { user },
     } = await supabase.auth.getUser()
+    console.log(user)
 
     const { data, error } = await supabase
       .from('restaurants')
