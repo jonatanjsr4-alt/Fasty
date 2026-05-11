@@ -424,7 +424,7 @@ function ConfigTab({ restaurant, user, onSaved }: { restaurant: any; user: any; 
   }
 
   // Load on mount
-  useState(() => { loadDetails() })
+  useEffect(() => { loadDetails() }, [])
 
   async function save() {
     if (!restaurant) return

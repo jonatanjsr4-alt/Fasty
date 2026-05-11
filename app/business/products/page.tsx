@@ -2,260 +2,369 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import { Search, Star, Clock, ShoppingBag, ChevronRight } from 'lucide-react'
+import {
+  Plus, Pencil, Trash2, ToggleLeft, ToggleRight,
+  Loader2, ArrowLeft, Package, AlertCircle,
+} from 'lucide-react'
 
-type Restaurant = {
+type Product = {
   id: string
   name: string
   description: string
+  price: number
   category: string
   image_url: string
-  logo_url: string
-  rating: number
-  delivery_time: string
-  delivery_fee: number
-  is_active: boolean
+  image: string
+  available: boolean
 }
 
-const CATEGORIES = [
-  { emoji: '🍽️', name: 'Todos' },
-  { emoji: '🍔', name: 'Restaurantes' },
-  { emoji: '🛒', name: 'Supermercados' },
-  { emoji: '💊', name: 'Farmacias' },
-  { emoji: '🍺', name: 'Licores' },
-  { emoji: '🍦', name: 'Heladerías' },
-  { emoji: '☕', name: 'Cafeterías' },
-  { emoji: '👗', name: 'Moda' },
-  { emoji: '💄', name: 'Belleza' },
-  { emoji: '📱', name: 'Tecnología' },
-]
-
-const PLACEHOLDER_IMAGES: Record<string, string> = {
-  Restaurantes: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop',
-  Supermercados: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop',
-  Farmacias: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop',
-  Licores: 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=600&auto=format&fit=crop',
-  Heladerías: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=600&auto=format&fit=crop',
-  Cafeterías: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&auto=format&fit=crop',
-  default: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop',
-}
-
-export default function StoresPage() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
-  const [filtered, setFiltered] = useState<Restaurant[]>([])
+export default function BusinessProductsPage() {
+  const router = useRouter()
+  const [products, setProducts] = useState<Product[]>([])
+  const [restaurantId, setRestaurantId] = useState<string | null>(null)
+  const [restaurantName, setRestaurantName] = useState('')
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [activeCategory, setActiveCategory] = useState('Todos')
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [togglingId, setTogglingId] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
 
-  useEffect(() => {
-    fetchRestaurants()
-  }, [])
+  useEffect(() => { fetchData() }, [])
 
-  useEffect(() => {
-    let result = restaurants
-    if (activeCategory !== 'Todos') {
-      result = result.filter(r => r.category === activeCategory)
-    }
-    if (search.trim()) {
-      const q = search.toLowerCase()
-      result = result.filter(r =>
-        r.name.toLowerCase().includes(q) ||
-        r.description?.toLowerCase().includes(q) ||
-        r.category.toLowerCase().includes(q)
-      )
-    }
-    setFiltered(result)
-  }, [search, activeCategory, restaurants])
+  async function fetchData() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push('/auth'); return }
 
-  async function fetchRestaurants() {
-    setLoading(true)
-    const { data } = await supabase
+    const { data: rest } = await supabase
       .from('restaurants')
+      .select('id, name')
+      .eq('owner_id', user.id)
+      .single()
+
+    if (!rest) {
+      setLoading(false)
+      return
+    }
+
+    setRestaurantId(rest.id)
+    setRestaurantName(rest.name)
+
+    const { data: prods } = await supabase
+      .from('products')
       .select('*')
-      .eq('is_active', true)
-      .order('rating', { ascending: false })
-    setRestaurants(data || [])
+      .eq('restaurant_id', rest.id)
+      .order('category')
+      .order('name')
+
+    setProducts(prods || [])
     setLoading(false)
   }
 
-  return (
-    <>
-      <Navbar />
-      <main style={{ minHeight: '100vh', paddingTop: '5rem', background: 'var(--dark)' }}>
+  function showToast(type: 'success' | 'error', msg: string) {
+    setToast({ type, msg })
+    setTimeout(() => setToast(null), 3500)
+  }
 
-        {/* HERO SECTION */}
-        <div style={{ position: 'relative', padding: '3rem 2rem 2rem', maxWidth: 1300, margin: '0 auto' }}>
-          <div style={{ position: 'absolute', top: 0, right: '10%', width: 400, height: 400, borderRadius: '50%', background: 'rgba(255,80,1,0.08)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+  async function toggleAvailable(product: Product) {
+    setTogglingId(product.id)
+    const { error } = await supabase
+      .from('products')
+      .update({ available: !product.available })
+      .eq('id', product.id)
 
-          <p style={{ fontSize: '0.75rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--orange)', marginBottom: '0.8rem' }}>
-            Quibdó, Chocó
-          </p>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.5rem)', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-            ¿Qué se te<br /><span style={{ color: 'var(--orange)' }}>antoja hoy?</span>
-          </h1>
+    if (!error) {
+      setProducts(prev =>
+        prev.map(p => p.id === product.id ? { ...p, available: !p.available } : p)
+      )
+      showToast('success', product.available ? 'Producto desactivado' : 'Producto activado')
+    }
+    setTogglingId(null)
+  }
 
-          {/* SEARCH */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '0 20px', maxWidth: 560, height: 56, marginBottom: '2rem' }}>
-            <Search size={18} color="var(--muted)" />
-            <input
-              type="text"
-              placeholder="Buscar restaurantes, comida..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: 'var(--white)', fontSize: '0.95rem' }}
-            />
-          </div>
+  async function deleteProduct(id: string) {
+    if (!confirm('¿Eliminar este producto? Esta acción no se puede deshacer.')) return
+    setDeletingId(id)
+    const { error } = await supabase.from('products').delete().eq('id', id)
+    if (!error) {
+      setProducts(prev => prev.filter(p => p.id !== id))
+      showToast('success', 'Producto eliminado')
+    } else {
+      showToast('error', 'Error al eliminar')
+    }
+    setDeletingId(null)
+  }
 
-          {/* CATEGORY PILLS */}
-          <div style={{ display: 'flex', gap: '0.6rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '8px 16px', borderRadius: 100, whiteSpace: 'nowrap',
-                  fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  background: activeCategory === cat.name ? 'var(--orange)' : 'var(--dark3)',
-                  color: activeCategory === cat.name ? '#fff' : 'var(--muted)',
-                  border: `1px solid ${activeCategory === cat.name ? 'var(--orange)' : 'rgba(255,255,255,0.08)'}`,
-                }}
-              >
-                <span>{cat.emoji}</span>
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* RESULTS */}
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '1rem 2rem 5rem' }}>
-          {loading ? (
-            <LoadingGrid />
-          ) : filtered.length === 0 ? (
-            <EmptyState search={search} category={activeCategory} />
-          ) : (
-            <>
-              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                {filtered.length} negocio{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                {filtered.map(r => (
-                  <RestaurantCard key={r.id} restaurant={r} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </main>
-    </>
-  )
-}
-
-function RestaurantCard({ restaurant: r }: { restaurant: Restaurant }) {
-  const [hovered, setHovered] = useState(false)
-  const imgSrc = r.image_url || PLACEHOLDER_IMAGES[r.category] || PLACEHOLDER_IMAGES.default
+  const categories = [...new Set(products.map(p => p.category).filter(Boolean))]
+  const uncategorized = products.filter(p => !p.category)
+  const available = products.filter(p => p.available).length
+  const unavailable = products.filter(p => !p.available).length
 
   return (
-    <Link
-      href={`/stores/${r.id}`}
-      style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={{
-        background: 'var(--dark3)',
-        border: `1px solid ${hovered ? 'rgba(255,80,1,0.3)' : 'rgba(255,255,255,0.06)'}`,
-        borderRadius: 24,
-        overflow: 'hidden',
-        transition: 'transform 0.25s, border-color 0.25s, box-shadow 0.25s',
-        transform: hovered ? 'translateY(-6px)' : 'none',
-        boxShadow: hovered ? '0 20px 40px rgba(0,0,0,0.4)' : 'none',
-        cursor: 'pointer',
+    <main style={{ minHeight: '100vh', background: 'var(--dark)', color: 'var(--white)' }}>
+
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: 'fixed', top: 24, right: 24, zIndex: 9999,
+          display: 'flex', alignItems: 'center', gap: 10,
+          background: toast.type === 'success' ? 'rgba(74,222,128,0.12)' : 'rgba(239,68,68,0.12)',
+          border: `1px solid ${toast.type === 'success' ? 'rgba(74,222,128,0.3)' : 'rgba(239,68,68,0.3)'}`,
+          borderRadius: 14, padding: '12px 18px', backdropFilter: 'blur(12px)', maxWidth: 320,
+        }}>
+          <span style={{ fontSize: '0.875rem', color: toast.type === 'success' ? '#4ade80' : '#f87171' }}>
+            {toast.msg}
+          </span>
+        </div>
+      )}
+
+      {/* Nav */}
+      <nav style={{
+        position: 'sticky', top: 0, zIndex: 100,
+        background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        {/* IMAGE */}
-        <div style={{ position: 'relative', height: 200, overflow: 'hidden' }}>
-          <img
-            src={imgSrc}
-            alt={r.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', transform: hovered ? 'scale(1.06)' : 'scale(1)' }}
-          />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%)' }} />
-
-          {/* CATEGORY BADGE */}
-          <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '4px 10px', fontSize: '0.7rem', color: 'var(--muted)' }}>
-            {r.category}
-          </div>
-
-          {/* RATING */}
-          <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '4px 10px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Star size={11} fill="#C8F135" color="#C8F135" />
-            <span style={{ color: '#C8F135', fontWeight: 600 }}>{r.rating?.toFixed(1) || '4.5'}</span>
-          </div>
-        </div>
-
-        {/* CONTENT */}
-        <div style={{ padding: '1.2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.2 }}>{r.name}</h3>
-            <ChevronRight size={16} color="var(--muted)" style={{ flexShrink: 0, marginTop: 2 }} />
-          </div>
-
-          {r.description && (
-            <p style={{ color: 'var(--muted)', fontSize: '0.8rem', lineHeight: 1.5, marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {r.description}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <button onClick={() => router.push('/dashboard')} style={{
+            width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', cursor: 'pointer', color: 'var(--white)',
+          }}>
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <p style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--orange)', fontWeight: 600, margin: 0 }}>
+              {restaurantName || 'Mi negocio'}
             </p>
-          )}
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', color: 'var(--muted)' }}>
-              <Clock size={13} />
-              {r.delivery_time || '20-35 min'}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', color: 'var(--muted)' }}>
-              <ShoppingBag size={13} />
-              {r.delivery_fee === 0 ? <span style={{ color: '#C8F135' }}>Gratis</span> : `$${r.delivery_fee?.toLocaleString()}`}
-            </div>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>
+              Mis productos
+            </h1>
           </div>
         </div>
+
+        <Link
+          href="/business/products/create"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8, height: 40, padding: '0 18px',
+            borderRadius: 12, background: 'var(--orange)', color: '#fff',
+            fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none',
+          }}
+        >
+          <Plus size={16} /> Agregar producto
+        </Link>
+      </nav>
+
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
+
+        {loading ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '5rem 0' }}>
+            <Loader2 size={32} color="var(--orange)" style={{ animation: 'spin 0.8s linear infinite' }} />
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
+        ) : !restaurantId ? (
+          <div style={{ textAlign: 'center', padding: '5rem 2rem' }}>
+            <Package size={56} color="var(--muted)" style={{ margin: '0 auto 1.5rem' }} />
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.8rem' }}>
+              Aún no tienes un negocio
+            </h2>
+            <p style={{ color: 'var(--muted)', marginBottom: '2rem' }}>
+              Crea tu negocio primero para poder agregar productos.
+            </p>
+            <Link href="/business/create" style={{
+              background: 'var(--orange)', color: '#fff', padding: '12px 28px',
+              borderRadius: 14, fontWeight: 700, textDecoration: 'none',
+            }}>
+              Crear mi negocio
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+              {[
+                { label: 'Total productos', value: products.length },
+                { label: 'Disponibles', value: available, color: '#4ade80' },
+                { label: 'Desactivados', value: unavailable, color: 'var(--muted)' },
+              ].map(s => (
+                <div key={s.label} style={{
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 20, padding: '1.2rem 1.5rem',
+                }}>
+                  <p style={{ color: 'var(--muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>
+                    {s.label}
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, color: s.color || 'var(--white)' }}>
+                    {s.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {products.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'rgba(255,255,255,0.03)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.06)' }}>
+                <Package size={48} color="var(--muted)" style={{ margin: '0 auto 1rem' }} />
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                  Sin productos aún
+                </h3>
+                <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+                  Agrega tus primeros productos para que los clientes puedan pedir.
+                </p>
+                <Link href="/business/products/create" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: 'var(--orange)', color: '#fff', padding: '12px 24px',
+                  borderRadius: 14, fontWeight: 700, textDecoration: 'none',
+                }}>
+                  <Plus size={16} /> Agregar primer producto
+                </Link>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+                {/* Categorías con productos */}
+                {categories.map(cat => (
+                  <div key={cat}>
+                    <p style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--orange)', fontWeight: 700, marginBottom: '0.8rem' }}>
+                      {cat}
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      {products.filter(p => p.category === cat).map(p => (
+                        <ProductRow
+                          key={p.id}
+                          product={p}
+                          toggling={togglingId === p.id}
+                          deleting={deletingId === p.id}
+                          onToggle={() => toggleAvailable(p)}
+                          onDelete={() => deleteProduct(p.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Sin categoría */}
+                {uncategorized.length > 0 && (
+                  <div>
+                    {categories.length > 0 && (
+                      <p style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--muted)', fontWeight: 700, marginBottom: '0.8rem' }}>
+                        Sin categoría
+                      </p>
+                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      {uncategorized.map(p => (
+                        <ProductRow
+                          key={p.id}
+                          product={p}
+                          toggling={togglingId === p.id}
+                          deleting={deletingId === p.id}
+                          onToggle={() => toggleAvailable(p)}
+                          onDelete={() => deleteProduct(p.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </div>
-    </Link>
+    </main>
   )
 }
 
-function LoadingGrid() {
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-      {[1, 2, 3, 4, 5, 6].map(i => (
-        <div key={i} style={{ background: 'var(--dark3)', borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ height: 200, background: 'var(--mid)', animation: 'pulse 1.5s infinite' }} />
-          <div style={{ padding: '1.2rem' }}>
-            <div style={{ height: 20, background: 'var(--mid)', borderRadius: 8, marginBottom: 10, width: '60%' }} />
-            <div style={{ height: 14, background: 'var(--mid)', borderRadius: 6, marginBottom: 6, width: '90%' }} />
-            <div style={{ height: 14, background: 'var(--mid)', borderRadius: 6, width: '70%' }} />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
+function ProductRow({
+  product: p,
+  toggling,
+  deleting,
+  onToggle,
+  onDelete,
+}: {
+  product: Product
+  toggling: boolean
+  deleting: boolean
+  onToggle: () => void
+  onDelete: () => void
+}) {
+  const img = p.image_url || p.image || null
 
-function EmptyState({ search, category }: { search: string; category: string }) {
   return (
-    <div style={{ textAlign: 'center', padding: '5rem 2rem' }}>
-      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🍽️</div>
-      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-        Sin resultados
-      </h3>
-      <p style={{ color: 'var(--muted)', maxWidth: 360, margin: '0 auto' }}>
-        {search
-          ? `No encontramos negocios para "${search}".`
-          : `Aún no hay negocios en la categoría "${category}".`}
-        <br />Pronto habrá más opciones en Quibdó.
-      </p>
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '1rem',
+      background: p.available ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+      border: `1px solid ${p.available ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)'}`,
+      borderRadius: 18, padding: '0.9rem 1.2rem',
+      opacity: p.available ? 1 : 0.6, transition: 'opacity 0.2s',
+    }}>
+      {/* Imagen */}
+      <div style={{
+        width: 56, height: 56, borderRadius: 12, flexShrink: 0,
+        background: 'var(--mid)', overflow: 'hidden',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {img
+          ? <img src={img} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          : <span style={{ fontSize: '1.5rem' }}>🍽️</span>
+        }
+      </div>
+
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.15rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {p.name}
+        </p>
+        {p.description && (
+          <p style={{ color: 'var(--muted)', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}>
+            {p.description}
+          </p>
+        )}
+      </div>
+
+      {/* Precio */}
+      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1rem', color: 'var(--orange)', flexShrink: 0 }}>
+        ${p.price.toLocaleString()}
+      </span>
+
+      {/* Toggle disponible */}
+      <button
+        onClick={onToggle}
+        disabled={toggling}
+        title={p.available ? 'Desactivar' : 'Activar'}
+        style={{
+          background: 'none', border: 'none', cursor: toggling ? 'not-allowed' : 'pointer',
+          color: p.available ? '#4ade80' : 'var(--muted)', flexShrink: 0, padding: 4,
+          display: 'flex', alignItems: 'center',
+        }}
+      >
+        {toggling
+          ? <Loader2 size={20} style={{ animation: 'spin 0.8s linear infinite' }} />
+          : p.available
+            ? <ToggleRight size={22} />
+            : <ToggleLeft size={22} />
+        }
+      </button>
+
+      {/* Eliminar */}
+      <button
+        onClick={onDelete}
+        disabled={deleting}
+        title="Eliminar"
+        style={{
+          background: 'none', border: 'none', cursor: deleting ? 'not-allowed' : 'pointer',
+          color: 'var(--muted)', flexShrink: 0, padding: 4,
+          display: 'flex', alignItems: 'center',
+          transition: 'color 0.15s',
+        }}
+        onMouseEnter={e => { if (!deleting) (e.currentTarget as HTMLElement).style.color = '#f87171' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--muted)' }}
+      >
+        {deleting
+          ? <Loader2 size={18} style={{ animation: 'spin 0.8s linear infinite' }} />
+          : <Trash2 size={18} />
+        }
+      </button>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }

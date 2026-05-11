@@ -9,6 +9,7 @@ type Product = {
   name: string
   price: number
   image: string
+  image_url?: string
 }
 
 type Order = {
@@ -462,7 +463,7 @@ export default function AdminOrders() {
                       >
 
                         <img
-                          src={product.image}
+                          src={product.image || (product as any).image_url || ''}
                           alt={product.name}
                           className="
                             w-24

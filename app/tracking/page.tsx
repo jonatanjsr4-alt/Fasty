@@ -1,211 +1,151 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
-import { CheckCircle, Clock, Truck, Package, XCircle, ArrowLeft, Phone, MapPin } from 'lucide-react'
+import { Search, ArrowLeft, Package, Clock, Truck, CheckCircle, XCircle } from 'lucide-react'
 
-type Order = {
-  id: string
-  customer_name: string
-  customer_phone: string
-  customer_address: string
-  products: { name: string; price: number; quantity: number }[]
-  total: number
-  status: string
-  created_at: string
-  restaurant_id: string
+const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
+  Pendiente:   { label: 'Pendiente',   color: '#facc15', icon: Clock },
+  Preparando:  { label: 'Preparando',  color: '#60a5fa', icon: Package },
+  'En camino': { label: 'En camino',   color: '#a78bfa', icon: Truck },
+  Entregado:   { label: 'Entregado',   color: '#4ade80', icon: CheckCircle },
+  Cancelado:   { label: 'Cancelado',   color: '#f87171', icon: XCircle },
 }
 
-type Restaurant = {
-  name: string
-  phone: string
-}
-
-const STEPS = [
-  { key: 'Pendiente',   label: 'Pedido recibido',  icon: Clock,        desc: 'Tu pedido ha sido registrado y está en espera.' },
-  { key: 'Preparando',  label: 'Preparando',        icon: Package,      desc: 'El negocio está preparando tu pedido.' },
-  { key: 'En camino',   label: 'En camino',         icon: Truck,        desc: 'Tu pedido está en camino hacia ti. 🚀' },
-  { key: 'Entregado',   label: 'Entregado',         icon: CheckCircle,  desc: '¡Tu pedido ha llegado! Buen provecho. 🎉' },
-]
-
-export default function TrackingPage() {
-  const params = useParams()
+export default function TrackingSearchPage() {
   const router = useRouter()
-  const orderId = params.id as string
-
-  const [order, setOrder] = useState<Order | null>(null)
-  const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<any | null>(null)
   const [notFound, setNotFound] = useState(false)
 
-  useEffect(() => {
-    if (!orderId) return
-    fetchOrder()
-
-    // Suscripción en tiempo real
-    const channel = supabase
-      .channel(`order-${orderId}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `id=eq.${orderId}` },
-        (payload) => { setOrder(prev => prev ? { ...prev, status: (payload.new as Order).status } : null) }
-      )
-      .subscribe()
-
-    return () => { supabase.removeChannel(channel) }
-  }, [orderId])
-
-  async function fetchOrder() {
+  async function search() {
+    const q = query.trim()
+    if (!q) return
     setLoading(true)
-    const { data } = await supabase.from('orders').select('*').eq('id', orderId).single()
-    if (!data) { setNotFound(true); setLoading(false); return }
-    setOrder(data)
+    setNotFound(false)
+    setResult(null)
 
-    if (data.restaurant_id) {
-      const { data: rest } = await supabase.from('restaurants').select('name, phone').eq('id', data.restaurant_id).single()
-      if (rest) setRestaurant(rest)
-    }
+    // Buscar por UUID completo o por prefijo del ID
+    const { data } = await supabase
+      .from('orders')
+      .select('id, customer_name, status, total, created_at')
+      .or(`id.eq.${q},id.ilike.${q}%`)
+      .limit(1)
+      .single()
+
     setLoading(false)
+    if (!data) {
+      setNotFound(true)
+    } else {
+      setResult(data)
+    }
   }
 
-  if (loading) return <LoadingScreen />
-
-  if (notFound) return (
-    <div style={{ minHeight: '100vh', background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16, textAlign: 'center', padding: '2rem' }}>
-      <XCircle size={56} color="var(--muted)" />
-      <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700 }}>Pedido no encontrado</h2>
-      <p style={{ color: 'var(--muted)' }}>El código de seguimiento no es válido.</p>
-      <Link href="/stores" style={{ marginTop: 8, color: 'var(--orange)', fontSize: '0.9rem' }}>← Volver a tiendas</Link>
-    </div>
-  )
-
-  if (!order) return null
-
-  const currentStepIndex = STEPS.findIndex(s => s.key === order.status)
-  const isCancelled = order.status === 'Cancelado'
+  const cfg = result ? STATUS_CONFIG[result.status] || STATUS_CONFIG['Pendiente'] : null
 
   return (
-    <main style={{ minHeight: '100vh', background: 'var(--dark)', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ width: '100%', maxWidth: 600 }}>
+    <main style={{ minHeight: '100vh', background: 'var(--dark)', color: 'var(--white)', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4rem 1.5rem' }}>
+      <div style={{ width: '100%', maxWidth: 520 }}>
 
-        {/* BACK */}
-        <button onClick={() => router.push('/stores')} style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--muted)', fontSize: '0.85rem', background: 'none', border: 'none', cursor: 'pointer', marginBottom: '2rem' }}>
-          <ArrowLeft size={16} /> Volver a tiendas
-        </button>
+        <Link href="/stores" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '2.5rem', textDecoration: 'none' }}>
+          <ArrowLeft size={15} /> Volver a tiendas
+        </Link>
 
-        {/* HEADER */}
-        <div style={{ marginBottom: '2rem' }}>
-          <p style={{ fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--orange)', marginBottom: '0.5rem' }}>
-            Seguimiento de pedido
-          </p>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.6rem,4vw,2.2rem)', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.4rem' }}>
-            {isCancelled ? 'Pedido cancelado' : order.status === 'Entregado' ? '¡Pedido entregado! 🎉' : 'Tu pedido está en camino'}
-          </h1>
-          <p style={{ color: 'var(--muted)', fontSize: '0.82rem' }}>
-            Pedido #{order.id.split('-')[0].toUpperCase()} · {new Date(order.created_at).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })}
-          </p>
+        <p style={{ fontSize: '0.72rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--orange)', marginBottom: '0.5rem' }}>
+          Seguimiento
+        </p>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem,5vw,2.8rem)', fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em', marginBottom: '0.8rem' }}>
+          Rastrear mi pedido
+        </h1>
+        <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+          Ingresa el código de seguimiento que recibiste al confirmar tu pedido.
+        </p>
+
+        {/* Buscador */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div style={{
+            flex: 1, display: 'flex', alignItems: 'center', gap: 10,
+            background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: 14, padding: '0 16px', height: 54,
+          }}>
+            <Search size={18} color="var(--muted)" />
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && search()}
+              placeholder="Código de pedido"
+              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: 'var(--white)', fontSize: '0.95rem' }}
+            />
+          </div>
+          <button
+            onClick={search}
+            disabled={loading || !query.trim()}
+            style={{
+              height: 54, padding: '0 22px', borderRadius: 14, background: 'var(--orange)',
+              color: '#fff', fontWeight: 700, fontSize: '0.9rem', border: 'none',
+              cursor: loading || !query.trim() ? 'not-allowed' : 'pointer',
+              opacity: !query.trim() ? 0.6 : 1, transition: 'opacity 0.2s',
+            }}
+          >
+            {loading ? '...' : 'Buscar'}
+          </button>
         </div>
 
-        {/* STEPS */}
-        {!isCancelled && (
-          <div style={{ background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 24, padding: '1.5rem', marginBottom: '1.5rem' }}>
-            {STEPS.map((step, index) => {
-              const Icon = step.icon
-              const isDone = index < currentStepIndex
-              const isCurrent = index === currentStepIndex
-              const isPending = index > currentStepIndex
-              return (
-                <div key={step.key} style={{ display: 'flex', gap: 16, paddingBottom: index < STEPS.length - 1 ? '1.5rem' : 0, position: 'relative' }}>
-                  {/* Line connector */}
-                  {index < STEPS.length - 1 && (
-                    <div style={{ position: 'absolute', left: 19, top: 40, width: 2, height: 'calc(100% - 16px)', background: isDone ? 'var(--orange)' : 'rgba(255,255,255,0.08)', transition: 'background 0.5s' }} />
-                  )}
-                  {/* Icon */}
-                  <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.4s', background: isDone ? 'var(--orange)' : isCurrent ? 'rgba(255,80,1,0.15)' : 'rgba(255,255,255,0.05)', border: `2px solid ${isDone ? 'var(--orange)' : isCurrent ? 'var(--orange)' : 'rgba(255,255,255,0.08)'}` }}>
-                    <Icon size={16} color={isDone ? '#fff' : isCurrent ? 'var(--orange)' : 'var(--muted)'} />
-                  </div>
-                  {/* Text */}
-                  <div style={{ flex: 1, paddingTop: 8 }}>
-                    <p style={{ fontWeight: 600, fontSize: '0.9rem', color: isPending ? 'var(--muted)' : 'var(--white)', marginBottom: '0.2rem' }}>
-                      {step.label}
-                      {isCurrent && <span style={{ marginLeft: 8, display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: 'var(--orange)', animation: 'pulse 1.5s infinite' }} />}
-                    </p>
-                    {isCurrent && <p style={{ color: 'var(--muted)', fontSize: '0.78rem', lineHeight: 1.4 }}>{step.desc}</p>}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {isCancelled && (
-          <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 20, padding: '1.5rem', marginBottom: '1.5rem', display: 'flex', gap: 12, alignItems: 'center' }}>
-            <XCircle size={24} color="#f87171" />
+        {/* Resultado */}
+        {notFound && (
+          <div style={{ marginTop: '1.5rem', padding: '1.2rem 1.5rem', background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
+            <XCircle size={20} color="#f87171" />
             <div>
-              <p style={{ fontWeight: 600, color: '#f87171', marginBottom: '0.2rem' }}>Pedido cancelado</p>
-              <p style={{ color: 'var(--muted)', fontSize: '0.82rem' }}>Este pedido fue cancelado. Contáctanos si tienes dudas.</p>
+              <p style={{ fontWeight: 600, color: '#f87171', fontSize: '0.9rem', marginBottom: 2 }}>Pedido no encontrado</p>
+              <p style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>Verifica el código e intenta de nuevo.</p>
             </div>
           </div>
         )}
 
-        {/* ORDER DETAILS */}
-        <div style={{ background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 24, padding: '1.5rem', marginBottom: '1.5rem' }}>
-          <h3 style={{ fontWeight: 700, marginBottom: '1rem', fontSize: '0.95rem' }}>Detalle del pedido</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1rem' }}>
-            {order.products?.map((p, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                <span style={{ color: 'var(--muted)' }}>{p.name} <span style={{ color: 'rgba(255,255,255,0.3)' }}>x{p.quantity}</span></span>
-                <span>${(p.price * p.quantity).toLocaleString()}</span>
+        {result && cfg && (
+          <div style={{ marginTop: '1.5rem', background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, overflow: 'hidden' }}>
+            <div style={{ padding: '1.2rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, background: `${cfg.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <cfg.icon size={18} color={cfg.color} />
               </div>
-            ))}
-          </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Total</span>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.3rem', color: 'var(--orange)' }}>${order.total.toLocaleString()}</span>
-          </div>
-        </div>
-
-        {/* DELIVERY INFO */}
-        <div style={{ background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 24, padding: '1.5rem' }}>
-          <h3 style={{ fontWeight: 700, marginBottom: '1rem', fontSize: '0.95rem' }}>Información de entrega</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', fontSize: '0.85rem' }}>
-            <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-              <MapPin size={15} color="var(--orange)" style={{ marginTop: 2, flexShrink: 0 }} />
               <div>
-                <p style={{ color: 'var(--muted)', fontSize: '0.72rem', marginBottom: 2 }}>Dirección</p>
-                <p>{order.customer_address}</p>
+                <p style={{ fontWeight: 700, margin: 0 }}>{result.customer_name}</p>
+                <p style={{ color: 'var(--muted)', fontSize: '0.78rem', margin: 0 }}>
+                  #{result.id.split('-')[0].toUpperCase()} · {new Date(result.created_at).toLocaleDateString('es-CO')}
+                </p>
+              </div>
+              <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                <p style={{ color: cfg.color, fontWeight: 700, fontSize: '0.85rem', margin: 0 }}>{cfg.label}</p>
+                <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, color: 'var(--orange)', fontSize: '1.1rem', margin: 0 }}>
+                  ${result.total.toLocaleString()}
+                </p>
               </div>
             </div>
-            {restaurant && (
-              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <Package size={15} color="var(--orange)" style={{ marginTop: 2, flexShrink: 0 }} />
-                <div>
-                  <p style={{ color: 'var(--muted)', fontSize: '0.72rem', marginBottom: 2 }}>Negocio</p>
-                  <p>{restaurant.name}</p>
-                </div>
-              </div>
-            )}
+            <div style={{ padding: '1.2rem 1.5rem' }}>
+              <Link
+                href={`/tracking/${result.id}`}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  height: 46, borderRadius: 12, background: 'var(--orange)', color: '#fff',
+                  fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem',
+                }}
+              >
+                Ver seguimiento completo →
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <Link href="/stores" style={{ color: 'var(--orange)', fontSize: '0.85rem' }}>
-            ← Hacer otro pedido
-          </Link>
-        </div>
+        {/* Hint */}
+        <p style={{ color: 'var(--muted)', fontSize: '0.78rem', marginTop: '2rem', textAlign: 'center', lineHeight: 1.6 }}>
+          El código aparece en el mensaje de WhatsApp después de confirmar tu pedido.<br />
+          También puedes verlo en el link de seguimiento que se abrió automáticamente.
+        </p>
       </div>
     </main>
-  )
-}
-
-function LoadingScreen() {
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 48, height: 48, borderRadius: '50%', border: '3px solid var(--dark3)', borderTopColor: 'var(--orange)', animation: 'spin 0.8s linear infinite', margin: '0 auto 1rem' }} />
-        <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Cargando tu pedido...</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    </div>
   )
 }

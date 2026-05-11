@@ -98,7 +98,7 @@ export default function CheckoutModal({
 
       total,
 
-      status: 'pending',
+      status: 'Pendiente',
 
       notes: notes.trim() || null,
 
