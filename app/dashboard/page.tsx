@@ -53,7 +53,35 @@ export default function ProfilePage() {
   async function fetchData() {
     setLoadingData(true)
     const { data: prof } = await supabase.from('profiles').select('*').eq('id', user!.id).single()
-    if (prof) setProfile({ full_name: prof.full_name || '', phone: prof.phone || '', address: prof.address || '' })
+    if (prof) {
+
+  if (prof.role === 'admin') {
+
+    window.location.href = '/admin'
+
+    return
+
+  }
+
+  if (prof.role === 'business') {
+
+    window.location.href = '/business/orders'
+
+    return
+
+  }
+
+  setProfile({
+
+    full_name: prof.full_name || '',
+
+    phone: prof.phone || '',
+
+    address: prof.address || '',
+
+  })
+
+}
 
     const { data: ords } = await supabase
       .from('orders')
