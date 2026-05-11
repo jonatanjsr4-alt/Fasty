@@ -184,7 +184,12 @@ export default function BusinessPage() {
                   </h4>
 
                   <button
-                    onClick={() => addToCart(product)}
+                    onClick={() =>
+                     addToCart({
+                      ...product,
+                      restaurant_id: product.restaurant_id,
+                    })
+                  }
                     className="px-6 py-3 rounded-full bg-orange-500 hover:bg-orange-600 transition-all font-bold"
                   >
 
