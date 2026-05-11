@@ -79,8 +79,8 @@ export default function CreateProductPage() {
 
       console.log(error)
 
-      alert('Error creando producto')
-
+      alert(JSON.stringify(error))
+      
       return
 
     }
