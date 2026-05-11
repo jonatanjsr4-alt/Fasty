@@ -93,17 +93,17 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
       .select()
       .single()
 
-    if (dbError || !data) {
+if (dbError || !data) {
 
-      console.log(dbError)
+  console.log(dbError)
 
-      setError(JSON.stringify(dbError))
+  setError(JSON.stringify(dbError))
 
-      setLoading(false)
+  setLoading(false)
 
-      return
+  return
 
-    }
+}
 
     const productsText = cart
       .map(
