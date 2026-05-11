@@ -2,9 +2,16 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { CartProvider } from '@/components/CartContext'
 
-export const metadata: Metadata = {
+export const metadata = {
+
   title: 'FASTY',
-  description: 'Delivery moderno para Quibdó',
+
+  description: 'Marketplace delivery FASTY',
+
+  manifest: '/manifest.json',
+
+  themeColor: '#FF5001',
+
 }
 
 export default function RootLayout({
