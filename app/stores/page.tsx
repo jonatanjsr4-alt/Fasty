@@ -1,11 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import {
+  Suspense,
+  useEffect,
+  useState,
+} from 'react'
 
-export default function StoresPage() {
+import Link from 'next/link'
+
+import {
+  useSearchParams,
+} from 'next/navigation'
+
+import {
+  supabase,
+} from '@/lib/supabase'
+
+function StoresContent() {
 
   const searchParams = useSearchParams()
 
@@ -28,15 +39,21 @@ export default function StoresPage() {
     let query = supabase
       .from('restaurants')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('created_at', {
+        ascending: false,
+      })
 
     if (category) {
 
-      query = query.eq('category', category)
+      query = query.eq(
+        'category',
+        category
+      )
 
     }
 
-    const { data, error } = await query
+    const { data, error } =
+      await query
 
     if (!error && data) {
 
@@ -48,13 +65,14 @@ export default function StoresPage() {
 
   }
 
-  const filteredRestaurants = restaurants.filter((restaurant) =>
+  const filteredRestaurants =
+    restaurants.filter((restaurant) =>
 
-    restaurant.name
-      ?.toLowerCase()
-      .includes(search.toLowerCase())
+      restaurant.name
+        ?.toLowerCase()
+        .includes(search.toLowerCase())
 
-  )
+    )
 
   if (loading) {
 
@@ -102,7 +120,9 @@ export default function StoresPage() {
             type="text"
             placeholder="Buscar restaurante..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
             className="
               h-16
               w-full
@@ -141,66 +161,69 @@ export default function StoresPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            {filteredRestaurants.map((restaurant) => (
+            {filteredRestaurants.map(
+              (restaurant) => (
 
-              <Link
-                key={restaurant.id}
-                href={`/business/${restaurant.id}`}
-                className="
-                  rounded-[32px]
-                  overflow-hidden
-                  border
-                  border-white/10
-                  bg-white/5
-                  hover:bg-white/10
-                  transition-all
-                "
-              >
+                <Link
+                  key={restaurant.id}
+                  href={`/business/${restaurant.id}`}
+                  className="
+                    rounded-[32px]
+                    overflow-hidden
+                    border
+                    border-white/10
+                    bg-white/5
+                    hover:bg-white/10
+                    transition-all
+                  "
+                >
 
-                <img
-                  src={
-                    restaurant.banner_url ||
-                    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop'
-                  }
-                  alt={restaurant.name}
-                  className="w-full h-64 object-cover"
-                />
+                  <img
+                    src={
+                      restaurant.banner_url ||
+                      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop'
+                    }
+                    alt={restaurant.name}
+                    className="w-full h-64 object-cover"
+                  />
 
-                <div className="p-6">
+                  <div className="p-6">
 
-                  <h2 className="text-4xl font-black">
+                    <h2 className="text-4xl font-black">
 
-                    {restaurant.name}
+                      {restaurant.name}
 
-                  </h2>
+                    </h2>
 
-                  <p className="text-white/60 mt-4">
+                    <p className="text-white/60 mt-4">
 
-                    {restaurant.description}
+                      {restaurant.description}
 
-                  </p>
+                    </p>
 
-                  <div className="mt-6 flex items-center justify-between">
+                    <div className="mt-6 flex items-center justify-between">
 
-                    <span className="text-orange-500 font-bold">
+                      <span className="text-orange-500 font-bold">
 
-                      {restaurant.category || 'Negocio'}
+                        {restaurant.category || 'Negocio'}
 
-                    </span>
+                      </span>
 
-                    <span className="text-white/40">
+                      <span className="text-white/40">
 
-                      Ver →
+                        Ver →
 
-                    </span>
+                      </span>
+
+                    </div>
 
                   </div>
 
-                </div>
+                </Link>
 
-              </Link>
+              )
 
-            ))}
+            )}
 
           </div>
 
@@ -209,6 +232,32 @@ export default function StoresPage() {
       </section>
 
     </main>
+
+  )
+
+}
+
+export default function StoresPage() {
+
+  return (
+
+    <Suspense fallback={
+
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+
+        <h1 className="text-4xl font-black">
+
+          Cargando...
+
+        </h1>
+
+      </main>
+
+    }>
+
+      <StoresContent />
+
+    </Suspense>
 
   )
 
