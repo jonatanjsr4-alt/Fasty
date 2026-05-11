@@ -10,6 +10,10 @@ export const metadata: Metadata = {
 
   manifest: '/manifest.json',
 
+}
+
+export const viewport = {
+
   themeColor: '#FF5001',
 
 }
