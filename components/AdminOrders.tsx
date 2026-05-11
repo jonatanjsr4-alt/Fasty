@@ -29,9 +29,24 @@ type Order = {
   created_at: string
 }
 
+type Restaurant = {
+  id: string
+  name: string
+  description: string
+  approved: boolean
+}
+
 export default function AdminOrders() {
 
   const [orders, setOrders] = useState<Order[]>([])
+
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+
+  const [stats, setStats] = useState({
+    restaurants: 0,
+    orders: 0,
+    users: 0,
+  })
 
   useEffect(() => {
 
@@ -76,9 +91,35 @@ export default function AdminOrders() {
       console.log(error)
 
       return
+
     }
 
     setOrders(data || [])
+
+    const { data: restaurantsData } = await supabase
+      .from('restaurants')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    setRestaurants(restaurantsData || [])
+
+    const { count: restaurantsCount } = await supabase
+      .from('restaurants')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: ordersCount } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: usersCount } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+
+    setStats({
+      restaurants: restaurantsCount || 0,
+      orders: ordersCount || 0,
+      users: usersCount || 0,
+    })
   }
 
   async function updateStatus(
@@ -95,6 +136,29 @@ export default function AdminOrders() {
       .eq('id', id)
 
     fetchOrders()
+
+  }
+
+  async function approveRestaurant(id: string) {
+
+    await supabase
+      .from('restaurants')
+      .update({ approved: true })
+      .eq('id', id)
+
+    fetchOrders()
+
+  }
+
+  async function disableRestaurant(id: string) {
+
+    await supabase
+      .from('restaurants')
+      .update({ approved: false })
+      .eq('id', id)
+
+    fetchOrders()
+
   }
 
   return (
@@ -113,19 +177,174 @@ export default function AdminOrders() {
 
           <h1 className="text-7xl font-black mt-4 leading-none">
 
-            Pedidos en tiempo real
+            Panel administrativo
 
           </h1>
 
           <p className="text-zinc-400 text-xl mt-5">
 
-            Administra pedidos y estados en vivo.
+            Administra negocios, pedidos y usuarios.
 
           </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+
+            <div className="glass rounded-[30px] p-6 border border-white/10">
+
+              <p className="text-zinc-500">
+
+                Negocios
+
+              </p>
+
+              <h2 className="text-6xl font-black mt-3">
+
+                {stats.restaurants}
+
+              </h2>
+
+            </div>
+
+            <div className="glass rounded-[30px] p-6 border border-white/10">
+
+              <p className="text-zinc-500">
+
+                Pedidos
+
+              </p>
+
+              <h2 className="text-6xl font-black mt-3">
+
+                {stats.orders}
+
+              </h2>
+
+            </div>
+
+            <div className="glass rounded-[30px] p-6 border border-white/10">
+
+              <p className="text-zinc-500">
+
+                Usuarios
+
+              </p>
+
+              <h2 className="text-6xl font-black mt-3">
+
+                {stats.users}
+
+              </h2>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div className="mb-16">
+
+          <h2 className="text-5xl font-black mb-8">
+
+            Negocios
+
+          </h2>
+
+          <div className="space-y-6">
+
+            {restaurants.map((restaurant) => (
+
+              <div
+                key={restaurant.id}
+                className="
+                  glass
+                  rounded-[30px]
+                  p-6
+                  border
+                  border-white/10
+                  flex
+                  flex-col
+                  lg:flex-row
+                  lg:items-center
+                  lg:justify-between
+                  gap-6
+                "
+              >
+
+                <div>
+
+                  <h3 className="text-3xl font-black">
+
+                    {restaurant.name}
+
+                  </h3>
+
+                  <p className="text-zinc-500 mt-2">
+
+                    {restaurant.description}
+
+                  </p>
+
+                </div>
+
+                <div className="flex gap-4">
+
+                  {restaurant.approved ? (
+
+                    <button
+                      onClick={() =>
+                        disableRestaurant(restaurant.id)
+                      }
+                      className="
+                        bg-red-500
+                        px-6
+                        h-12
+                        rounded-2xl
+                        font-bold
+                      "
+                    >
+
+                      Desactivar
+
+                    </button>
+
+                  ) : (
+
+                    <button
+                      onClick={() =>
+                        approveRestaurant(restaurant.id)
+                      }
+                      className="
+                        bg-green-500
+                        px-6
+                        h-12
+                        rounded-2xl
+                        font-bold
+                      "
+                    >
+
+                      Aprobar
+
+                    </button>
+
+                  )}
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
 
         </div>
 
         <div className="space-y-8">
+
+          <h2 className="text-5xl font-black mb-8">
+
+            Pedidos en tiempo real
+
+          </h2>
 
           {orders.map((order) => (
 
