@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function StoresPage() {
+
+  const searchParams = useSearchParams()
+
+  const category = searchParams.get('category')
 
   const [restaurants, setRestaurants] = useState<any[]>([])
 
@@ -16,14 +21,22 @@ export default function StoresPage() {
 
     fetchRestaurants()
 
-  }, [])
+  }, [category])
 
   async function fetchRestaurants() {
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('restaurants')
       .select('*')
       .order('created_at', { ascending: false })
+
+    if (category) {
+
+      query = query.eq('category', category)
+
+    }
+
+    const { data, error } = await query
 
     if (!error && data) {
 
@@ -79,7 +92,7 @@ export default function StoresPage() {
 
             <h1 className="text-7xl font-black tracking-[-5px] mt-4">
 
-              Tiendas
+              {category || 'Tiendas'}
 
             </h1>
 
@@ -112,13 +125,13 @@ export default function StoresPage() {
 
             <h2 className="text-5xl font-black">
 
-              No hay restaurantes
+              No hay negocios
 
             </h2>
 
             <p className="text-white/60 mt-4">
 
-              Agrega restaurantes desde el panel admin
+              Aún no existen negocios en esta categoría
 
             </p>
 
@@ -171,7 +184,7 @@ export default function StoresPage() {
 
                     <span className="text-orange-500 font-bold">
 
-                      {restaurant.category || 'Restaurante'}
+                      {restaurant.category || 'Negocio'}
 
                     </span>
 
