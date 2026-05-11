@@ -51,7 +51,7 @@ export default function Navbar() {
             {itemCount > 0 && <span style={{ position:'absolute',top:-5,right:-5,width:18,height:18,borderRadius:'50%',background:'var(--orange)',color:'#fff',fontSize:'0.6rem',fontWeight:700,display:'flex',alignItems:'center',justifyContent:'center' }}>{itemCount > 9 ? '9+' : itemCount}</span>}
           </button>
           {isLoggedIn
-            ? <Link href="/profile" style={{ width:40,height:40,borderRadius:12,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.08)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--white)' }}><User size={16} /></Link>
+            ? <Link href="/dashboard" style={{ width:40,height:40,borderRadius:12,background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.08)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--white)' }} title="Mi panel"><User size={16} /></Link>
             : <Link href="/auth" style={{ background:'var(--orange)',color:'var(--white)',padding:'0.55rem 1.2rem',borderRadius:'100px',fontSize:'0.82rem',fontWeight:500,whiteSpace:'nowrap' }} onMouseEnter={e=>{e.currentTarget.style.transform='scale(1.05)';e.currentTarget.style.boxShadow='0 0 25px rgba(255,80,1,0.4)'}} onMouseLeave={e=>{e.currentTarget.style.transform='scale(1)';e.currentTarget.style.boxShadow='none'}}>Pedir ahora →</Link>
           }
           <button className="nav-burger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menú">
@@ -64,7 +64,7 @@ export default function Navbar() {
       <div className={`nav-mobile-menu${menuOpen ? ' open' : ''}`}>
         {LINKS.map(l => <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</Link>)}
         {isLoggedIn
-          ? <Link href="/profile" onClick={() => setMenuOpen(false)} style={{ color:'var(--muted)' }}>Mi perfil</Link>
+          ? <Link href="/dashboard" onClick={() => setMenuOpen(false)} style={{ color:'var(--muted)' }}>Mi panel</Link>
           : <Link href="/auth" onClick={() => setMenuOpen(false)} style={{ background:'var(--orange)',color:'var(--white)',padding:'0.8rem 1.4rem',borderRadius:'100px',fontSize:'0.95rem',fontWeight:500,textAlign:'center',marginTop:'0.5rem' }}>Pedir ahora →</Link>
         }
       </div>

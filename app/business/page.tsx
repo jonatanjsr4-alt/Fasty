@@ -33,8 +33,9 @@ type Product = {
   description: string
   price: number
   image_url: string
+  image: string
   category: string
-  is_available: boolean
+  available: boolean
 }
 
 export default function StorePage() {
@@ -71,7 +72,7 @@ export default function StorePage() {
       .from('products')
       .select('*')
       .eq('restaurant_id', storeId)
-      .eq('is_available', true)
+      .eq('available', true)
       .order('category')
 
     setProducts(prods || [])
@@ -83,7 +84,7 @@ export default function StorePage() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image_url || '',
+      image: product.image_url || product.image || '',
       restaurant_id: storeId,
     })
     setAddedId(product.id)

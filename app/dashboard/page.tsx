@@ -51,7 +51,19 @@ export default function DashboardPage() {
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null)
 
   useEffect(() => {
-    if (user) fetchData()
+    if (user) {
+      fetchData()
+
+      // Realtime: escuchar cambios en pedidos
+      const channel = supabase
+        .channel('dashboard-orders')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+          fetchData()
+        })
+        .subscribe()
+
+      return () => { supabase.removeChannel(channel) }
+    }
   }, [user])
 
   async function fetchData() {
@@ -213,6 +225,8 @@ export default function DashboardPage() {
             <div className="flex items-center justify-center py-20">
               <Loader2 size={32} className="text-orange-500 animate-spin" />
             </div>
+          ) : activeTab === 'Configuración' ? (
+            <ConfigTab restaurant={restaurant} user={user} onSaved={() => fetchData()} />
           ) : (
             <>
               {/* Métricas */}
@@ -386,5 +400,100 @@ export default function DashboardPage() {
         </div>
       </section>
     </main>
+  )
+}
+
+function ConfigTab({ restaurant, user, onSaved }: { restaurant: any; user: any; onSaved: () => void }) {
+  const [name, setName] = useState(restaurant?.name || '')
+  const [description, setDescription] = useState('')
+  const [phone, setPhone] = useState('')
+  const [address, setAddress] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState('')
+
+  async function loadDetails() {
+    if (!restaurant) return
+    const { data } = await (await import('@/lib/supabase')).supabase
+      .from('restaurants').select('*').eq('id', restaurant.id).single()
+    if (data) {
+      setName(data.name || '')
+      setDescription(data.description || '')
+      setPhone(data.phone || '')
+      setAddress(data.address || '')
+    }
+  }
+
+  // Load on mount
+  useState(() => { loadDetails() })
+
+  async function save() {
+    if (!restaurant) return
+    setSaving(true)
+    const { supabase } = await import('@/lib/supabase')
+    const { error } = await supabase.from('restaurants').update({
+      name: name.trim(),
+      description: description.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+    }).eq('id', restaurant.id)
+    setSaving(false)
+    setMsg(error ? 'Error al guardar. Intenta de nuevo.' : '¡Cambios guardados!')
+    setTimeout(() => setMsg(''), 3000)
+    if (!error) onSaved()
+  }
+
+  const inputCls = "w-full h-12 rounded-2xl bg-white/5 border border-white/5 px-4 text-white outline-none focus:border-orange-500/50 transition-all text-sm"
+
+  return (
+    <div className="max-w-xl">
+      <h2 className="text-2xl font-black mb-1">Configuración del negocio</h2>
+      <p className="text-zinc-500 text-sm mb-8">Actualiza la información pública de tu negocio.</p>
+
+      {!restaurant ? (
+        <div className="bg-white/5 border border-white/5 rounded-[24px] p-8 text-center">
+          <p className="text-zinc-400 mb-4">Aún no tienes un negocio registrado.</p>
+          <a href="/business/create" className="inline-block bg-orange-500 text-white px-6 py-3 rounded-2xl font-bold text-sm">Crear mi negocio</a>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Nombre</label>
+            <input className={inputCls} value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del negocio" />
+          </div>
+          <div>
+            <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Descripción</label>
+            <textarea className={inputCls + " h-24 py-3 resize-none"} value={description} onChange={e => setDescription(e.target.value)} placeholder="Describe tu negocio..." />
+          </div>
+          <div>
+            <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Teléfono / WhatsApp</label>
+            <input className={inputCls} value={phone} onChange={e => setPhone(e.target.value)} placeholder="+57 300 000 0000" />
+          </div>
+          <div>
+            <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Dirección</label>
+            <input className={inputCls} value={address} onChange={e => setAddress(e.target.value)} placeholder="Dirección del negocio" />
+          </div>
+
+          <div className="flex items-center gap-4 pt-2">
+            <button onClick={save} disabled={saving}
+              className="h-12 px-8 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm transition-all disabled:opacity-60">
+              {saving ? 'Guardando...' : 'Guardar cambios'}
+            </button>
+            {msg && <span className="text-sm text-green-400">{msg}</span>}
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-white/5">
+            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Acceso rápido</p>
+            <div className="flex flex-wrap gap-3">
+              <a href={`/business/${restaurant.id}`} target="_blank" className="text-sm text-zinc-400 hover:text-white border border-white/10 rounded-xl px-4 py-2 transition-all">
+                Ver mi tienda →
+              </a>
+              <a href="/business/products/create" className="text-sm text-zinc-400 hover:text-white border border-white/10 rounded-xl px-4 py-2 transition-all">
+                Agregar producto →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

@@ -10,10 +10,10 @@ import {
 } from '@/lib/supabase'
 
 const STATUS = [
-  'pending',
-  'preparing',
-  'on_the_way',
-  'delivered',
+  'Pendiente',
+  'Preparando',
+  'En camino',
+  'Entregado',
 ]
 
 export default function BusinessOrdersPage() {
