@@ -51,14 +51,14 @@ export default function DeliveryPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth'); return }
 
-    const { data: profile } = await supabase
-      .from('profiles')
+    const { data: profiles } = await supabase
+      .from('profiless')
       .select('role')
       .eq('id', user.id)
       .single()
 
     // Solo repartidores y admins pueden acceder
-    if (!profile || !['delivery', 'admin'].includes(profile.role)) {
+    if (!profiles || !['delivery', 'admin'].includes(profiles.role)) {
       router.push('/')
       return
     }

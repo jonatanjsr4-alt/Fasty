@@ -29,15 +29,15 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
     async function prefill() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
-      const { data: profile } = await supabase
-        .from('profiles')
+      const { data: profiles } = await supabase
+        .from('profiless')
         .select('name, phone, address')
         .eq('id', user.id)
         .single()
-      if (profile) {
-        if (profile.name) setName(profile.name)
-        if (profile.phone) setPhone(profile.phone)
-        if (profile.address) setAddress(profile.address)
+      if (profiles) {
+        if (profiles.name) setName(profiles.name)
+        if (profiles.phone) setPhone(profiles.phone)
+        if (profiles.address) setAddress(profiles.address)
       }
     }
     prefill()

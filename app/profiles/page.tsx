@@ -28,10 +28,10 @@ type Order = {
   restaurant_id: string
 }
 
-export default function ProfilePage() {
+export default function profilesPage() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
-  const [profile, setProfile] = useState<any>(null)
+  const [profiles, setprofiles] = useState<any>(null)
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -50,13 +50,13 @@ export default function ProfilePage() {
     setUser(user)
 
     const { data: prof } = await supabase
-      .from('profiles')
+      .from('profiless')
       .select('*')
       .eq('id', user.id)
       .single()
 
     if (prof) {
-      setProfile(prof)
+      setprofiles(prof)
       setName(prof.name || '')
       setPhone(prof.phone || '')
       setAddress(prof.address || '')
@@ -73,10 +73,10 @@ export default function ProfilePage() {
     setLoading(false)
   }
 
-  async function saveProfile() {
+  async function saveprofiles() {
     setSaving(true)
     const { error } = await supabase
-      .from('profiles')
+      .from('profiless')
       .update({ name, phone, address })
       .eq('id', user.id)
 
@@ -245,7 +245,7 @@ export default function ProfilePage() {
                 </div>
               ))}
 
-              <button onClick={saveProfile} disabled={saving} style={{ width: '100%', height: 50, borderRadius: 12, background: '#FF5001', border: 'none', color: '#fff', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 }}>
+              <button onClick={saveprofiles} disabled={saving} style={{ width: '100%', height: 50, borderRadius: 12, background: '#FF5001', border: 'none', color: '#fff', fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 }}>
                 {saving ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={16} />}
                 {saving ? 'Guardando...' : 'Guardar cambios'}
               </button>

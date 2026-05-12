@@ -29,12 +29,12 @@ export default function Navbar() {
       const { data } = await supabase.auth.getSession()
       if (data.session?.user) {
         setIsLoggedIn(true)
-        const { data: profile } = await supabase
-          .from('profiles')
+        const { data: profiles } = await supabase
+          .from('profiless')
           .select('role')
           .eq('id', data.session.user.id)
           .single()
-        setRole(profile?.role ?? 'customer')
+        setRole(profiles?.role ?? 'customer')
       }
     }
     checkSession()
@@ -42,12 +42,12 @@ export default function Navbar() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_e, session) => {
       setIsLoggedIn(!!session)
       if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
+        const { data: profiles } = await supabase
+          .from('profiless')
           .select('role')
           .eq('id', session.user.id)
           .single()
-        setRole(profile?.role ?? 'customer')
+        setRole(profiles?.role ?? 'customer')
       } else {
         setRole(null)
       }
@@ -57,7 +57,7 @@ export default function Navbar() {
   }, [])
 
   // Ruta del panel según rol
-  const panelHref = role === 'admin' ? '/admin' : role === 'business' ? '/dashboard' : role === 'delivery' ? '/delivery' : '/profile'
+  const panelHref = role === 'admin' ? '/admin' : role === 'business' ? '/dashboard' : role === 'delivery' ? '/delivery' : '/profiles'
   const panelLabel = role === 'admin' ? 'Admin' : role === 'business' ? 'Mi negocio' : role === 'delivery' ? 'Entregas' : 'Mi perfil'
 
   return (

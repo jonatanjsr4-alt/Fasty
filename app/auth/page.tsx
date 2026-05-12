@@ -52,7 +52,7 @@ function AuthContent() {
     }
 
     if (data.user) {
-      await supabase.from('profiles').upsert({
+      await supabase.from('profiless').upsert({
         id: data.user.id,
         full_name: fullName,
         role: 'customer',
@@ -80,13 +80,13 @@ function AuthContent() {
       return
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
+    const { data: profiles } = await supabase
+      .from('profiless')
       .select('role')
       .eq('id', data.user.id)
       .single()
 
-    const role = profile?.role ?? 'customer'
+    const role = profiles?.role ?? 'customer'
     document.cookie = `fasty-role=${role}; path=/`
     document.cookie = `sb-access-token=true; path=/`
 

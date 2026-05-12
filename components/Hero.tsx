@@ -12,12 +12,12 @@ export default function Hero() {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (data.session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
+        const { data: profiles } = await supabase
+          .from('profiless')
           .select('role')
           .eq('id', data.session.user.id)
           .single()
-        setRole(profile?.role ?? 'customer')
+        setRole(profiles?.role ?? 'customer')
       }
     })
   }, [])

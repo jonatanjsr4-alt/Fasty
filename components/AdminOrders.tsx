@@ -43,7 +43,7 @@ type Restaurant = {
   address?: string
 }
 
-type Profile = {
+type profiles = {
   id: string
   name: string
   email: string
@@ -58,7 +58,7 @@ export default function AdminOrders() {
   const [activeTab, setActiveTab] = useState<Tab>('pedidos')
   const [orders, setOrders] = useState<Order[]>([])
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
-  const [users, setUsers] = useState<Profile[]>([])
+  const [users, setUsers] = useState<profiles[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('Todos')
@@ -86,7 +86,7 @@ export default function AdminOrders() {
     const [ordersRes, restRes, usersRes] = await Promise.all([
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
       supabase.from('restaurants').select('*').order('created_at', { ascending: false }),
-      supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+      supabase.from('profiless').select('*').order('created_at', { ascending: false }),
     ])
     setOrders(ordersRes.data || [])
     setRestaurants(restRes.data || [])
@@ -115,7 +115,7 @@ export default function AdminOrders() {
   }
 
   async function updateUserRole(id: string, role: string) {
-    const { error } = await supabase.from('profiles').update({ role }).eq('id', id)
+    const { error } = await supabase.from('profiless').update({ role }).eq('id', id)
     if (!error) {
       setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u))
       showToast('success', 'Rol actualizado')

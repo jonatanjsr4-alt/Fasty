@@ -29,21 +29,21 @@ export default function AdminPage() {
     }
 
     // Fallback: query directa
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiless')
       .select('role')
       .eq('id', session.user.id)
       .single()
 
-    if (profileError) {
-      setDebugMsg(`RPC error: ${rpcError?.message} | Profile error: ${profileError.message}`)
+    if (profilesError) {
+      setDebugMsg(`RPC error: ${rpcError?.message} | profiles error: ${profilesError.message}`)
       setAllowed(false)
       setChecking(false)
       return
     }
 
-    setDebugMsg(profile ? `role: ${profile.role}` : 'sin perfil')
-    setAllowed(profile?.role === 'admin')
+    setDebugMsg(profiles ? `role: ${profiles.role}` : 'sin perfil')
+    setAllowed(profiles?.role === 'admin')
     setChecking(false)
   }
 
