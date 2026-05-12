@@ -5,16 +5,33 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
+export type UserRole = 'customer' | 'business' | 'admin' | null
+
 export function useAuth(redirectIfUnauthenticated = true) {
   const [user, setUser] = useState<User | null>(null)
+  const [role, setRole] = useState<UserRole>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
+  async function fetchRole(userId: string): Promise<UserRole> {
+    const { data } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single()
+    return (data?.role as UserRole) ?? 'customer'
+  }
+
   useEffect(() => {
-    // Obtener sesión inicial
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       const currentUser = session?.user ?? null
       setUser(currentUser)
+
+      if (currentUser) {
+        const userRole = await fetchRole(currentUser.id)
+        setRole(userRole)
+      }
+
       setLoading(false)
 
       if (!currentUser && redirectIfUnauthenticated) {
@@ -22,14 +39,17 @@ export function useAuth(redirectIfUnauthenticated = true) {
       }
     })
 
-    // Escuchar cambios de sesión en tiempo real
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (_event, session) => {
         const currentUser = session?.user ?? null
         setUser(currentUser)
 
-        if (!currentUser && redirectIfUnauthenticated) {
-          router.push('/auth')
+        if (currentUser) {
+          const userRole = await fetchRole(currentUser.id)
+          setRole(userRole)
+        } else {
+          setRole(null)
+          if (redirectIfUnauthenticated) router.push('/auth')
         }
       }
     )
@@ -42,5 +62,5 @@ export function useAuth(redirectIfUnauthenticated = true) {
     router.push('/auth')
   }
 
-  return { user, loading, logout }
+  return { user, role, loading, logout }
 }

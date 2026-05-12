@@ -18,33 +18,37 @@ export default function AuthPage() {
   const router = useRouter()
 
   async function signUp() {
-    if (!fullName.trim()) {
-      setError('Ingresa tu nombre completo')
-      return
-    }
-    if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres')
-      return
-    }
+    if (!fullName.trim()) { setError('Ingresa tu nombre completo'); return }
+    if (password.length < 6) { setError('La contraseña debe tener al menos 6 caracteres'); return }
 
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { full_name: fullName },
-      },
+      options: { data: { full_name: fullName } },
     })
 
-    if (error) {
-      setError(error.message)
-    } else {
-      setSuccess('¡Cuenta creada! Revisa tu correo para confirmar.')
-      setMode('login')
+    if (signUpError) {
+      setError(signUpError.message)
+      setLoading(false)
+      return
     }
 
+    // Crear perfil con role 'customer' por defecto
+    // (también lo hace el trigger de Supabase, esto es un respaldo)
+    if (data.user) {
+     await supabase.from('profiles').upsert({
+  id: data.user.id,
+  name: fullName,
+  email: email,
+  role: 'customer',
+})
+    }
+
+    setSuccess('¡Cuenta creada! Revisa tu correo para confirmar.')
+    setMode('login')
     setLoading(false)
   }
 
@@ -52,25 +56,36 @@ export default function AuthPage() {
     setLoading(true)
     setError('')
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
+    if (signInError) {
       setError('Correo o contraseña incorrectos')
-    } else {
+      setLoading(false)
+      return
+    }
+
+    // Leer el rol del perfil y redirigir según corresponda
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.user.id)
+      .single()
+
+    const role = profile?.role ?? 'customer'
+
+    if (role === 'admin') {
+      router.push('/admin')
+    } else if (role === 'business') {
       router.push('/dashboard')
+    } else {
+      router.push('/stores')
     }
 
     setLoading(false)
   }
 
   function handleSubmit() {
-    if (!email.trim() || !password.trim()) {
-      setError('Completa todos los campos')
-      return
-    }
+    if (!email.trim() || !password.trim()) { setError('Completa todos los campos'); return }
     if (mode === 'login') signIn()
     else signUp()
   }
@@ -154,9 +169,7 @@ export default function AuthPage() {
               <button
                 onClick={() => { setMode('login'); setError(''); setSuccess('') }}
                 className={`flex-1 h-11 rounded-xl text-sm font-medium transition-all ${
-                  mode === 'login'
-                    ? 'bg-white text-[#111] shadow-sm'
-                    : 'text-[#888]'
+                  mode === 'login' ? 'bg-white text-[#111] shadow-sm' : 'text-[#888]'
                 }`}
               >
                 Ingresar
@@ -164,16 +177,13 @@ export default function AuthPage() {
               <button
                 onClick={() => { setMode('register'); setError(''); setSuccess('') }}
                 className={`flex-1 h-11 rounded-xl text-sm font-medium transition-all ${
-                  mode === 'register'
-                    ? 'bg-white text-[#111] shadow-sm'
-                    : 'text-[#888]'
+                  mode === 'register' ? 'bg-white text-[#111] shadow-sm' : 'text-[#888]'
                 }`}
               >
                 Crear cuenta
               </button>
             </div>
 
-            {/* Mensajes */}
             {error && (
               <div className="mt-5 p-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-sm">
                 {error}
