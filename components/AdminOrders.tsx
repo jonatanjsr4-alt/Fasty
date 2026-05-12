@@ -331,6 +331,7 @@ export default function AdminOrders() {
                     >
                       <option value="customer">Cliente</option>
                       <option value="business">Negocio</option>
+                      <option value="delivery">Domiciliario</option>
                       <option value="admin">Admin</option>
                     </select>
                   </div>
