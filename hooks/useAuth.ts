@@ -59,6 +59,12 @@ export function useAuth(redirectIfUnauthenticated = true) {
 
   async function logout() {
     await supabase.auth.signOut()
+
+document.cookie =
+  'fasty-role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+
+document.cookie =
+  'sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
     router.push('/auth')
   }
 

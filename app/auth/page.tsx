@@ -87,6 +87,8 @@ function AuthContent() {
       .single()
 
     const role = profile?.role ?? 'customer'
+    document.cookie = `fasty-role=${role}; path=/`
+    document.cookie = `sb-access-token=true; path=/`
 
     if (nextUrl) {
       router.push(nextUrl)
