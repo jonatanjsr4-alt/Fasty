@@ -1,547 +1,346 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
 import { supabase } from '@/lib/supabase'
+import {
+  ShoppingBag, Store, Users, TrendingUp,
+  Clock, Package, Truck, CheckCircle, XCircle,
+  ChevronDown, Search, LogOut, Loader2,
+  ToggleLeft, ToggleRight, Trash2,
+} from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
-type Product = {
-  id: string
-  name: string
-  price: number
-  image: string
-  image_url?: string
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: any }> = {
+  Pendiente:   { label: 'Pendiente',   color: '#facc15', bg: 'rgba(250,204,21,0.1)',   icon: Clock },
+  Preparando:  { label: 'Preparando',  color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   icon: Package },
+  'En camino': { label: 'En camino',   color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  icon: Truck },
+  Entregado:   { label: 'Entregado',   color: '#4ade80', bg: 'rgba(74,222,128,0.1)',   icon: CheckCircle },
+  Cancelado:   { label: 'Cancelado',   color: '#f87171', bg: 'rgba(248,113,113,0.1)',  icon: XCircle },
 }
+
+const STATUS_FLOW = ['Pendiente', 'Preparando', 'En camino', 'Entregado', 'Cancelado']
 
 type Order = {
   id: string
-
   customer_name: string
-
   customer_phone: string
-
   customer_address: string
-
-  products: Product[]
-
+  products: { name: string; price: number; quantity: number; image?: string }[]
   total: number
-
   status: string
-
   created_at: string
+  notes?: string
+  restaurant_id?: string
 }
 
 type Restaurant = {
   id: string
   name: string
-  description: string
+  category: string
   approved: boolean
+  owner_id: string
+  phone?: string
+  address?: string
 }
 
+type Profile = {
+  id: string
+  name: string
+  email: string
+  role: string
+  phone?: string
+}
+
+type Tab = 'pedidos' | 'negocios' | 'usuarios'
+
 export default function AdminOrders() {
-
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState<Tab>('pedidos')
   const [orders, setOrders] = useState<Order[]>([])
-
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [users, setUsers] = useState<Profile[]>([])
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [filterStatus, setFilterStatus] = useState('Todos')
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
 
-  const [stats, setStats] = useState({
-    restaurants: 0,
-    orders: 0,
-    users: 0,
-  })
+  const stats = {
+    pedidos: orders.length,
+    negocios: restaurants.length,
+    usuarios: users.length,
+    ingresos: orders.filter(o => o.status === 'Entregado').reduce((a, o) => a + o.total, 0),
+  }
 
   useEffect(() => {
-
-    fetchOrders()
-
+    fetchAll()
     const channel = supabase
-
-      .channel('orders-realtime')
-
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'orders',
-        },
-        () => {
-          fetchOrders()
-        }
-      )
-
+      .channel('admin-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, fetchAll)
       .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
-  async function fetchOrders() {
+  async function fetchAll() {
+    setLoading(true)
+    const [ordersRes, restRes, usersRes] = await Promise.all([
+      supabase.from('orders').select('*').order('created_at', { ascending: false }),
+      supabase.from('restaurants').select('*').order('created_at', { ascending: false }),
+      supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+    ])
+    setOrders(ordersRes.data || [])
+    setRestaurants(restRes.data || [])
+    setUsers(usersRes.data || [])
+    setLoading(false)
+  }
 
-    const { data, error } = await supabase
+  function showToast(type: 'success' | 'error', msg: string) {
+    setToast({ type, msg })
+    setTimeout(() => setToast(null), 3000)
+  }
 
-      .from('orders')
+  async function updateOrderStatus(id: string, status: string) {
+    setUpdatingId(id)
+    await supabase.from('orders').update({ status }).eq('id', id)
+    setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o))
+    setUpdatingId(null)
+  }
 
-      .select('*')
-
-      .order('created_at', { ascending: false })
-
-    if (error) {
-
-      console.log(error)
-
-      return
-
+  async function toggleRestaurantApproval(id: string, current: boolean) {
+    const { error } = await supabase.from('restaurants').update({ approved: !current }).eq('id', id)
+    if (!error) {
+      setRestaurants(prev => prev.map(r => r.id === id ? { ...r, approved: !current } : r))
+      showToast('success', current ? 'Negocio desactivado' : 'Negocio aprobado')
     }
-
-    setOrders(data || [])
-
-    const { data: restaurantsData } = await supabase
-      .from('restaurants')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    setRestaurants(restaurantsData || [])
-
-    const { count: restaurantsCount } = await supabase
-      .from('restaurants')
-      .select('*', { count: 'exact', head: true })
-
-    const { count: ordersCount } = await supabase
-      .from('orders')
-      .select('*', { count: 'exact', head: true })
-
-    const { count: usersCount } = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true })
-
-    setStats({
-      restaurants: restaurantsCount || 0,
-      orders: ordersCount || 0,
-      users: usersCount || 0,
-    })
   }
 
-  async function updateStatus(
-    id: string,
-    status: string
-  ) {
-
-    await supabase
-
-      .from('orders')
-
-      .update({ status })
-
-      .eq('id', id)
-
-    fetchOrders()
-
+  async function updateUserRole(id: string, role: string) {
+    const { error } = await supabase.from('profiles').update({ role }).eq('id', id)
+    if (!error) {
+      setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u))
+      showToast('success', 'Rol actualizado')
+    }
   }
 
-  async function approveRestaurant(id: string) {
-
-    await supabase
-      .from('restaurants')
-      .update({ approved: true })
-      .eq('id', id)
-
-    fetchOrders()
-
+  async function deleteOrder(id: string) {
+    if (!confirm('¿Eliminar este pedido?')) return
+    await supabase.from('orders').delete().eq('id', id)
+    setOrders(prev => prev.filter(o => o.id !== id))
+    showToast('success', 'Pedido eliminado')
   }
 
-  async function disableRestaurant(id: string) {
+  const filteredOrders = orders.filter(o => {
+    const matchSearch = o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
+      o.id.includes(search)
+    const matchStatus = filterStatus === 'Todos' || o.status === filterStatus
+    return matchSearch && matchStatus
+  })
 
-    await supabase
-      .from('restaurants')
-      .update({ approved: false })
-      .eq('id', id)
+  const filteredRestaurants = restaurants.filter(r =>
+    r.name.toLowerCase().includes(search.toLowerCase())
+  )
 
-    fetchOrders()
+  const filteredUsers = users.filter(u =>
+    (u.name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (u.email || '').toLowerCase().includes(search.toLowerCase())
+  )
 
-  }
+  const logout = async () => { await supabase.auth.signOut(); router.push('/auth') }
 
   return (
+    <div style={{ minHeight: '100vh', background: '#080808', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
 
-    <div className="min-h-screen bg-[#0A0A0A] text-white p-6 lg:p-10">
+      {/* Toast */}
+      {toast && (
+        <div style={{
+          position: 'fixed', top: 20, right: 20, zIndex: 9999,
+          background: toast.type === 'success' ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)',
+          border: `1px solid ${toast.type === 'success' ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)'}`,
+          borderRadius: 14, padding: '12px 20px',
+          color: toast.type === 'success' ? '#4ade80' : '#f87171',
+          fontSize: '0.9rem', fontWeight: 600,
+        }}>{toast.msg}</div>
+      )}
 
-      <div className="max-w-7xl mx-auto">
-
-        <div className="mb-14">
-
-          <span className="text-orange-500 font-bold uppercase tracking-[4px]">
-
-            FASTY ADMIN
-
-          </span>
-
-          <h1 className="text-7xl font-black mt-4 leading-none">
-
-            Panel administrativo
-
-          </h1>
-
-          <p className="text-zinc-400 text-xl mt-5">
-
-            Administra negocios, pedidos y usuarios.
-
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-
-            <div className="glass rounded-[30px] p-6 border border-white/10">
-
-              <p className="text-zinc-500">
-
-                Negocios
-
-              </p>
-
-              <h2 className="text-6xl font-black mt-3">
-
-                {stats.restaurants}
-
-              </h2>
-
-            </div>
-
-            <div className="glass rounded-[30px] p-6 border border-white/10">
-
-              <p className="text-zinc-500">
-
-                Pedidos
-
-              </p>
-
-              <h2 className="text-6xl font-black mt-3">
-
-                {stats.orders}
-
-              </h2>
-
-            </div>
-
-            <div className="glass rounded-[30px] p-6 border border-white/10">
-
-              <p className="text-zinc-500">
-
-                Usuarios
-
-              </p>
-
-              <h2 className="text-6xl font-black mt-3">
-
-                {stats.users}
-
-              </h2>
-
-            </div>
-
+      {/* Header */}
+      <header style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FF5001', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem' }}>F</div>
+          <div>
+            <p style={{ margin: 0, fontWeight: 800, fontSize: '1rem' }}>Panel Admin</p>
+            <p style={{ margin: 0, fontSize: '0.7rem', color: '#FF5001' }}>FASTY PLATFORM</p>
           </div>
-
         </div>
+        <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#888', fontSize: '0.8rem', cursor: 'pointer' }}>
+          <LogOut size={14} /> Salir
+        </button>
+      </header>
 
-        <div className="mb-16">
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
 
-          <h2 className="text-5xl font-black mb-8">
-
-            Negocios
-
-          </h2>
-
-          <div className="space-y-6">
-
-            {restaurants.map((restaurant) => (
-
-              <div
-                key={restaurant.id}
-                className="
-                  glass
-                  rounded-[30px]
-                  p-6
-                  border
-                  border-white/10
-                  flex
-                  flex-col
-                  lg:flex-row
-                  lg:items-center
-                  lg:justify-between
-                  gap-6
-                "
-              >
-
+        {/* Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+          {[
+            { label: 'Pedidos totales', value: stats.pedidos, icon: ShoppingBag, color: '#FF5001' },
+            { label: 'Negocios', value: stats.negocios, icon: Store, color: '#60a5fa' },
+            { label: 'Usuarios', value: stats.usuarios, icon: Users, color: '#a78bfa' },
+            { label: 'Ingresos', value: `$${stats.ingresos.toLocaleString('es-CO')}`, icon: TrendingUp, color: '#4ade80' },
+          ].map((s, i) => (
+            <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-
-                  <h3 className="text-3xl font-black">
-
-                    {restaurant.name}
-
-                  </h3>
-
-                  <p className="text-zinc-500 mt-2">
-
-                    {restaurant.description}
-
-                  </p>
-
+                  <p style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800 }}>{s.value}</p>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: '#666' }}>{s.label}</p>
                 </div>
-
-                <div className="flex gap-4">
-
-                  {restaurant.approved ? (
-
-                    <button
-                      onClick={() =>
-                        disableRestaurant(restaurant.id)
-                      }
-                      className="
-                        bg-red-500
-                        px-6
-                        h-12
-                        rounded-2xl
-                        font-bold
-                      "
-                    >
-
-                      Desactivar
-
-                    </button>
-
-                  ) : (
-
-                    <button
-                      onClick={() =>
-                        approveRestaurant(restaurant.id)
-                      }
-                      className="
-                        bg-green-500
-                        px-6
-                        h-12
-                        rounded-2xl
-                        font-bold
-                      "
-                    >
-
-                      Aprobar
-
-                    </button>
-
-                  )}
-
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <s.icon size={18} color={s.color} />
                 </div>
-
               </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-        <div className="space-y-8">
-
-          <h2 className="text-5xl font-black mb-8">
-
-            Pedidos en tiempo real
-
-          </h2>
-
-          {orders.map((order) => (
-
-            <div
-              key={order.id}
-              className="
-                glass
-                rounded-[36px]
-                p-7
-                border
-                border-white/10
-              "
-            >
-
-              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-
-                <div>
-
-                  <h2 className="text-5xl font-black">
-
-                    {order.customer_name}
-
-                  </h2>
-
-                  <div className="space-y-2 mt-5 text-zinc-300">
-
-                    <p>
-
-                      📞 {order.customer_phone}
-
-                    </p>
-
-                    <p>
-
-                      📍 {order.customer_address}
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-                <select
-                  value={order.status || 'Pendiente'}
-                  onChange={(e) =>
-                    updateStatus(
-                      order.id,
-                      e.target.value
-                    )
-                  }
-                  className="
-                    h-14
-                    px-5
-                    rounded-2xl
-                    bg-black
-                    border
-                    border-white/10
-                    outline-none
-                    text-white
-                    font-bold
-                  "
-                >
-
-                  <option value="Pendiente">
-
-                    Pendiente
-
-                  </option>
-
-                  <option value="Preparando">
-
-                    Preparando
-
-                  </option>
-
-                  <option value="En camino">
-
-                    En camino
-
-                  </option>
-
-                  <option value="Entregado">
-
-                    Entregado
-
-                  </option>
-
-                </select>
-
-              </div>
-
-              <div className="mt-10">
-
-                <h3 className="text-3xl font-black mb-6">
-
-                  Productos
-
-                </h3>
-
-                <div className="space-y-5">
-
-                  {order.products?.map(
-                    (product, index) => (
-
-                      <div
-                        key={index}
-                        className="
-                          bg-black/40
-                          rounded-[28px]
-                          p-4
-                          flex
-                          items-center
-                          gap-5
-                        "
-                      >
-
-                        <img
-                          src={product.image || (product as any).image_url || ''}
-                          alt={product.name}
-                          className="
-                            w-24
-                            h-24
-                            rounded-2xl
-                            object-cover
-                          "
-                        />
-
-                        <div>
-
-                          <h4 className="text-3xl font-black">
-
-                            {product.name}
-
-                          </h4>
-
-                          <p className="text-orange-500 text-2xl font-black mt-2">
-
-                            $
-                            {product.price?.toLocaleString()}
-
-                          </p>
-
-                        </div>
-
-                      </div>
-
-                    )
-                  )}
-
-                </div>
-
-              </div>
-
-              <div
-                className="
-                  mt-10
-                  pt-7
-                  border-t
-                  border-white/10
-                  flex
-                  flex-col
-                  lg:flex-row
-                  lg:items-center
-                  lg:justify-between
-                  gap-5
-                "
-              >
-
-                <div className="text-zinc-500">
-
-                  Pedido creado:
-                  {' '}
-                  {new Date(
-                    order.created_at
-                  ).toLocaleString()}
-
-                </div>
-
-                <div className="text-6xl font-black text-orange-500">
-
-                  $
-                  {order.total?.toLocaleString()}
-
-                </div>
-
-              </div>
-
             </div>
-
           ))}
-
         </div>
 
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: '1.5rem', background: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: 4 }}>
+          {([
+            { key: 'pedidos', label: '🛒 Pedidos' },
+            { key: 'negocios', label: '🏪 Negocios' },
+            { key: 'usuarios', label: '👥 Usuarios' },
+          ] as const).map(tab => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
+              flex: 1, height: 40, borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
+              background: activeTab === tab.key ? '#FF5001' : 'transparent',
+              color: activeTab === tab.key ? '#fff' : '#666',
+            }}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Search + filter */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: '1.5rem' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <Search size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#555' }} />
+            <input
+              type="text"
+              placeholder="Buscar..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{ width: '100%', height: 42, borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', paddingLeft: 38, paddingRight: 14, color: '#fff', fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' }}
+            />
+          </div>
+          {activeTab === 'pedidos' && (
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+              style={{ height: 42, borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0 12px', color: '#fff', fontSize: '0.85rem', outline: 'none' }}>
+              <option value="Todos">Todos</option>
+              {STATUS_FLOW.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          )}
+        </div>
+
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '3rem' }}>
+            <Loader2 size={32} color="#FF5001" style={{ animation: 'spin 1s linear infinite' }} />
+          </div>
+        ) : (
+          <>
+            {/* PEDIDOS */}
+            {activeTab === 'pedidos' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {filteredOrders.length === 0 && <p style={{ color: '#555', textAlign: 'center', padding: '2rem' }}>No hay pedidos</p>}
+                {filteredOrders.map(order => {
+                  const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['Pendiente']
+                  const Icon = cfg.icon
+                  return (
+                    <div key={order.id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem' }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <p style={{ margin: 0, fontWeight: 800, fontSize: '1rem' }}>{order.customer_name}</p>
+                          <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#666' }}>#{order.id.split('-')[0].toUpperCase()} · {new Date(order.created_at).toLocaleString('es-CO')}</p>
+                          <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: '#888' }}>📞 {order.customer_phone} · 📍 {order.customer_address}</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <select
+                            value={order.status}
+                            onChange={e => updateOrderStatus(order.id, e.target.value)}
+                            disabled={updatingId === order.id}
+                            style={{ height: 36, borderRadius: 8, background: cfg.bg, border: `1px solid ${cfg.color}40`, padding: '0 10px', color: cfg.color, fontSize: '0.8rem', fontWeight: 600, outline: 'none', cursor: 'pointer' }}
+                          >
+                            {STATUS_FLOW.map(s => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                          <button onClick={() => deleteOrder(order.id)} style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)', color: '#f87171', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      </div>
+                      <div style={{ marginTop: 10, fontSize: '0.82rem', color: '#666' }}>
+                        {order.products?.map((p, i) => `${p.name} x${p.quantity}`).join(' · ')}
+                      </div>
+                      <div style={{ marginTop: 8, fontWeight: 800, color: '#FF5001' }}>
+                        ${order.total?.toLocaleString('es-CO')}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* NEGOCIOS */}
+            {activeTab === 'negocios' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {filteredRestaurants.length === 0 && <p style={{ color: '#555', textAlign: 'center', padding: '2rem' }}>No hay negocios</p>}
+                {filteredRestaurants.map(r => (
+                  <div key={r.id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div>
+                      <p style={{ margin: 0, fontWeight: 700 }}>{r.name}</p>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#666' }}>{r.category} {r.phone && `· ${r.phone}`}</p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 8, background: r.approved ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)', color: r.approved ? '#4ade80' : '#f87171', fontWeight: 600 }}>
+                        {r.approved ? 'Activo' : 'Inactivo'}
+                      </span>
+                      <button onClick={() => toggleRestaurantApproval(r.id, r.approved)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}>
+                        {r.approved ? <ToggleRight size={14} color="#4ade80" /> : <ToggleLeft size={14} color="#f87171" />}
+                        {r.approved ? 'Desactivar' : 'Aprobar'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* USUARIOS */}
+            {activeTab === 'usuarios' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {filteredUsers.length === 0 && <p style={{ color: '#555', textAlign: 'center', padding: '2rem' }}>No hay usuarios</p>}
+                {filteredUsers.map(u => (
+                  <div key={u.id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#FF5001', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', flexShrink: 0 }}>
+                        {(u.name || u.email || 'U')[0].toUpperCase()}
+                      </div>
+                      <div>
+                        <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem' }}>{u.name || '—'}</p>
+                        <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#666' }}>{u.email}</p>
+                      </div>
+                    </div>
+                    <select
+                      value={u.role || 'customer'}
+                      onChange={e => updateUserRole(u.id, e.target.value)}
+                      style={{ height: 36, borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', padding: '0 10px', color: '#fff', fontSize: '0.82rem', outline: 'none', cursor: 'pointer' }}
+                    >
+                      <option value="customer">Cliente</option>
+                      <option value="business">Negocio</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
-
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
-
   )
 }
