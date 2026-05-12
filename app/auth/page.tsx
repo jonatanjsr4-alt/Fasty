@@ -2,12 +2,14 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
 
 export default function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
+  const searchParams = useSearchParams()
+  const nextUrl = searchParams.get('next')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
@@ -39,12 +41,11 @@ export default function AuthPage() {
     // Crear perfil con role 'customer' por defecto
     // (también lo hace el trigger de Supabase, esto es un respaldo)
     if (data.user) {
-     await supabase.from('profiles').upsert({
-  id: data.user.id,
-  name: fullName,
-  email: email,
-  role: 'customer',
-})
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        full_name: fullName,
+        role: 'customer',
+      })
     }
 
     setSuccess('¡Cuenta creada! Revisa tu correo para confirmar.')
@@ -73,7 +74,9 @@ export default function AuthPage() {
 
     const role = profile?.role ?? 'customer'
 
-    if (role === 'admin') {
+    if (nextUrl) {
+      router.push(nextUrl)
+    } else if (role === 'admin') {
       router.push('/admin')
     } else if (role === 'business') {
       router.push('/dashboard')

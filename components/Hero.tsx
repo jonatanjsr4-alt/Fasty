@@ -1,8 +1,40 @@
 'use client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import PhoneMockup from './PhoneMockup'
+import { supabase } from '@/lib/supabase'
 
 export default function Hero() {
+  const router = useRouter()
+  const [role, setRole] = useState<string | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (data.session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.session.user.id)
+          .single()
+        setRole(profile?.role ?? 'customer')
+      }
+    })
+  }, [])
+
+  function handleRegisterBusiness() {
+    if (!role) {
+      // No logueado: ir a auth y luego a crear negocio
+      router.push('/auth?next=/business/create')
+    } else if (role === 'business') {
+      // Ya tiene negocio: ir al dashboard
+      router.push('/dashboard')
+    } else {
+      // Logueado como customer/delivery/admin: ir a crear negocio
+      router.push('/business/create')
+    }
+  }
+
   return (
     <section style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
       <div style={{ position: 'absolute', width: 500, height: 500, borderRadius: '50%', filter: 'blur(120px)', background: 'rgba(255,80,1,0.12)', top: -100, right: -100, pointerEvents: 'none' }} />
@@ -31,19 +63,20 @@ export default function Hero() {
           </p>
 
           <div className="hero-actions">
-            <Link href="/auth"
+            <Link href="/stores"
               style={{ background: 'var(--orange)', color: 'var(--white)', padding: '0.9rem 1.8rem', borderRadius: '100px', fontSize: '1rem', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: 8, animation: 'bounceIn 0.8s 0.4s both' }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(255,80,1,0.35)' }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none' }}>
               Pedir ahora
               <span style={{ width: 22, height: 22, background: 'rgba(255,255,255,0.25)', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>→</span>
             </Link>
-            <Link href="/business"
-              style={{ color: 'var(--white)', padding: '0.9rem 1.8rem', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '100px', fontSize: '1rem', background: 'transparent' }}
+            <button
+              onClick={handleRegisterBusiness}
+              style={{ color: 'var(--white)', padding: '0.9rem 1.8rem', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '100px', fontSize: '1rem', background: 'transparent', cursor: 'pointer' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.background = 'transparent' }}>
-              Registrar negocio
-            </Link>
+              {role === 'business' ? 'Mi negocio →' : 'Registrar negocio'}
+            </button>
           </div>
 
           <div className="hero-stats">
@@ -56,7 +89,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT — oculto en mobile via CSS */}
+        {/* RIGHT */}
         <div className="hero-phone-col">
           <div style={{ position: 'absolute', top: 60, right: -40, background: 'var(--dark2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 16, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10, zIndex: 3, animation: 'floatBadge1 4s ease-in-out infinite', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
             <span style={{ fontSize: '1.3rem' }}>🚀</span>
