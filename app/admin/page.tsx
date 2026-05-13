@@ -30,7 +30,7 @@ export default function AdminPage() {
 
     // Fallback: query directa
     const { data: profiles, error: profilesError } = await supabase
-      .from('profiless')
+      .from('profiles')
       .select('role')
       .eq('id', session.user.id)
       .single()

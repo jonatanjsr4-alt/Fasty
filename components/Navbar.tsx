@@ -30,7 +30,7 @@ export default function Navbar() {
       if (data.session?.user) {
         setIsLoggedIn(true)
         const { data: profiles } = await supabase
-          .from('profiless')
+          .from('profiles')
           .select('role')
           .eq('id', data.session.user.id)
           .single()
@@ -43,7 +43,7 @@ export default function Navbar() {
       setIsLoggedIn(!!session)
       if (session?.user) {
         const { data: profiles } = await supabase
-          .from('profiless')
+          .from('profiles')
           .select('role')
           .eq('id', session.user.id)
           .single()

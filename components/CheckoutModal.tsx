@@ -30,7 +30,7 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       const { data: profiles } = await supabase
-        .from('profiless')
+        .from('profiles')
         .select('name, phone, address')
         .eq('id', user.id)
         .single()

@@ -52,7 +52,7 @@ export default function DeliveryPage() {
     if (!user) { router.push('/auth'); return }
 
     const { data: profiles } = await supabase
-      .from('profiless')
+      .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single()

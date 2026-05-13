@@ -52,7 +52,7 @@ function AuthContent() {
     }
 
     if (data.user) {
-      await supabase.from('profiless').upsert({
+      await supabase.from('profiles').upsert({
         id: data.user.id,
         full_name: fullName,
         role: 'customer',
@@ -81,7 +81,7 @@ function AuthContent() {
     }
 
     const { data: profiles } = await supabase
-      .from('profiless')
+      .from('profiles')
       .select('role')
       .eq('id', data.user.id)
       .single()

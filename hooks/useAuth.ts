@@ -36,7 +36,7 @@ export function useAuth(
 
     const { data } =
       await supabase
-        .from('profiless')
+        .from('profiles')
         .select('role')
         .eq('id', userId)
         .single()

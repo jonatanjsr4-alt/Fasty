@@ -13,7 +13,7 @@ export default function Hero() {
     supabase.auth.getSession().then(async ({ data }) => {
       if (data.session?.user) {
         const { data: profiles } = await supabase
-          .from('profiless')
+          .from('profiles')
           .select('role')
           .eq('id', data.session.user.id)
           .single()

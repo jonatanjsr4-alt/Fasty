@@ -50,7 +50,7 @@ export default function profilesPage() {
     setUser(user)
 
     const { data: prof } = await supabase
-      .from('profiless')
+      .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()
@@ -76,7 +76,7 @@ export default function profilesPage() {
   async function saveprofiles() {
     setSaving(true)
     const { error } = await supabase
-      .from('profiless')
+      .from('profiles')
       .update({ name, phone, address })
       .eq('id', user.id)
 
