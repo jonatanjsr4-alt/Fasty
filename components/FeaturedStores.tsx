@@ -33,7 +33,7 @@ export default function FeaturedStores() {
     supabase
       .from('restaurants')
       .select('id, name, category, image_url, rating, delivery_time, delivery_fee')
-      .eq('is_active', true)
+      .eq('approved', true)
       .order('rating', { ascending: false })
       .limit(3)
       .then(({ data }) => {
@@ -106,7 +106,7 @@ function StoreCard({ store }: { store: Restaurant }) {
 
   return (
     <Link
-      href={`/stores/${store.id}`}
+      href={`/business/${store.id}`}
       className="glass rounded-[36px] overflow-hidden card-hover group cursor-pointer block"
       style={{ textDecoration: 'none', color: 'inherit' }}
     >

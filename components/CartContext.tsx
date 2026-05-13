@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from 'react'
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 
 export type CartItem = {
   id: string
@@ -21,287 +15,61 @@ type CartContextType = {
   cart: CartItem[]
   total: number
   itemCount: number
-
-  addToCart: (
-    item: Omit<CartItem, 'quantity'>
-  ) => void
-
-  removeFromCart: (
-    id: string
-  ) => void
-
-  increaseQty: (
-    id: string
-  ) => void
-
-  decreaseQty: (
-    id: string
-  ) => void
-
+  addToCart: (item: Omit<CartItem, 'quantity'>) => void
+  removeFromCart: (id: string) => void
+  increaseQty: (id: string) => void
+  decreaseQty: (id: string) => void
   clearCart: () => void
 }
 
-const CartContext =
-  createContext<CartContextType>({
-    cart: [],
-    total: 0,
-    itemCount: 0,
+const CartContext = createContext<CartContextType | null>(null)
 
-    addToCart: () => {},
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [hydrated, setHydrated] = useState(false)
 
-    removeFromCart: () => {},
-
-    increaseQty: () => {},
-
-    decreaseQty: () => {},
-
-    clearCart: () => {},
-  })
-
-export function CartProvider({
-  children,
-}: {
-  children: ReactNode
-}) {
-
-  const [cart, setCart] =
-    useState<CartItem[]>([])
-
-  // ====================================
-  // RESTAURAR CARRITO
-  // ====================================
-
+  // Cargar desde localStorage al iniciar
   useEffect(() => {
-
-    const savedCart =
-      localStorage.getItem(
-        'fasty-cart'
-      )
-
-    if (savedCart) {
-
-      try {
-
-        setCart(
-          JSON.parse(savedCart)
-        )
-
-      } catch {
-
-        localStorage.removeItem(
-          'fasty-cart'
-        )
-
-      }
-
-    }
-
+    try {
+      const saved = localStorage.getItem('fasty_cart')
+      if (saved) setCart(JSON.parse(saved))
+    } catch {}
+    setHydrated(true)
   }, [])
 
-  // ====================================
-  // GUARDAR CARRITO
-  // ====================================
-
+  // Guardar en localStorage cada vez que cambia
   useEffect(() => {
+    if (!hydrated) return
+    try { localStorage.setItem('fasty_cart', JSON.stringify(cart)) } catch {}
+  }, [cart, hydrated])
 
-    localStorage.setItem(
-      'fasty-cart',
-      JSON.stringify(cart)
-    )
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0)
 
-  }, [cart])
-
-  // ====================================
-  // TOTAL
-  // ====================================
-
-  const total = cart.reduce(
-    (acc, item) =>
-      acc +
-      item.price *
-        item.quantity,
-    0
-  )
-
-  // ====================================
-  // ITEMS
-  // ====================================
-
-  const itemCount = cart.reduce(
-    (acc, item) =>
-      acc + item.quantity,
-    0
-  )
-
-  // ====================================
-  // AGREGAR
-  // ====================================
-
-  function addToCart(
-    item: Omit<
-      CartItem,
-      'quantity'
-    >
-  ) {
-
-    setCart((prev) => {
-
-      const existing =
-        prev.find(
-          (i) =>
-            i.id === item.id
-        )
-
-      if (existing) {
-
-        return prev.map((i) =>
-
-          i.id === item.id
-            ? {
-                ...i,
-                quantity:
-                  i.quantity + 1,
-              }
-            : i
-
-        )
-
-      }
-
-      return [
-        ...prev,
-        {
-          ...item,
-          quantity: 1,
-        },
-      ]
-
+  function addToCart(item: Omit<CartItem, 'quantity'>) {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === item.id)
+      if (existing) return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)
+      return [...prev, { ...item, quantity: 1 }]
     })
-
   }
 
-  // ====================================
-  // ELIMINAR
-  // ====================================
-
-  function removeFromCart(
-    id: string
-  ) {
-
-    setCart((prev) =>
-
-      prev.filter(
-        (item) =>
-          item.id !== id
-      )
-
-    )
-
+  function removeFromCart(id: string) { setCart(prev => prev.filter(i => i.id !== id)) }
+  function increaseQty(id: string) { setCart(prev => prev.map(i => i.id === id ? { ...i, quantity: i.quantity + 1 } : i)) }
+  function decreaseQty(id: string) {
+    setCart(prev => prev.map(i => i.id === id ? { ...i, quantity: Math.max(0, i.quantity - 1) } : i).filter(i => i.quantity > 0))
   }
-
-  // ====================================
-  // AUMENTAR
-  // ====================================
-
-  function increaseQty(
-    id: string
-  ) {
-
-    setCart((prev) =>
-
-      prev.map((item) =>
-
-        item.id === id
-          ? {
-              ...item,
-              quantity:
-                item.quantity + 1,
-            }
-          : item
-
-      )
-
-    )
-
-  }
-
-  // ====================================
-  // DISMINUIR
-  // ====================================
-
-  function decreaseQty(
-    id: string
-  ) {
-
-    setCart((prev) =>
-
-      prev
-        .map((item) =>
-
-          item.id === id
-            ? {
-                ...item,
-                quantity:
-                  item.quantity - 1,
-              }
-            : item
-
-        )
-        .filter(
-          (item) =>
-            item.quantity > 0
-        )
-
-    )
-
-  }
-
-  // ====================================
-  // LIMPIAR
-  // ====================================
-
-  function clearCart() {
-
-    setCart([])
-
-    localStorage.removeItem(
-      'fasty-cart'
-    )
-
-  }
+  function clearCart() { setCart([]); try { localStorage.removeItem('fasty_cart') } catch {} }
 
   return (
-
-    <CartContext.Provider
-      value={{
-        cart,
-        total,
-        itemCount,
-
-        addToCart,
-
-        removeFromCart,
-
-        increaseQty,
-
-        decreaseQty,
-
-        clearCart,
-      }}
-    >
-
+    <CartContext.Provider value={{ cart, total, itemCount, addToCart, removeFromCart, increaseQty, decreaseQty, clearCart }}>
       {children}
-
     </CartContext.Provider>
-
   )
-
 }
 
 export function useCart() {
-
-  return useContext(
-    CartContext
-  )
-
+  const ctx = useContext(CartContext)
+  if (!ctx) throw new Error('useCart must be used within CartProvider')
+  return ctx
 }
