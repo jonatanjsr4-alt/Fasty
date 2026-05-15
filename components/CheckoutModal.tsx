@@ -1,11 +1,17 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { X, Loader2, CheckCircle, Send } from 'lucide-react'
+import { X, Loader2, CheckCircle, Send, MapPin, Navigation } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useCart } from '@/components/CartContext'
 import Link from 'next/link'
 
 const WA = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '573134157991'
+
+const PAYMENT_METHODS = [
+  { id: 'Efectivo', label: 'Efectivo', icon: '💵', desc: 'Paga al domiciliario cuando llegue' },
+  { id: 'Nequi', label: 'Nequi', icon: '📱', desc: 'Transferencia por Nequi' },
+  { id: 'Daviplata', label: 'Daviplata', icon: '💳', desc: 'Transferencia por Daviplata' },
+]
 
 type Props = { onClose: () => void; restaurantId?: string }
 
@@ -15,7 +21,9 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
   const [notes, setNotes] = useState('')
+  const [payMethod, setPayMethod] = useState('Efectivo')
   const [loading, setLoading] = useState(false)
+  const [gpsLoading, setGpsLoading] = useState(false)
   const [orderId, setOrderId] = useState<string | null>(null)
   const [error, setError] = useState('')
 
@@ -27,6 +35,27 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
     })
   }, [])
 
+  function getGPS() {
+    if (!navigator.geolocation) { setError('Tu navegador no soporta GPS'); return }
+    setGpsLoading(true)
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+          const data = await res.json()
+          const addr = data.display_name || `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
+          setAddress(addr)
+        } catch {
+          setAddress(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`)
+        }
+        setGpsLoading(false)
+      },
+      () => { setError('No se pudo obtener la ubicación'); setGpsLoading(false) },
+      { timeout: 10000 }
+    )
+  }
+
   async function sendOrder() {
     if (!name.trim() || !address.trim()) { setError('Nombre y dirección son obligatorios'); return }
     setLoading(true); setError('')
@@ -36,8 +65,11 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
       restaurant_id: restaurantId || cart[0]?.restaurant_id || null,
       customer_name: name.trim(), customer_phone: phone.trim(), customer_address: address.trim(),
       products: cart.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
-      total, status: 'Pendiente', notes: notes.trim() || null,
+      total, status: 'Pendiente',
+      notes: notes.trim() || null,
+      payment_method: payMethod,
     }]).select().single()
+
     if (e || !data) { setError('Error al crear el pedido. Intenta de nuevo.'); setLoading(false); return }
 
     const msg = [
@@ -47,6 +79,7 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
       `👤 *Cliente:* ${name}`,
       `📞 *WhatsApp:* ${phone}`,
       `📍 *Dirección:* ${address}`,
+      `💳 *Pago:* ${payMethod}`,
       notes ? `📝 *Notas:* ${notes}` : '',
       '',
       '🛒 *Productos:*',
@@ -84,14 +117,15 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
-      <div style={{ width: '100%', maxWidth: 520, background: '#101010', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 28, padding: '2rem', maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
+      <div style={{ width: '100%', maxWidth: 520, background: '#101010', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 28, padding: '2rem', maxHeight: '92vh', overflowY: 'auto', position: 'relative' }}>
         <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, width: 36, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--muted)' }}>
           <X size={15} />
         </button>
+
         <p style={{ fontSize: '0.68rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 6 }}>Finalizar pedido</p>
         <h2 style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: '1.5rem' }}>Confirma tu pedido 🚀</h2>
 
-        {/* Resumen */}
+        {/* Resumen carrito */}
         <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: '1rem', marginBottom: '1.2rem' }}>
           <p style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Tu pedido</p>
           {cart.map((item, i) => (
@@ -110,9 +144,43 @@ export default function CheckoutModal({ onClose, restaurantId }: Props) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
           <input type="text" placeholder="Nombre completo *" value={name} onChange={e => setName(e.target.value)} style={inp} />
           <input type="tel" placeholder="WhatsApp" value={phone} onChange={e => setPhone(e.target.value)} style={inp} />
-          <textarea placeholder="Dirección de entrega *" value={address} onChange={e => setAddress(e.target.value)} rows={2} style={ta} />
+
+          {/* Dirección + GPS */}
+          <div style={{ position: 'relative' }}>
+            <textarea placeholder="Dirección de entrega *" value={address} onChange={e => setAddress(e.target.value)} rows={2} style={{ ...ta, paddingRight: 50 }} />
+            <button onClick={getGPS} disabled={gpsLoading} title="Obtener mi ubicación actual"
+              style={{ position: 'absolute', top: 12, right: 12, width: 32, height: 32, borderRadius: 8, background: 'rgba(255,80,1,0.15)', border: '1px solid rgba(255,80,1,0.3)', color: 'var(--orange)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {gpsLoading ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Navigation size={14} />}
+            </button>
+          </div>
+          <p style={{ fontSize: '0.72rem', color: 'var(--muted)', marginTop: -6 }}>
+            📍 Escribe tu dirección o usa el botón GPS para detectarla automáticamente.
+          </p>
+
           <textarea placeholder="Notas al negocio (opcional)" value={notes} onChange={e => setNotes(e.target.value)} rows={2} style={ta} />
-          <button onClick={sendOrder} disabled={loading} style={{ height: 52, borderRadius: 14, background: 'linear-gradient(135deg,var(--orange),#ff8c00)', border: 'none', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: loading ? 0.7 : 1 }}>
+
+          {/* Método de pago */}
+          <div>
+            <p style={{ fontSize: '0.72rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600, marginBottom: 10 }}>Método de pago</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {PAYMENT_METHODS.map(m => (
+                <button key={m.id} onClick={() => setPayMethod(m.id)}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.9rem 1rem', borderRadius: 12, border: `1.5px solid ${payMethod === m.id ? 'var(--orange)' : 'rgba(255,255,255,0.08)'}`, background: payMethod === m.id ? 'rgba(255,80,1,0.08)' : 'rgba(255,255,255,0.03)', cursor: 'pointer', transition: 'all 0.2s' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontSize: '1.3rem' }}>{m.icon}</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <p style={{ margin: 0, fontWeight: 700, color: '#fff', fontSize: '0.88rem' }}>{m.label}</p>
+                      <p style={{ margin: 0, color: 'var(--muted)', fontSize: '0.75rem' }}>{m.desc}</p>
+                    </div>
+                  </div>
+                  <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${payMethod === m.id ? 'var(--orange)' : 'rgba(255,255,255,0.2)'}`, background: payMethod === m.id ? 'var(--orange)' : 'transparent', flexShrink: 0 }} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button onClick={sendOrder} disabled={loading}
+            style={{ height: 52, borderRadius: 14, background: 'linear-gradient(135deg,var(--orange),#ff8c00)', border: 'none', color: '#fff', fontWeight: 700, fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, opacity: loading ? 0.7 : 1, marginTop: 4 }}>
             {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Send size={18} />}
             {loading ? 'Enviando...' : 'Confirmar pedido'}
           </button>
