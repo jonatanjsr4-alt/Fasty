@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import './globals.css'
 import { CartProvider } from '@/components/CartContext'
 import Cursor from '@/components/Cursor'
 
