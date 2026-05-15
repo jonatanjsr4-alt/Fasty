@@ -1,264 +1,114 @@
 'use client'
-
-import {
-  Suspense,
-  useEffect,
-  useState,
-} from 'react'
-
+import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import Navbar from '@/components/Navbar'
+import { Search, Clock, Star, ChevronRight, Loader2 } from 'lucide-react'
 
-import {
-  useSearchParams,
-} from 'next/navigation'
-
-import {
-  supabase,
-} from '@/lib/supabase'
+const CATEGORIES = ['Todos','Restaurantes','Supermercados','Farmacias','Licores','Heladerías','Cafeterías','Moda','Belleza','Salud','Tecnología','Mantenimiento','Deportes','Educación','Hogar','Otro']
 
 function StoresContent() {
-
   const searchParams = useSearchParams()
-
-  const category = searchParams.get('category')
-
   const [restaurants, setRestaurants] = useState<any[]>([])
-
   const [loading, setLoading] = useState(true)
-
   const [search, setSearch] = useState('')
+  const [cat, setCat] = useState(searchParams.get('category') || 'Todos')
 
-  useEffect(() => {
+  useEffect(() => { fetch() }, [cat])
 
-    fetchRestaurants()
-
-  }, [category])
-
-  async function fetchRestaurants() {
-
-    let query = supabase
-      .from('restaurants')
-      .select('*')
-      .order('created_at', {
-        ascending: false,
-      })
-
-    if (category) {
-
-      query = query.eq(
-        'category',
-        category
-      )
-
-    }
-
-    const { data, error } =
-      await query
-
-    if (!error && data) {
-
-      setRestaurants(data)
-
-    }
-
+  async function fetch() {
+    setLoading(true)
+    let q = supabase.from('restaurants').select('*').eq('approved', true).order('created_at', { ascending: false })
+    if (cat !== 'Todos') q = q.eq('category', cat)
+    const { data } = await q
+    setRestaurants(data || [])
     setLoading(false)
-
   }
 
-  const filteredRestaurants =
-    restaurants.filter((restaurant) =>
-
-      restaurant.name
-        ?.toLowerCase()
-        .includes(search.toLowerCase())
-
-    )
-
-  if (loading) {
-
-    return (
-
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-
-        <h1 className="text-4xl font-black">
-
-          Cargando tiendas...
-
-        </h1>
-
-      </main>
-
-    )
-
-  }
-
-  return (
-
-    <main className="min-h-screen bg-black text-white">
-
-      <section className="max-w-7xl mx-auto px-6 py-16">
-
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
-
-          <div>
-
-            <p className="text-orange-500 uppercase tracking-[4px] font-bold">
-
-              FASTY MARKETPLACE
-
-            </p>
-
-            <h1 className="text-7xl font-black tracking-[-5px] mt-4">
-
-              {category || 'Tiendas'}
-
-            </h1>
-
-          </div>
-
-          <input
-            type="text"
-            placeholder="Buscar restaurante..."
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            className="
-              h-16
-              w-full
-              md:w-[340px]
-              rounded-2xl
-              bg-white/5
-              border
-              border-white/10
-              px-5
-              text-white
-              outline-none
-            "
-          />
-
-        </div>
-
-        {filteredRestaurants.length === 0 ? (
-
-          <div className="text-center py-32">
-
-            <h2 className="text-5xl font-black">
-
-              No hay negocios
-
-            </h2>
-
-            <p className="text-white/60 mt-4">
-
-              Aún no existen negocios en esta categoría
-
-            </p>
-
-          </div>
-
-        ) : (
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            {filteredRestaurants.map(
-              (restaurant) => (
-
-                <Link
-                  key={restaurant.id}
-                  href={`/business/${restaurant.id}`}
-                  className="
-                    rounded-[32px]
-                    overflow-hidden
-                    border
-                    border-white/10
-                    bg-white/5
-                    hover:bg-white/10
-                    transition-all
-                  "
-                >
-
-                  <img
-                    src={
-                      restaurant.banner_url ||
-                      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop'
-                    }
-                    alt={restaurant.name}
-                    className="w-full h-64 object-cover"
-                  />
-
-                  <div className="p-6">
-
-                    <h2 className="text-4xl font-black">
-
-                      {restaurant.name}
-
-                    </h2>
-
-                    <p className="text-white/60 mt-4">
-
-                      {restaurant.description}
-
-                    </p>
-
-                    <div className="mt-6 flex items-center justify-between">
-
-                      <span className="text-orange-500 font-bold">
-
-                        {restaurant.category || 'Negocio'}
-
-                      </span>
-
-                      <span className="text-white/40">
-
-                        Ver →
-
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </Link>
-
-              )
-
-            )}
-
-          </div>
-
-        )}
-
-      </section>
-
-    </main>
-
+  const filtered = restaurants.filter(r =>
+    r.name.toLowerCase().includes(search.toLowerCase()) ||
+    (r.description || '').toLowerCase().includes(search.toLowerCase())
   )
 
+  return (
+    <main style={{ minHeight: '100vh', background: 'var(--dark)', color: 'var(--white)', fontFamily: 'var(--font-body)' }}>
+      <Navbar />
+      <div style={{ paddingTop: 80 }}>
+        <div style={{ background: 'linear-gradient(180deg,rgba(255,80,1,0.08) 0%,transparent 100%)', padding: '3rem 1.5rem 2rem', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--orange)', fontWeight: 600, marginBottom: 10 }}>Quibdó · Disponible ahora</p>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem,5vw,3.5rem)', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+            Explora <span style={{ color: 'var(--orange)' }}>negocios</span>
+          </h1>
+          <div style={{ maxWidth: 500, margin: '0 auto', display: 'flex', gap: 10, background: 'var(--dark3)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: '0 16px', height: 52, alignItems: 'center' }}>
+            <Search size={15} color="var(--muted)" />
+            <input type="text" placeholder="Busca pizza, sushi, hamburguesas..." value={search} onChange={e => setSearch(e.target.value)}
+              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: 'var(--white)', fontSize: '0.9rem' }} />
+          </div>
+        </div>
+
+        <div style={{ overflowX: 'auto', padding: '0 1.5rem 1.5rem', display: 'flex', gap: 8, scrollbarWidth: 'none' }}>
+          {CATEGORIES.map(c => (
+            <button key={c} onClick={() => setCat(c)} style={{ flexShrink: 0, height: 36, padding: '0 16px', borderRadius: 100, fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', border: 'none', background: cat === c ? 'var(--orange)' : 'var(--dark3)', color: cat === c ? '#fff' : 'var(--muted)' }}>
+              {c}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 1.5rem 5rem' }}>
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
+              <Loader2 size={32} color="var(--orange)" style={{ animation: 'spin 1s linear infinite' }} />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--muted)' }}>
+              <p style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 8 }}>No hay negocios disponibles</p>
+              <p style={{ fontSize: '0.88rem' }}>Pronto habrá más opciones en Quibdó</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: '1.5rem' }}>
+              {filtered.map(r => <StoreCard key={r.id} r={r} />)}
+            </div>
+          )}
+        </div>
+      </div>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    </main>
+  )
+}
+
+function StoreCard({ r }: { r: any }) {
+  const [h, setH] = useState(false)
+  const img = r.image_url || r.banner_url || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&auto=format&fit=crop'
+  return (
+    <Link href={`/business/${r.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', borderRadius: 24, overflow: 'hidden', background: 'var(--dark3)', border: `1px solid ${h ? 'rgba(255,80,1,0.3)' : 'rgba(255,255,255,0.07)'}`, transition: 'all 0.2s', transform: h ? 'translateY(-4px)' : 'none' }}
+      onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}>
+      <div style={{ position: 'relative', height: 180, overflow: 'hidden' }}>
+        <img src={img} alt={r.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s', transform: h ? 'scale(1.05)' : 'scale(1)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 60%)' }} />
+        <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.65)', borderRadius: 8, padding: '3px 8px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--lime)', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Star size={10} fill="var(--lime)" /> {r.rating || '4.8'}
+        </div>
+      </div>
+      <div style={{ padding: '1rem 1.2rem 1.2rem' }}>
+        <h3 style={{ fontWeight: 800, fontSize: '1.05rem', marginBottom: 4, fontFamily: 'var(--font-display)' }}>{r.name}</h3>
+        <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: 10, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.5 }}>{r.description || r.category}</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.78rem', color: 'var(--muted)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={11} /> {r.delivery_time || '30-45 min'}</span>
+            <span style={{ background: 'rgba(255,80,1,0.12)', color: 'var(--orange)', padding: '2px 8px', borderRadius: 6, fontWeight: 600 }}>{r.category}</span>
+          </div>
+          <ChevronRight size={15} color="var(--orange)" />
+        </div>
+      </div>
+    </Link>
+  )
 }
 
 export default function StoresPage() {
-
   return (
-
-    <Suspense fallback={
-
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-
-        <h1 className="text-4xl font-black">
-
-          Cargando...
-
-        </h1>
-
-      </main>
-
-    }>
-
+    <Suspense fallback={<main style={{ minHeight:'100vh',background:'var(--dark)',display:'flex',alignItems:'center',justifyContent:'center' }}><Loader2 size={28} color="var(--orange)" style={{ animation:'spin 1s linear infinite' }} /><style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style></main>}>
       <StoresContent />
-
     </Suspense>
-
   )
-
 }

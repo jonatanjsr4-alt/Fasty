@@ -58,7 +58,7 @@ export default function DeliveryPage() {
       .single()
 
     // Solo repartidores y admins pueden acceder
-    if (!profiles || !['delivery', 'admin'].includes(profiles.role)) {
+    if (!profiles || !['delivery','admin'].includes(profiles.role)) {
       router.push('/')
       return
     }

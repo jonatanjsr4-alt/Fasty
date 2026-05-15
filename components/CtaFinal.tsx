@@ -23,7 +23,7 @@ export default function CtaFinal() {
       </p>
       <div style={{ display:'flex',gap:'1rem',justifyContent:'center',flexWrap:'wrap' }}>
         <Btn href="/auth" primary>Comenzar ahora →</Btn>
-        <Btn href="/business" primary={false}>Soy un negocio</Btn>
+        <Btn href="/business/create" primary={false}>Soy un negocio</Btn>
       </div>
       <div style={{ display:'inline-flex',alignItems:'center',gap:6,background:'rgba(255,255,255,0.05)',borderRadius:'100px',padding:'5px 14px',fontSize:'0.75rem',color:'var(--muted)',marginTop:'1.5rem' }}>
         📍 Quibdó, Chocó · Colombia 🇨🇴

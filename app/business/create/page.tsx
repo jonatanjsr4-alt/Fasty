@@ -75,6 +75,7 @@ export default function CreateBusinessPage() {
       return
     }
 
+    await supabase.from('profiles').update({ role: 'business' }).eq('id', user.id)
     showToast('success', '¡Negocio creado correctamente!')
     setTimeout(() => router.push(`/business/${data.id}`), 1500)
   }

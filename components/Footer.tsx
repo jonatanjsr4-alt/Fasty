@@ -9,7 +9,7 @@ export default function Footer() {
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.5rem', marginBottom: '1rem' }}>FASTY</div>
           <p style={{ color: 'var(--muted)', fontSize: '0.85rem', lineHeight: 1.7, maxWidth: 280 }}>Plataforma moderna de delivery y domicilios para restaurantes, supermercados y negocios locales en Quibdó.</p>
         </div>
-        <FooterCol title="Navegación" links={[{l:'Inicio',h:'/'},{l:'Negocios',h:'/business'},{l:'Dashboard',h:'/dashboard'},{l:'Ingresar',h:'/auth'}]} />
+        <FooterCol title="Navegación" links={[{l:'Inicio',h:'/'},{l:'Negocios',h:'/stores'},{l:'Dashboard',h:'/dashboard'},{l:'Ingresar',h:'/auth'}]} />
         <FooterCol title="Categorías" links={['Restaurantes','Supermercados','Farmacias','Licores','Moda'].map(l=>({l,h:'#'}))} />
         <FooterCol title="Contacto" links={[{l:'Quibdó, Chocó',h:'#'},{l:'contacto@fasty.com',h:'mailto:contacto@fasty.com'},{l:'+57 300 000 0000',h:'tel:+573000000000'}]} />
       </div>

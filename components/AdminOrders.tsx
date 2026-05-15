@@ -1,346 +1,479 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import {
-  ShoppingBag, Store, Users, TrendingUp,
-  Clock, Package, Truck, CheckCircle, XCircle,
-  ChevronDown, Search, LogOut, Loader2,
-  ToggleLeft, ToggleRight, Trash2,
-} from 'lucide-react'
+import { ShoppingBag, Store, Users, TrendingUp, Clock, Package, Truck, CheckCircle, XCircle, Search, LogOut, Loader2, ToggleLeft, ToggleRight, Trash2, Bike } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-  Pendiente:   { label: 'Pendiente',   color: '#facc15', bg: 'rgba(250,204,21,0.1)',   icon: Clock },
-  Preparando:  { label: 'Preparando',  color: '#60a5fa', bg: 'rgba(96,165,250,0.1)',   icon: Package },
-  'En camino': { label: 'En camino',   color: '#a78bfa', bg: 'rgba(167,139,250,0.1)',  icon: Truck },
-  Entregado:   { label: 'Entregado',   color: '#4ade80', bg: 'rgba(74,222,128,0.1)',   icon: CheckCircle },
-  Cancelado:   { label: 'Cancelado',   color: '#f87171', bg: 'rgba(248,113,113,0.1)',  icon: XCircle },
+const S: Record<string, { label: string; color: string; bg: string }> = {
+  Pendiente:   { label:'Pendiente',   color:'#facc15', bg:'rgba(250,204,21,0.1)' },
+  Preparando:  { label:'Preparando',  color:'#60a5fa', bg:'rgba(96,165,250,0.1)' },
+  'En camino': { label:'En camino',   color:'#a78bfa', bg:'rgba(167,139,250,0.1)' },
+  Entregado:   { label:'Entregado',   color:'#4ade80', bg:'rgba(74,222,128,0.1)' },
+  Cancelado:   { label:'Cancelado',   color:'#f87171', bg:'rgba(248,113,113,0.1)' },
 }
 
-const STATUS_FLOW = ['Pendiente', 'Preparando', 'En camino', 'Entregado', 'Cancelado']
-
-type Order = {
-  id: string
-  customer_name: string
-  customer_phone: string
-  customer_address: string
-  products: { name: string; price: number; quantity: number; image?: string }[]
-  total: number
-  status: string
-  created_at: string
-  notes?: string
-  restaurant_id?: string
-}
-
-type Restaurant = {
-  id: string
-  name: string
-  category: string
-  approved: boolean
-  owner_id: string
-  phone?: string
-  address?: string
-}
-
-type profiles = {
-  id: string
-  name: string
-  email: string
-  role: string
-  phone?: string
-}
-
-type Tab = 'pedidos' | 'negocios' | 'usuarios'
+type Tab = 'resumen' | 'pedidos' | 'solicitudes' | 'negocios' | 'usuarios' | 'domiciliarios'
 
 export default function AdminOrders() {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<Tab>('pedidos')
-  const [orders, setOrders] = useState<Order[]>([])
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
-  const [users, setUsers] = useState<profiles[]>([])
+  const [tab, setTab] = useState<Tab>('resumen')
+  const [orders, setOrders] = useState<any[]>([])
+  const [restaurants, setRestaurants] = useState<any[]>([])
+  const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState('Todos')
-  const [updatingId, setUpdatingId] = useState<string | null>(null)
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  // Cargar menu modal
+  const [showLoadMenu, setShowLoadMenu] = useState(false)
+  const [menuRestId, setMenuRestId] = useState('')
+  const [menuText, setMenuText] = useState('')
+  const [loadingMenu, setLoadingMenu] = useState(false)
 
-  const stats = {
-    pedidos: orders.length,
-    negocios: restaurants.length,
-    usuarios: users.length,
-    ingresos: orders.filter(o => o.status === 'Entregado').reduce((a, o) => a + o.total, 0),
-  }
+  function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 3000) }
 
-  useEffect(() => {
-    fetchAll()
-    const channel = supabase
-      .channel('admin-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, fetchAll)
-      .subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [])
+  useEffect(() => { fetchAll() }, [])
 
   async function fetchAll() {
     setLoading(true)
-    const [ordersRes, restRes, usersRes] = await Promise.all([
+    const [o, r, u] = await Promise.all([
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
       supabase.from('restaurants').select('*').order('created_at', { ascending: false }),
       supabase.from('profiles').select('*').order('created_at', { ascending: false }),
     ])
-    setOrders(ordersRes.data || [])
-    setRestaurants(restRes.data || [])
-    setUsers(usersRes.data || [])
+    setOrders(o.data || []); setRestaurants(r.data || []); setUsers(u.data || [])
     setLoading(false)
   }
 
-  function showToast(type: 'success' | 'error', msg: string) {
-    setToast({ type, msg })
-    setTimeout(() => setToast(null), 3000)
-  }
-
-  async function updateOrderStatus(id: string, status: string) {
-    setUpdatingId(id)
+  async function updateStatus(id: string, status: string) {
     await supabase.from('orders').update({ status }).eq('id', id)
-    setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o))
-    setUpdatingId(null)
+    setOrders(p => p.map(o => o.id === id ? { ...o, status } : o))
   }
 
-  async function toggleRestaurantApproval(id: string, current: boolean) {
-    const { error } = await supabase.from('restaurants').update({ approved: !current }).eq('id', id)
-    if (!error) {
-      setRestaurants(prev => prev.map(r => r.id === id ? { ...r, approved: !current } : r))
-      showToast('success', current ? 'Negocio desactivado' : 'Negocio aprobado')
-    }
+  async function toggleRestaurant(id: string, cur: boolean) {
+    await supabase.from('restaurants').update({ approved: !cur }).eq('id', id)
+    setRestaurants(p => p.map(r => r.id === id ? { ...r, approved: !cur } : r))
+    showToast(cur ? 'Negocio desactivado' : 'Negocio aprobado ✅')
   }
 
-  async function updateUserRole(id: string, role: string) {
-    const { error } = await supabase.from('profiles').update({ role }).eq('id', id)
-    if (!error) {
-      setUsers(prev => prev.map(u => u.id === id ? { ...u, role } : u))
-      showToast('success', 'Rol actualizado')
-    }
+  async function updateRole(id: string, role: string) {
+    await supabase.from('profiles').update({ role }).eq('id', id)
+    setUsers(p => p.map(u => u.id === id ? { ...u, role } : u))
+    showToast('Rol actualizado ✅')
   }
 
   async function deleteOrder(id: string) {
-    if (!confirm('¿Eliminar este pedido?')) return
+    if (!confirm('¿Eliminar?')) return
     await supabase.from('orders').delete().eq('id', id)
-    setOrders(prev => prev.filter(o => o.id !== id))
-    showToast('success', 'Pedido eliminado')
+    setOrders(p => p.filter(o => o.id !== id))
+    showToast('Pedido eliminado')
   }
 
+  async function loadMenu() {
+    if (!menuRestId.trim() || !menuText.trim()) return
+    setLoadingMenu(true)
+    let products: any[] = []
+    try {
+      const cleaned = menuText.trim().replace(/```json|```/g, '').trim()
+      products = JSON.parse(cleaned)
+    } catch {
+      // Formato texto: Nombre - $Precio - Descripción - Categoría
+      products = menuText.split('\n').filter(l => l.trim()).map(line => {
+        const parts = line.split('-').map(p => p.trim())
+        return { name: parts[0] || '', price: parseInt((parts[1] || '0').replace(/\D/g, '')) || 0, description: parts[2] || '', category: parts[3] || 'General' }
+      }).filter(p => p.name)
+    }
+    if (products.length > 0) {
+      const inserts = products.map(p => ({ ...p, restaurant_id: menuRestId, available: true }))
+      const { error } = await supabase.from('products').insert(inserts)
+      showToast(error ? 'Error al cargar' : `${products.length} productos cargados ✅`)
+    }
+    setLoadingMenu(false); setShowLoadMenu(false); setMenuRestId(''); setMenuText('')
+  }
+
+  const revenue = orders.filter(o => o.status === 'Entregado').reduce((a, o) => a + (o.total || 0), 0)
+  const pending = orders.filter(o => o.status === 'Pendiente').length
+  const deliverers = users.filter(u => u.role === 'delivery')
   const filteredOrders = orders.filter(o => {
-    const matchSearch = o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
-      o.id.includes(search)
-    const matchStatus = filterStatus === 'Todos' || o.status === filterStatus
-    return matchSearch && matchStatus
+    const ms = o.customer_name?.toLowerCase().includes(search.toLowerCase()) || o.id?.includes(search)
+    const mst = filterStatus === 'Todos' || o.status === filterStatus
+    return ms && mst
   })
+  const solicitudes = restaurants.filter(r => !r.approved)
 
-  const filteredRestaurants = restaurants.filter(r =>
-    r.name.toLowerCase().includes(search.toLowerCase())
-  )
+  const SIDEBAR_ITEMS: { key: Tab; label: string; icon: any; badge?: number }[] = [
+    { key: 'resumen', label: 'Director del panel', icon: TrendingUp },
+    { key: 'solicitudes', label: 'Solicitudes', icon: Store, badge: solicitudes.length },
+    { key: 'pedidos', label: 'Pedidos', icon: ShoppingBag, badge: pending },
+    { key: 'negocios', label: 'Negocios', icon: Store },
+    { key: 'usuarios', label: 'Usuarios', icon: Users },
+    { key: 'domiciliarios', label: 'Domiciliarios', icon: Bike },
+  ]
 
-  const filteredUsers = users.filter(u =>
-    (u.name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (u.email || '').toLowerCase().includes(search.toLowerCase())
-  )
-
-  const logout = async () => { await supabase.auth.signOut(); router.push('/auth') }
+  const inp: React.CSSProperties = { height: 42, borderRadius: 10, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '0 12px', color: '#fff', fontSize: '0.85rem', outline: 'none' }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#080808', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#f8f5f0', display: 'flex', fontFamily: 'system-ui, sans-serif' }}>
+      {toast && <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 9999, background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 14, padding: '12px 20px', color: '#4ade80', fontWeight: 600, fontSize: '0.88rem' }}>{toast}</div>}
 
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: 'fixed', top: 20, right: 20, zIndex: 9999,
-          background: toast.type === 'success' ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)',
-          border: `1px solid ${toast.type === 'success' ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)'}`,
-          borderRadius: 14, padding: '12px 20px',
-          color: toast.type === 'success' ? '#4ade80' : '#f87171',
-          fontSize: '0.9rem', fontWeight: 600,
-        }}>{toast.msg}</div>
+      {/* Modal cargar menú */}
+      {showLoadMenu && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9000, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
+          <div style={{ width: '100%', maxWidth: 600, background: '#fff', borderRadius: 24, padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontWeight: 800, fontSize: '1.3rem', color: '#111' }}>Cargar Menú Completo</h3>
+              <button onClick={() => setShowLoadMenu(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#888' }}>✕</button>
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>ID del Negocio</label>
+              <input value={menuRestId} onChange={e => setMenuRestId(e.target.value)} placeholder="Ej: abc123def" style={{ width: '100%', height: 48, borderRadius: 12, border: '1.5px solid #e5e0d8', padding: '0 14px', fontSize: '0.9rem', outline: 'none', color: '#111', boxSizing: 'border-box' }} />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#666', display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Menú (una línea por producto)</label>
+              <textarea value={menuText} onChange={e => setMenuText(e.target.value)} rows={8} placeholder={'Formato TEXTO:\nPizza Margherita - $25000 - Pizza clásica - Pizzas\n\nFormato JSON:\n[{"name":"Pizza","price":25000,"description":"Clásica","category":"Pizzas"}]'}
+                style={{ width: '100%', borderRadius: 12, border: '1.5px solid #e5e0d8', padding: '12px 14px', fontSize: '0.85rem', outline: 'none', resize: 'none', color: '#111', boxSizing: 'border-box' }} />
+              <p style={{ fontSize: '0.75rem', color: '#999', marginTop: 6 }}>Soporta formato de texto separado por " - " o matriz JSON.</p>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setShowLoadMenu(false)} style={{ flex: 1, height: 48, borderRadius: 12, background: '#f5f5f5', border: 'none', cursor: 'pointer', fontWeight: 600, color: '#666' }}>Cancelar</button>
+              <button onClick={loadMenu} disabled={loadingMenu} style={{ flex: 1, height: 48, borderRadius: 12, background: 'var(--orange)', border: 'none', cursor: 'pointer', fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                {loadingMenu ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : null} Cargar Menú
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* Header */}
-      <header style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FF5001', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem' }}>F</div>
-          <div>
-            <p style={{ margin: 0, fontWeight: 800, fontSize: '1rem' }}>Panel Admin</p>
-            <p style={{ margin: 0, fontSize: '0.7rem', color: '#FF5001' }}>FASTY PLATFORM</p>
+      {/* SIDEBAR */}
+      <aside style={{ width: 240, background: '#fff', borderRight: '1px solid #ede9e1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div>
+          <div style={{ padding: '1.5rem', borderBottom: '1px solid #ede9e1', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)' }}>F</div>
+            <span style={{ fontWeight: 800, fontSize: '1rem', fontFamily: 'var(--font-display)', color: '#111' }}>FASTY</span>
+          </div>
+          <div style={{ padding: '1rem 0.8rem' }}>
+            <p style={{ fontSize: '0.65rem', color: '#bbb', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, padding: '0 0.8rem', marginBottom: 6 }}>Gestión</p>
+            {SIDEBAR_ITEMS.map(item => (
+              <button key={item.key} onClick={() => setTab(item.key)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '0.7rem 0.8rem', borderRadius: 10, border: 'none', cursor: 'pointer', background: tab === item.key ? '#fff5f0' : 'transparent', color: tab === item.key ? 'var(--orange)' : '#555', fontWeight: tab === item.key ? 700 : 400, fontSize: '0.88rem', position: 'relative', textAlign: 'left' }}>
+                <item.icon size={16} />
+                {item.label}
+                {item.badge ? <span style={{ marginLeft: 'auto', background: 'var(--orange)', color: '#fff', borderRadius: 100, padding: '1px 7px', fontSize: '0.68rem', fontWeight: 800 }}>{item.badge}</span> : null}
+              </button>
+            ))}
           </div>
         </div>
-        <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#888', fontSize: '0.8rem', cursor: 'pointer' }}>
-          <LogOut size={14} /> Salir
+        <button onClick={async () => { await supabase.auth.signOut(); router.push('/auth') }}
+          style={{ margin: '1rem', padding: '0.8rem', borderRadius: 12, background: '#f5f0eb', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, color: '#888', fontSize: '0.85rem', fontWeight: 600 }}>
+          <LogOut size={15} /> Cerrar sesión
         </button>
-      </header>
+      </aside>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem 5rem' }}>
-
-        {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
-          {[
-            { label: 'Pedidos totales', value: stats.pedidos, icon: ShoppingBag, color: '#FF5001' },
-            { label: 'Negocios', value: stats.negocios, icon: Store, color: '#60a5fa' },
-            { label: 'Usuarios', value: stats.usuarios, icon: Users, color: '#a78bfa' },
-            { label: 'Ingresos', value: `$${stats.ingresos.toLocaleString('es-CO')}`, icon: TrendingUp, color: '#4ade80' },
-          ].map((s, i) => (
-            <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <p style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800 }}>{s.value}</p>
-                  <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: '#666' }}>{s.label}</p>
-                </div>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <s.icon size={18} color={s.color} />
-                </div>
-              </div>
+      {/* MAIN */}
+      <main style={{ flex: 1, overflowY: 'auto', minHeight: '100vh' }}>
+        {/* Topbar */}
+        <div style={{ background: '#fff', borderBottom: '1px solid #ede9e1', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', margin: 0 }}>
+            {SIDEBAR_ITEMS.find(i => i.key === tab)?.label}
+          </h2>
+          {tab === 'negocios' && (
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => setShowLoadMenu(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 10, background: '#f5f0eb', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.82rem', color: '#555' }}>
+                <Package size={14} /> Cargar Menú
+              </button>
             </div>
-          ))}
-        </div>
-
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: '1.5rem', background: 'rgba(255,255,255,0.04)', borderRadius: 14, padding: 4 }}>
-          {([
-            { key: 'pedidos', label: '🛒 Pedidos' },
-            { key: 'negocios', label: '🏪 Negocios' },
-            { key: 'usuarios', label: '👥 Usuarios' },
-          ] as const).map(tab => (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
-              flex: 1, height: 40, borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem',
-              background: activeTab === tab.key ? '#FF5001' : 'transparent',
-              color: activeTab === tab.key ? '#fff' : '#666',
-            }}>
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Search + filter */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: '1.5rem' }}>
-          <div style={{ position: 'relative', flex: 1 }}>
-            <Search size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#555' }} />
-            <input
-              type="text"
-              placeholder="Buscar..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{ width: '100%', height: 42, borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', paddingLeft: 38, paddingRight: 14, color: '#fff', fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box' }}
-            />
-          </div>
-          {activeTab === 'pedidos' && (
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-              style={{ height: 42, borderRadius: 10, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0 12px', color: '#fff', fontSize: '0.85rem', outline: 'none' }}>
-              <option value="Todos">Todos</option>
-              {STATUS_FLOW.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
           )}
         </div>
 
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}>
-            <Loader2 size={32} color="#FF5001" style={{ animation: 'spin 1s linear infinite' }} />
-          </div>
-        ) : (
-          <>
-            {/* PEDIDOS */}
-            {activeTab === 'pedidos' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {filteredOrders.length === 0 && <p style={{ color: '#555', textAlign: 'center', padding: '2rem' }}>No hay pedidos</p>}
-                {filteredOrders.map(order => {
-                  const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['Pendiente']
-                  const Icon = cfg.icon
-                  return (
-                    <div key={order.id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem' }}>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                          <p style={{ margin: 0, fontWeight: 800, fontSize: '1rem' }}>{order.customer_name}</p>
-                          <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#666' }}>#{order.id.split('-')[0].toUpperCase()} · {new Date(order.created_at).toLocaleString('es-CO')}</p>
-                          <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: '#888' }}>📞 {order.customer_phone} · 📍 {order.customer_address}</p>
+        <div style={{ padding: '2rem' }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '4rem' }}>
+              <Loader2 size={32} color="var(--orange)" style={{ animation: 'spin 1s linear infinite' }} />
+            </div>
+          ) : (
+            <>
+              {/* RESUMEN */}
+              {tab === 'resumen' && (
+                <div>
+                  <p style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Administración</p>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', fontWeight: 800, color: '#111', marginBottom: 4 }}>Panel de control</h1>
+                  <p style={{ color: '#888', marginBottom: '2rem' }}>Visión completa de la operación de Fasty.</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1.2rem', marginBottom: '2rem' }}>
+                    {[
+                      { label: 'Ingresos totales', value: `$${revenue.toLocaleString('es-CO')}`, icon: TrendingUp, color: '#4ade80' },
+                      { label: 'Pedidos', value: orders.length, icon: ShoppingBag, color: 'var(--orange)' },
+                      { label: 'Negocios', value: restaurants.length, icon: Store, color: '#60a5fa' },
+                      { label: 'Domiciliarios', value: deliverers.length, icon: Bike, color: '#a78bfa' },
+                    ].map((s, i) => (
+                      <div key={i} style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 18, padding: '1.2rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <p style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800, color: '#111', fontFamily: 'var(--font-display)' }}>{s.value}</p>
+                            <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: '#888' }}>{s.label}</p>
+                          </div>
+                          <div style={{ width: 38, height: 38, borderRadius: 10, background: `${s.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <s.icon size={18} color={s.color} />
+                          </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <select
-                            value={order.status}
-                            onChange={e => updateOrderStatus(order.id, e.target.value)}
-                            disabled={updatingId === order.id}
-                            style={{ height: 36, borderRadius: 8, background: cfg.bg, border: `1px solid ${cfg.color}40`, padding: '0 10px', color: cfg.color, fontSize: '0.8rem', fontWeight: 600, outline: 'none', cursor: 'pointer' }}
-                          >
-                            {STATUS_FLOW.map(s => <option key={s} value={s}>{s}</option>)}
-                          </select>
-                          <button onClick={() => deleteOrder(order.id)} style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)', color: '#f87171', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Trash2 size={13} />
+                      </div>
+                    ))}
+                  </div>
+                  {/* Top negocios */}
+                  <div style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 18, padding: '1.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+                      <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#111', margin: 0 }}>Los mejores negocios</h3>
+                      <span style={{ fontSize: '0.78rem', color: '#888' }}>Por pedidos</span>
+                    </div>
+                    {restaurants.slice(0, 5).map((r, i) => {
+                      const cnt = orders.filter(o => o.restaurant_id === r.id && o.status === 'Entregado').length
+                      const max = Math.max(...restaurants.slice(0,5).map(x => orders.filter(o => o.restaurant_id === x.id && o.status === 'Entregado').length), 1)
+                      return (
+                        <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                          <span style={{ fontSize: '0.75rem', color: '#999', width: 80, textAlign: 'right', flexShrink: 0 }}>{r.name?.substring(0,12)}</span>
+                          <div style={{ flex: 1, height: 24, background: '#f5f0eb', borderRadius: 6, overflow: 'hidden' }}>
+                            <div style={{ height: '100%', background: 'var(--orange)', width: `${(cnt / max) * 100}%`, borderRadius: 6, transition: 'width 0.5s', display: 'flex', alignItems: 'center', paddingLeft: 8 }}>
+                              {cnt > 0 && <span style={{ fontSize: '0.68rem', color: '#fff', fontWeight: 700 }}>{cnt}</span>}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* SOLICITUDES */}
+              {tab === 'solicitudes' && (
+                <div>
+                  <p style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Administración</p>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: 4 }}>Solicitudes</h1>
+                  <p style={{ color: '#888', marginBottom: '1.5rem' }}>Nuevos negocios esperando aprobación para unirse a Fasty.</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    {restaurants.map(r => (
+                      <div key={r.id} style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 16, padding: '1rem 1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800 }}>{r.name?.[0]?.toUpperCase()}</div>
+                          <div>
+                            <p style={{ margin: 0, fontWeight: 700, color: '#111' }}>{r.name}</p>
+                            <p style={{ margin: 0, fontSize: '0.78rem', color: '#888' }}>{r.category} · {new Date(r.created_at).toLocaleDateString('es-CO')}</p>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <span style={{ fontSize: '0.78rem', padding: '4px 12px', borderRadius: 100, background: r.approved ? 'rgba(74,222,128,0.1)' : 'rgba(250,204,21,0.1)', color: r.approved ? '#4ade80' : '#facc15', fontWeight: 600, border: `1px solid ${r.approved ? 'rgba(74,222,128,0.2)' : 'rgba(250,204,21,0.2)'}` }}>
+                            {r.approved ? 'Aprobado' : 'Pendiente'}
+                          </span>
+                          <button onClick={() => toggleRestaurant(r.id, r.approved)} style={{ padding: '6px 14px', borderRadius: 10, background: r.approved ? '#f5f0eb' : 'var(--orange)', border: 'none', color: r.approved ? '#888' : '#fff', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>
+                            {r.approved ? 'Desactivar' : 'Aprobar'}
                           </button>
                         </div>
                       </div>
-                      <div style={{ marginTop: 10, fontSize: '0.82rem', color: '#666' }}>
-                        {order.products?.map((p, i) => `${p.name} x${p.quantity}`).join(' · ')}
-                      </div>
-                      <div style={{ marginTop: 8, fontWeight: 800, color: '#FF5001' }}>
-                        ${order.total?.toLocaleString('es-CO')}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* NEGOCIOS */}
-            {activeTab === 'negocios' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {filteredRestaurants.length === 0 && <p style={{ color: '#555', textAlign: 'center', padding: '2rem' }}>No hay negocios</p>}
-                {filteredRestaurants.map(r => (
-                  <div key={r.id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-                    <div>
-                      <p style={{ margin: 0, fontWeight: 700 }}>{r.name}</p>
-                      <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#666' }}>{r.category} {r.phone && `· ${r.phone}`}</p>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 8, background: r.approved ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)', color: r.approved ? '#4ade80' : '#f87171', fontWeight: 600 }}>
-                        {r.approved ? 'Activo' : 'Inactivo'}
-                      </span>
-                      <button onClick={() => toggleRestaurantApproval(r.id, r.approved)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}>
-                        {r.approved ? <ToggleRight size={14} color="#4ade80" /> : <ToggleLeft size={14} color="#f87171" />}
-                        {r.approved ? 'Desactivar' : 'Aprobar'}
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              )}
 
-            {/* USUARIOS */}
-            {activeTab === 'usuarios' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {filteredUsers.length === 0 && <p style={{ color: '#555', textAlign: 'center', padding: '2rem' }}>No hay usuarios</p>}
-                {filteredUsers.map(u => (
-                  <div key={u.id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18, padding: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#FF5001', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', flexShrink: 0 }}>
-                        {(u.name || u.email || 'U')[0].toUpperCase()}
-                      </div>
-                      <div>
-                        <p style={{ margin: 0, fontWeight: 600, fontSize: '0.9rem' }}>{u.name || '—'}</p>
-                        <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#666' }}>{u.email}</p>
-                      </div>
+              {/* PEDIDOS */}
+              {tab === 'pedidos' && (
+                <div>
+                  <p style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Administración</p>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: 4 }}>Pedidos</h1>
+                  <p style={{ color: '#888', marginBottom: '1.5rem' }}>{orders.length} pedidos. Monitorea el flujo de vida de las órdenes.</p>
+                  <div style={{ display: 'flex', gap: 10, marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                    <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+                      <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
+                      <input type="text" placeholder="Buscar por ID, cliente..." value={search} onChange={e => setSearch(e.target.value)}
+                        style={{ width: '100%', height: 42, borderRadius: 10, border: '1px solid #ede9e1', background: '#fff', paddingLeft: 36, paddingRight: 14, fontSize: '0.85rem', outline: 'none', color: '#111', boxSizing: 'border-box' }} />
                     </div>
-                    <select
-                      value={u.role || 'customer'}
-                      onChange={e => updateUserRole(u.id, e.target.value)}
-                      style={{ height: 36, borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', padding: '0 10px', color: '#fff', fontSize: '0.82rem', outline: 'none', cursor: 'pointer' }}
-                    >
-                      <option value="customer">Cliente</option>
-                      <option value="business">Negocio</option>
-                      <option value="delivery">Domiciliario</option>
-                      <option value="admin">Admin</option>
+                    <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+                      style={{ height: 42, borderRadius: 10, border: '1px solid #ede9e1', background: '#fff', padding: '0 12px', fontSize: '0.85rem', outline: 'none', color: '#111' }}>
+                      <option value="Todos">Todos los estados</option>
+                      {Object.keys(S).map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
+                  <div style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 18, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid #ede9e1' }}>
+                          {['PEDIDO','NEGOCIO','PRODUCTOS','CLIENTE','TOTAL','ESTADO',''].map(h => (
+                            <th key={h} style={{ padding: '0.8rem 1rem', textAlign: 'left', fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredOrders.map(o => {
+                          const rest = restaurants.find(r => r.id === o.restaurant_id)
+                          const sc = S[o.status] || S['Pendiente']
+                          return (
+                            <tr key={o.id} style={{ borderBottom: '1px solid #f5f0eb' }}>
+                              <td style={{ padding: '0.8rem 1rem' }}>
+                                <span style={{ color: 'var(--orange)', fontSize: '0.8rem', fontWeight: 700 }}>#{o.id?.split('-')[0]?.toUpperCase()}</span>
+                              </td>
+                              <td style={{ padding: '0.8rem 1rem', fontSize: '0.82rem', color: '#111', fontWeight: 600 }}>{rest?.name || 'Pedido Abierto'}</td>
+                              <td style={{ padding: '0.8rem 1rem', fontSize: '0.78rem', color: '#666', maxWidth: 180 }}>
+                                <span style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                  {o.products?.map((p: any) => `${p.quantity}x ${p.name}`).join(', ')}
+                                </span>
+                              </td>
+                              <td style={{ padding: '0.8rem 1rem', fontSize: '0.82rem', color: '#111' }}>{o.customer_name}</td>
+                              <td style={{ padding: '0.8rem 1rem', fontSize: '0.88rem', fontWeight: 700, color: '#111' }}>${(o.total || 0).toLocaleString('es-CO')}</td>
+                              <td style={{ padding: '0.8rem 1rem' }}>
+                                <select value={o.status} onChange={e => updateStatus(o.id, e.target.value)}
+                                  style={{ height: 32, borderRadius: 8, background: sc.bg, border: `1px solid ${sc.color}40`, padding: '0 8px', color: sc.color, fontSize: '0.78rem', fontWeight: 700, outline: 'none', cursor: 'pointer' }}>
+                                  {Object.keys(S).map(s => <option key={s} value={s}>{s}</option>)}
+                                </select>
+                              </td>
+                              <td style={{ padding: '0.8rem 0.8rem' }}>
+                                <button onClick={() => deleteOrder(o.id)} style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  <Trash2 size={12} />
+                                </button>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                    {filteredOrders.length === 0 && <p style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>No hay pedidos</p>}
+                  </div>
+                </div>
+              )}
+
+              {/* NEGOCIOS */}
+              {tab === 'negocios' && (
+                <div>
+                  <p style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Administración</p>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: 4 }}>Negocios</h1>
+                  <p style={{ color: '#888', marginBottom: '1.5rem' }}>Controla los aliados y establecimientos de la plataforma.</p>
+                  <div style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 18, overflow: 'hidden' }}>
+                    <div style={{ padding: '1rem 1.2rem', borderBottom: '1px solid #ede9e1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                      <div style={{ position: 'relative' }}>
+                        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
+                        <input placeholder="Buscar negocio..." value={search} onChange={e => setSearch(e.target.value)}
+                          style={{ height: 38, borderRadius: 10, border: '1px solid #ede9e1', paddingLeft: 36, paddingRight: 12, fontSize: '0.85rem', outline: 'none', color: '#111', width: 250 }} />
+                      </div>
+                    </div>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid #ede9e1' }}>
+                          {['NEGOCIO','CATEGORÍA','ESTADO','ACCIONES'].map(h => (
+                            <th key={h} style={{ padding: '0.8rem 1rem', textAlign: 'left', fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {restaurants.filter(r => r.name?.toLowerCase().includes(search.toLowerCase())).map(r => (
+                          <tr key={r.id} style={{ borderBottom: '1px solid #f5f0eb' }}>
+                            <td style={{ padding: '0.8rem 1rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#f5f0eb', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                  {r.image_url ? <img src={r.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: '1rem' }}>🏪</span>}
+                                </div>
+                                <div>
+                                  <p style={{ margin: 0, fontWeight: 700, fontSize: '0.88rem', color: '#111' }}>{r.name}</p>
+                                  <p style={{ margin: 0, fontSize: '0.72rem', color: '#888' }}>ID: {r.id?.split('-')[0]}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ padding: '0.8rem 1rem' }}><span style={{ background: '#f5f0eb', padding: '3px 10px', borderRadius: 100, fontSize: '0.75rem', color: '#555', fontWeight: 600 }}>{r.category}</span></td>
+                            <td style={{ padding: '0.8rem 1rem' }}>
+                              <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 100, background: r.approved ? 'rgba(74,222,128,0.1)' : 'rgba(250,204,21,0.1)', color: r.approved ? '#4ade80' : '#facc15', fontWeight: 600 }}>
+                                {r.approved ? '● Activo' : '● Pendiente'}
+                              </span>
+                            </td>
+                            <td style={{ padding: '0.8rem 1rem' }}>
+                              <button onClick={() => toggleRestaurant(r.id, r.approved)} style={{ padding: '6px 14px', borderRadius: 8, background: r.approved ? '#f5f0eb' : 'var(--orange)', border: 'none', color: r.approved ? '#888' : '#fff', fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600 }}>
+                                {r.approved ? 'Desactivar' : 'Aprobar'}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* USUARIOS */}
+              {tab === 'usuarios' && (
+                <div>
+                  <p style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Administración</p>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: 16 }}>Usuarios</h1>
+                  <div style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 18, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid #ede9e1' }}>
+                          {['USUARIO','EMAIL','ROL'].map(h => <th key={h} style={{ padding: '0.8rem 1rem', textAlign: 'left', fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{h}</th>)}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {users.map(u => (
+                          <tr key={u.id} style={{ borderBottom: '1px solid #f5f0eb' }}>
+                            <td style={{ padding: '0.8rem 1rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: '0.88rem', flexShrink: 0 }}>{(u.name || u.email || 'U')[0]?.toUpperCase()}</div>
+                                <p style={{ margin: 0, fontWeight: 600, fontSize: '0.88rem', color: '#111' }}>{u.name || '—'}</p>
+                              </div>
+                            </td>
+                            <td style={{ padding: '0.8rem 1rem', fontSize: '0.82rem', color: '#666' }}>{u.email}</td>
+                            <td style={{ padding: '0.8rem 1rem' }}>
+                              <select value={u.role || 'customer'} onChange={e => updateRole(u.id, e.target.value)}
+                                style={{ height: 34, borderRadius: 8, border: '1px solid #ede9e1', padding: '0 10px', fontSize: '0.82rem', outline: 'none', color: '#111', background: '#fff', cursor: 'pointer' }}>
+                                <option value="customer">Cliente</option>
+                                <option value="business">Negocio</option>
+                                <option value="delivery">Domiciliario</option>
+                                <option value="admin">Admin</option>
+                              </select>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* DOMICILIARIOS */}
+              {tab === 'domiciliarios' && (
+                <div>
+                  <p style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Administración</p>
+                  <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: 4 }}>Domiciliarios</h1>
+                  <p style={{ color: '#888', marginBottom: '1.5rem' }}>Administra el equipo de reparto de la plataforma.</p>
+                  <div style={{ background: '#fff', border: '1px solid #ede9e1', borderRadius: 18, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid #ede9e1' }}>
+                          {['DOMICILIARIO','CONTACTO','ENTREGAS','ESTADO'].map(h => <th key={h} style={{ padding: '0.8rem 1rem', textAlign: 'left', fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>{h}</th>)}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {deliverers.length === 0 ? (
+                          <tr><td colSpan={4} style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>No hay domiciliarios registrados. Asigna el rol "Domiciliario" a usuarios desde la pestaña Usuarios.</td></tr>
+                        ) : deliverers.map(u => {
+                          const delivered = orders.filter(o => o.status === 'Entregado').length
+                          return (
+                            <tr key={u.id} style={{ borderBottom: '1px solid #f5f0eb' }}>
+                              <td style={{ padding: '0.8rem 1rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                  <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, flexShrink: 0 }}>{(u.name || 'D')[0]?.toUpperCase()}</div>
+                                  <div><p style={{ margin: 0, fontWeight: 700, fontSize: '0.88rem', color: '#111' }}>{u.name || '—'}</p><p style={{ margin: 0, fontSize: '0.72rem', color: '#888' }}>🏍 Moto</p></div>
+                                </div>
+                              </td>
+                              <td style={{ padding: '0.8rem 1rem', fontSize: '0.82rem', color: '#555' }}>{u.phone || u.email || '—'}</td>
+                              <td style={{ padding: '0.8rem 1rem', fontSize: '0.88rem', fontWeight: 700, color: '#111' }}>{delivered}</td>
+                              <td style={{ padding: '0.8rem 1rem' }}>
+                                <span style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 100, background: 'rgba(74,222,128,0.1)', color: '#4ade80', fontWeight: 600 }}>● EN LÍNEA</span>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </main>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
